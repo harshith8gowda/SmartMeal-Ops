@@ -1,35 +1,37 @@
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
+import Image from "next/image";
+import { ArrowRight, CalendarCheck, PackagePlus, Sparkles, Utensils } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HeroMotion } from "@/components/dashboard/hero-motion";
+import { Card } from "@/components/ui/card";
 
 const bullets = [
-  "Tonight’s smartest move",
+  "Tonight's smartest move",
   "Save money. Eat better.",
-  "Groceries or takeout? We’ll decide."
+  "Groceries or takeout? We'll decide."
 ];
 
 export default function LandingPage() {
   return (
-    <main className="mx-auto flex min-h-screen max-w-6xl flex-col px-6 py-14">
-      <nav className="glass mb-16 flex items-center justify-between rounded-2xl px-5 py-3">
+    <main className="mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-6 sm:px-6 lg:py-8">
+      <nav className="glass mb-10 flex items-center justify-between rounded-lg px-5 py-3">
         <p className="text-lg font-semibold">SmartMeal Ops</p>
         <Button asChild>
           <Link href="/onboarding">Get Started</Link>
         </Button>
       </nav>
 
-      <HeroMotion><section className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+      <HeroMotion><section className="grid min-h-[calc(100vh-128px)] gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
         <div>
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-indigo-100 px-3 py-1 text-sm font-medium text-indigo-700">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-sm font-medium text-primary shadow-sm">
             <Sparkles className="h-4 w-4" />
             AI Household Food Copilot
           </div>
-          <h1 className="text-5xl font-semibold tracking-tight md:text-6xl">Your AI Food Operations Copilot</h1>
-          <p className="mt-5 max-w-2xl text-lg text-slate-600">
+          <h1 className="max-w-3xl text-5xl font-semibold tracking-tight md:text-7xl">Your AI Food Operations Copilot</h1>
+          <p className="mt-5 max-w-2xl text-lg text-muted-foreground">
             Plan meals, optimize costs, restock groceries, and make smarter dinner decisions with one intelligent assistant powered by Swiggy MCP.
           </p>
-          <div className="mt-8 flex gap-3">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button asChild size="lg">
               <Link href="/dashboard">Launch Dashboard <ArrowRight className="ml-2 h-4 w-4" /></Link>
             </Button>
@@ -37,17 +39,29 @@ export default function LandingPage() {
               <Link href="/chat">Try AI Assistant</Link>
             </Button>
           </div>
+          <div className="mt-8 grid max-w-xl grid-cols-3 gap-3 text-sm">
+            <div className="metric"><Utensils className="mb-2 h-4 w-4 text-primary" />Cook</div>
+            <div className="metric"><PackagePlus className="mb-2 h-4 w-4 text-primary" />Order</div>
+            <div className="metric"><CalendarCheck className="mb-2 h-4 w-4 text-primary" />Dineout</div>
+          </div>
         </div>
 
-        <div className="glass rounded-3xl p-6">
-          <p className="text-sm font-medium uppercase text-slate-500">What you can ask</p>
-          <ul className="mt-5 space-y-4">
+        <div className="relative overflow-hidden rounded-lg">
+          <Image
+            src="https://images.unsplash.com/photo-1543352634-a1c51d9f1fa7?auto=format&fit=crop&w=1400&q=80"
+            alt="A dinner table with balanced bowls and fresh ingredients"
+            width={1400}
+            height={920}
+            priority
+            className="h-[520px] w-full rounded-lg object-cover"
+          />
+          <div className="absolute inset-x-4 bottom-4 grid gap-3 md:grid-cols-3">
             {bullets.map((item) => (
-              <li key={item} className="rounded-xl border border-slate-200 bg-white/80 p-4 text-slate-700">
+              <Card key={item} className="bg-white/88 p-4 text-sm shadow-lg backdrop-blur">
                 {item}
-              </li>
+              </Card>
             ))}
-          </ul>
+          </div>
         </div>
       </section></HeroMotion>
     </main>

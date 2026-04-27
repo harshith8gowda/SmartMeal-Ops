@@ -1,6 +1,6 @@
 import { DietGoal } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/db/prisma";
+import { getPrisma } from "@/lib/db/prisma";
 
 function parseDietGoal(value: string): DietGoal {
   const normalized = value?.toUpperCase?.() ?? "BALANCED";
@@ -12,6 +12,7 @@ function parseDietGoal(value: string): DietGoal {
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
+  const prisma = getPrisma();
   const dietaryGoal = parseDietGoal(String(body.dietaryGoal || "balanced"));
 
   const payload = {

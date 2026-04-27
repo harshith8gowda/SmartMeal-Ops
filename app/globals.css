@@ -3,24 +3,38 @@
 @tailwind utilities;
 
 :root {
-  --background: 220 35% 98%;
-  --foreground: 222 47% 11%;
+  --background: 45 44% 96%;
+  --foreground: 222 42% 10%;
   --card: 0 0% 100%;
-  --card-foreground: 222 47% 11%;
-  --primary: 231 78% 58%;
+  --card-foreground: 222 42% 10%;
+  --primary: 164 76% 30%;
   --primary-foreground: 0 0% 100%;
-  --muted: 220 17% 95%;
-  --muted-foreground: 215 16% 47%;
-  --border: 220 15% 88%;
-  --input: 220 15% 88%;
-  --ring: 231 78% 58%;
+  --secondary: 30 20% 92%;
+  --secondary-foreground: 222 42% 12%;
+  --accent: 12 76% 56%;
+  --accent-foreground: 0 0% 100%;
+  --muted: 40 26% 91%;
+  --muted-foreground: 218 13% 38%;
+  --border: 38 18% 82%;
+  --input: 38 18% 82%;
+  --ring: 164 76% 30%;
 }
 
 body {
   @apply bg-background text-foreground antialiased;
-  background-image: radial-gradient(circle at top left, rgba(79, 70, 229, 0.1), transparent 40%);
+  background:
+    linear-gradient(135deg, rgba(250, 247, 239, 0.94), rgba(235, 242, 237, 0.94)),
+    url("data:image/svg+xml,%3Csvg width='180' height='180' viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%231f513f' stroke-opacity='.05' stroke-width='1'%3E%3Cpath d='M0 40h180M0 100h180M0 160h180M40 0v180M100 0v180M160 0v180'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 .glass {
-  @apply bg-white/70 backdrop-blur-xl border border-white/60 shadow-sm;
+  @apply border border-white/70 bg-white/75 shadow-sm backdrop-blur-xl;
+}
+
+.dark-panel {
+  @apply border border-white/10 bg-slate-950 text-white shadow-xl;
+}
+
+.metric {
+  @apply rounded-xl border border-border bg-white/70 p-4;
 }

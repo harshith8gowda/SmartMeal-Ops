@@ -5,3 +5,5 @@ node_modules
 .vercel
 coverage
 prisma/dev.db
+tsconfig.tsbuildinfo
+dev-server*.log

@@ -1,25 +1,30 @@
 # SmartMeal Ops
 
-SmartMeal Ops is an AI household food operations copilot that helps users decide whether to cook at home, order via Swiggy Food, or dine out via Dineout.
+SmartMeal Ops is an AI household food operations copilot. It helps a household decide whether to cook at home with Instamart groceries, order through Swiggy Food, or reserve a table through Dineout.
 
-## Tech Stack
-- Next.js 15 (App Router) + TypeScript
-- TailwindCSS + reusable UI components
-- Prisma + PostgreSQL
-- AI abstraction layer with mock-safe fallback
-- Swiggy MCP-ready service layer (Food, Instamart, Dineout)
+## Stack
 
-## Features in this MVP
-- Onboarding flow with household and goal preferences
-- Dashboard with tonight recommendation + weekly meal plan
-- AI assistant chat panel
-- Decision engine: cook/order/dineout
-- Pantry memory starter models
-- Final confirmation-ready cart/order payload architecture
-- API routes for Swiggy Food / Instamart / Dineout workflows
-- Seed data for local development
+- Next.js 16 App Router, React 19, TypeScript
+- TailwindCSS, ShadCN-style reusable UI, Framer Motion
+- React Hook Form and Zod for onboarding
+- Prisma ORM with PostgreSQL
+- NextAuth-ready auth boundary
+- OpenAI-ready planner abstraction with mock fallback
+- Swiggy MCP-ready service layer for Food, Instamart, and Dineout
+- Vercel-compatible deployment
+
+## MVP Features
+
+- Premium landing page with clear product positioning
+- Onboarding for household size, dietary goal, budget, cuisines, allergies, city, and cooking skill
+- Dashboard with tonight recommendation, weekly meal plan, pantry status, budget tracker, quick actions, and AI assistant
+- AI planner and rules-based decision engine for cook/order/dineout
+- Mock Swiggy MCP services when API keys or MCP URLs are absent
+- Final confirmation layer before any order placement
+- Prisma schema and seed data for users, pantry, meal plans, orders, and conversations
 
 ## Folder Structure
+
 ```txt
 app/
   (marketing)/page.tsx
@@ -28,62 +33,105 @@ app/
   onboarding/page.tsx
   api/
 components/
-  ui/
   cards/
   charts/
   chat/
+  dashboard/
   onboarding/
+  ui/
 lib/
   ai/
-  swiggy/
   db/
+  store/
+  swiggy/
   utils/
 prisma/
   schema.prisma
   seed.ts
 types/
+  index.ts
 ```
 
 ## Local Setup
+
 1. Install dependencies:
+
    ```bash
    npm install
    ```
-2. Copy env file:
+
+2. Copy environment variables:
+
    ```bash
    cp .env.example .env
    ```
-3. Generate Prisma client:
+
+3. Start PostgreSQL and set `DATABASE_URL`.
+
+4. Generate Prisma client:
+
    ```bash
    npm run prisma:generate
    ```
-4. Run migrations:
+
+5. Run migration:
+
    ```bash
    npm run prisma:migrate -- --name init
    ```
-5. Seed data:
+
+6. Seed demo data:
+
    ```bash
    npm run prisma:seed
    ```
-6. Start app:
+
+7. Start the app:
+
    ```bash
    npm run dev
    ```
 
-## Deployment (Vercel)
-1. Push repo to GitHub.
-2. Import project in Vercel.
-3. Set environment variables from `.env.example`.
-4. Add managed Postgres and set `DATABASE_URL`.
+## Environment Variables
+
+```env
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/smartmeal_ops"
+NEXTAUTH_SECRET="replace_me"
+NEXTAUTH_URL="http://localhost:3000"
+OPENAI_API_KEY=""
+SWIGGY_FOOD_API_KEY=""
+SWIGGY_FOOD_MCP_URL=""
+SWIGGY_INSTAMART_API_KEY=""
+SWIGGY_INSTAMART_MCP_URL=""
+SWIGGY_DINEOUT_API_KEY=""
+SWIGGY_DINEOUT_MCP_URL=""
+```
+
+When Swiggy keys or MCP URLs are blank, `lib/swiggy/*` returns deterministic mock data so the app remains usable.
+
+## Swiggy MCP Integration
+
+The integration boundary is intentionally thin:
+
+- `lib/swiggy/food.ts`: `searchFood`, `createFoodCart`, `placeFoodOrder`
+- `lib/swiggy/instamart.ts`: `searchGroceries`, `createGroceryCart`
+- `lib/swiggy/dineout.ts`: `searchRestaurants`, `bookTable`
+
+API routes under `app/api/swiggy/*` call those services. Keep the UI pointed at the app routes, then replace the service internals with the real Swiggy MCP transport when credentials are available.
+
+## Deployment
+
+1. Push the repo to GitHub.
+2. Import the project into Vercel.
+3. Add Vercel Postgres or another managed PostgreSQL database.
+4. Set the environment variables above in Vercel.
 5. Build command: `npm run build`.
-6. Run Prisma migration in CI/CD or post-deploy hook.
+6. Run Prisma migrations from CI or a release step:
 
-## Swiggy MCP integration notes
-- Service layer lives in `lib/swiggy/`.
-- If API keys are absent, mock responses are returned so UI still works.
-- Replace inline comments in service files with actual MCP endpoint calls and auth headers.
+   ```bash
+   npx prisma migrate deploy
+   ```
 
-## Future-ready extensions
-- Household family mode (multiple members)
-- Spend analytics and trend charts
-- WhatsApp agent orchestrator
+## Safety Rule
+
+Order and booking APIs must require explicit confirmation. The Food order placement route rejects requests unless `confirmed: true` is provided.
