@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum MealSource {
+  COOK
+  ORDER
+  DINEOUT
+}
+
+enum DietGoal {
+  HIGH_PROTEIN
+  WEIGHT_LOSS
+  LOW_CARB
+  BALANCED
+}
+
+model User {
+  id             String         @id @default(cuid())
+  name           String
+  email          String         @unique
+  preferences    Json?
+  householdSize  Int            @default(1)
+  dietType       String         @default("veg")
+  dietaryGoal    DietGoal       @default(BALANCED)
+  monthlyBudget  Int            @default(0)
+  cookingSkill   String         @default("medium")
+  cuisines       String[]
+  allergies      String[]
+  city           String         @default("Bengaluru")
+  pantryItems    PantryItem[]
+  mealPlans      MealPlan[]
+  orders         Order[]
+  conversations  Conversation[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model PantryItem {
+  id          String   @id @default(cuid())
+  userId      String
+  item        String
+  qty         Float
+  unit        String   @default("pcs")
+  recurring   Boolean  @default(false)
+  lastOrdered DateTime?
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model MealPlan {
+  id           String     @id @default(cuid())
+  userId       String
+  date         DateTime
+  type         String
+  title        String
+  calories     Int
+  protein      Int
+  cost         Int
+  source       MealSource
+  prepMinutes  Int
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Order {
+  id         String   @id @default(cuid())
+  userId     String
+  provider   String
+  status     String
+  total      Int
+  etaMinutes Int?
+  payload    Json?
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+}
+
+model Conversation {
+  id        String   @id @default(cuid())
+  userId    String
+  messages  Json
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
