@@ -7,21 +7,23 @@ import { searchRestaurants } from "@/lib/swiggy/dineout";
 
 export async function POST(req: NextRequest) {
   const { prompt } = await req.json();
+  const normalizedPrompt = String(prompt ?? "").toLowerCase();
   const meals = await generateMealPlan(prompt ?? "");
   const missingIngredients = getMissingIngredients(meals, ["Rice", "Milk", "Bread"]);
+  const addressId = process.env.SWIGGY_DEFAULT_ADDRESS_ID ?? "addr_demo_home";
   const recommendation = buildTonightRecommendation({
     budgetLeft: 2500,
-    timeAvailableMins: 30,
-    energyLevel: "low",
-    missingIngredientsCount: missingIngredients.length,
-    householdSize: 2,
+    timeAvailableMins: normalizedPrompt.includes("book") || normalizedPrompt.includes("dine") ? 90 : 30,
+    energyLevel: normalizedPrompt.includes("tired") ? "low" : "medium",
+    missingIngredientsCount: normalizedPrompt.includes("book") || normalizedPrompt.includes("dine") ? 8 : missingIngredients.length,
+    householdSize: normalizedPrompt.includes("for 4") ? 4 : 2,
     goal: prompt ?? "",
     perMealBudget: 700
   });
   const [food, groceries, restaurants] = await Promise.all([
-    searchFood("high protein dinner", "Bengaluru"),
-    searchGroceries(missingIngredients[0] ?? "eggs", "Bengaluru"),
-    searchRestaurants("dinner", "Bengaluru")
+    searchFood("high protein dinner", addressId),
+    searchGroceries(missingIngredients[0] ?? "eggs", addressId),
+    searchRestaurants("dinner", addressId)
   ]);
 
   return NextResponse.json({
