@@ -6,8 +6,8 @@ export interface GroceryCartItem {
   quantity: number;
 }
 
-export async function searchGroceries(query: string, addressId: string): Promise<SwiggyItem[]> {
-  if (!hasSwiggyMcpSession()) {
+export async function searchGroceries(query: string, addressId: string, token?: string): Promise<SwiggyItem[]> {
+  if (!hasSwiggyMcpSession(token)) {
     return [
       { id: `g-${query.toLowerCase().replace(/\s+/g, "-")}-1`, name: `${query} - Daily Fresh`, price: 120, eta: 12, metadata: { addressId } },
       { id: `g-${query.toLowerCase().replace(/\s+/g, "-")}-2`, name: `${query} - Value Pack`, price: 180, eta: 15, metadata: { addressId } }
@@ -17,7 +17,7 @@ export async function searchGroceries(query: string, addressId: string): Promise
   const result = await callSwiggyTool<{ products?: SwiggyItem[] }>("instamart", "search_products", {
     addressId,
     query
-  });
+  }, token);
 
   if (!result.success) {
     throw new Error(result.error?.message ?? "Swiggy Instamart search_products failed");
@@ -28,9 +28,10 @@ export async function searchGroceries(query: string, addressId: string): Promise
 
 export async function createGroceryCart(
   itemIds: string[],
-  selectedAddressId = "addr_demo_home"
+  selectedAddressId = "addr_demo_home",
+  token?: string
 ): Promise<CartResponse> {
-  if (!hasSwiggyMcpSession()) {
+  if (!hasSwiggyMcpSession(token)) {
     return {
       cartId: `grocery_${Date.now()}`,
       items: itemIds.map((id, i) => ({ id, name: `Grocery ${i + 1}`, price: 90 + i * 40 })),
@@ -45,18 +46,18 @@ export async function createGroceryCart(
   const result = await callSwiggyTool("instamart", "update_cart", {
     selectedAddressId,
     items: itemIds.map((spinId) => ({ spinId, quantity: 1 }))
-  });
+  }, token);
 
   if (!result.success) {
     throw new Error(result.error?.message ?? "Swiggy Instamart update_cart failed");
   }
 
-  const cart = await getGroceryCart();
+  const cart = await getGroceryCart(token);
   return { ...cart, raw: result.data };
 }
 
-export async function getGroceryCart(): Promise<CartResponse> {
-  if (!hasSwiggyMcpSession()) {
+export async function getGroceryCart(token?: string): Promise<CartResponse> {
+  if (!hasSwiggyMcpSession(token)) {
     return {
       cartId: "grocery_demo_cart",
       items: [{ id: "g1", name: "Eggs, paneer, tomatoes", price: 375 }],
@@ -68,7 +69,7 @@ export async function getGroceryCart(): Promise<CartResponse> {
     };
   }
 
-  const result = await callSwiggyTool<Record<string, unknown>>("instamart", "get_cart");
+  const result = await callSwiggyTool<Record<string, unknown>>("instamart", "get_cart", {}, token);
 
   if (!result.success) {
     throw new Error(result.error?.message ?? "Swiggy Instamart get_cart failed");
@@ -86,15 +87,15 @@ export async function getGroceryCart(): Promise<CartResponse> {
   };
 }
 
-export async function checkoutGroceries(addressId: string, paymentMethod?: string) {
-  if (!hasSwiggyMcpSession()) {
+export async function checkoutGroceries(addressId: string, paymentMethod?: string, token?: string) {
+  if (!hasSwiggyMcpSession(token)) {
     return { orderId: `order_im_${Date.now()}`, status: "CONFIRMED", trackingUrl: "/dashboard?tab=orders" };
   }
 
   const result = await callSwiggyTool("instamart", "checkout", {
     addressId,
     ...(paymentMethod ? { paymentMethod } : {})
-  });
+  }, token);
 
   if (!result.success) {
     throw new Error(result.error?.message ?? "Swiggy Instamart checkout failed");

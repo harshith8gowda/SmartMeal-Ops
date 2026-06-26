@@ -20,25 +20,38 @@ enum DietGoal {
   BALANCED
 }
 
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  FAILED
+}
+
 model User {
-  id             String         @id @default(cuid())
-  name           String
-  email          String         @unique
-  preferences    Json?
-  householdSize  Int            @default(1)
-  dietType       String         @default("veg")
-  dietaryGoal    DietGoal       @default(BALANCED)
-  monthlyBudget  Int            @default(0)
-  cookingSkill   String         @default("medium")
-  cuisines       String[]
-  allergies      String[]
-  city           String         @default("Bengaluru")
-  pantryItems    PantryItem[]
-  mealPlans      MealPlan[]
-  orders         Order[]
-  conversations  Conversation[]
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  id                String         @id @default(cuid())
+  clerkId           String         @unique
+  name              String?
+  email             String         @unique
+  avatarUrl         String?
+  preferences       Json?
+  householdSize     Int            @default(1)
+  dietType          String         @default("veg")
+  dietaryGoal       DietGoal       @default(BALANCED)
+  monthlyBudget     Int            @default(0)
+  cookingSkill      String         @default("medium")
+  cuisines          String[]
+  allergies         String[]
+  city              String         @default("Bengaluru")
+  swiggyAccessToken String?
+  pantryItems       PantryItem[]
+  mealPlans         MealPlan[]
+  orders            Order[]
+  conversations     Conversation[]
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  @@index([clerkId])
+  @@index([email])
 }
 
 model PantryItem {
@@ -50,38 +63,60 @@ model PantryItem {
   recurring   Boolean  @default(false)
   lastOrdered DateTime?
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, item])
+  @@index([userId])
 }
 
 model MealPlan {
-  id           String     @id @default(cuid())
-  userId       String
-  date         DateTime
-  type         String
-  title        String
-  calories     Int
-  protein      Int
-  cost         Int
-  source       MealSource
-  prepMinutes  Int
-  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String     @id @default(cuid())
+  userId            String
+  date              DateTime
+  type              String
+  title             String
+  calories          Int
+  protein           Int
+  cost              Int
+  source            MealSource
+  prepMinutes       Int
+  ingredients       String[]
+  reason            String?
+  providerSuggestion String?
+  user              User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  @@index([userId, date])
 }
 
 model Order {
-  id         String   @id @default(cuid())
-  userId     String
-  provider   String
-  status     String
-  total      Int
-  etaMinutes Int?
-  payload    Json?
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt  DateTime @default(now())
+  id          String      @id @default(cuid())
+  userId      String
+  provider    String
+  source      MealSource
+  status      OrderStatus @default(PENDING)
+  total       Int
+  etaMinutes  Int?
+  externalId  String?
+  payload     Json?
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([userId])
+  @@index([userId, createdAt])
 }
 
 model Conversation {
   id        String   @id @default(cuid())
   userId    String
+  title     String?
   messages  Json
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }

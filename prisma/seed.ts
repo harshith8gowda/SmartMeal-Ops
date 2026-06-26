@@ -1,5 +1,7 @@
 import { DietGoal, MealSource, PrismaClient } from "@prisma/client";
 
+const DEMO_CLERK_ID = "user_demo_000000000000000000000000";
+
 const prisma = new PrismaClient();
 
 async function main() {
@@ -7,6 +9,7 @@ async function main() {
     where: { email: "demo@smartmealops.ai" },
     update: {},
     create: {
+      clerkId: DEMO_CLERK_ID,
       name: "Demo User",
       email: "demo@smartmealops.ai",
       householdSize: 3,
@@ -39,7 +42,9 @@ async function main() {
       protein: 41,
       cost: 320,
       prepMinutes: 35,
-      source: MealSource.COOK
+      source: MealSource.COOK,
+      ingredients: ["Chicken breast", "Rice", "Curd", "Cucumber"],
+      reason: "Best protein-to-cost ratio."
     }
   });
 }

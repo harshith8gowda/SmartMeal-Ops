@@ -1,24 +1,88 @@
+import { redirect } from "next/navigation";
+import { auth } from "@clerk/nextjs/server";
 import { MealPlanCard } from "@/components/cards/meal-plan-card";
 import { ConfirmationCard } from "@/components/cards/confirmation-card";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BudgetOverview } from "@/components/charts/budget-overview";
 import { AssistantPanel } from "@/components/chat/assistant-panel";
+import { OrderList } from "@/components/orders/order-list";
+import { PantryManager } from "@/components/pantry/pantry-manager";
 import { getMissingIngredients, generateMealPlan } from "@/lib/ai/planner";
 import { buildTonightRecommendation } from "@/lib/ai/decision-engine";
+import { searchFood } from "@/lib/swiggy/food";
+import { searchRestaurants } from "@/lib/swiggy/dineout";
+import { getPrisma } from "@/lib/db/prisma";
+import { getPantryItems } from "@/lib/db/pantry";
+import { getMealPlans } from "@/lib/db/meal-plan";
+import { getBudgetStatus } from "@/lib/db/budget";
+import { getOrders } from "@/lib/db/orders";
+import { UserButton } from "@clerk/nextjs";
 import { ArrowRight, CalendarCheck, PackagePlus, ShoppingBag, Utensils } from "lucide-react";
 
 export default async function DashboardPage() {
-  const meals = await generateMealPlan("Plan healthy dinners this week under ₹2000");
-  const missingIngredients = getMissingIngredients(meals, ["Rice", "Bread", "Milk"]);
+  const { userId } = await auth();
+  if (!userId) {
+    redirect("/sign-in" as never);
+  }
+
+  const prisma = getPrisma();
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+
+  if (!user) {
+    redirect("/onboarding" as never);
+  }
+
+  const [pantryItems, mealPlans, budgetStatus, orders] = await Promise.all([
+    getPantryItems(userId),
+    getMealPlans(userId, 5),
+    getBudgetStatus(userId, user.monthlyBudget),
+    getOrders(userId, 5)
+  ]);
+
+  const pantry = pantryItems.map((p) => p.item);
+  const meals = mealPlans.length
+    ? mealPlans.map((m) => ({
+        day: m.date.toLocaleDateString("en-IN", { weekday: "short" }),
+        title: m.title,
+        calories: m.calories,
+        protein: m.protein,
+        cost: m.cost,
+        prepMinutes: m.prepMinutes,
+        source: m.source,
+        ingredients: m.ingredients,
+        reason: m.reason ?? undefined,
+        providerSuggestion: m.providerSuggestion ?? undefined
+      }))
+    : await generateMealPlan("Plan healthy dinners this week under ₹2000", {
+        householdSize: user.householdSize,
+        monthlyBudget: user.monthlyBudget,
+        budgetRemaining: budgetStatus.remaining,
+        dietType: user.dietType,
+        dietaryGoal: user.dietaryGoal.toLowerCase(),
+        cookingSkill: user.cookingSkill,
+        cuisines: user.cuisines,
+        allergies: user.allergies,
+        city: user.city,
+        pantry
+      });
+
+  const missingIngredients = getMissingIngredients(meals, pantry);
+
+  const addressId = "addr_demo_home";
+  const [food, restaurants] = await Promise.all([
+    searchFood("high protein dinner", addressId),
+    searchRestaurants("dinner", addressId)
+  ]);
+
   const recommendation = buildTonightRecommendation({
-    budgetLeft: 2500,
+    budgetLeft: budgetStatus.remaining,
     timeAvailableMins: 30,
     energyLevel: "low",
     missingIngredientsCount: missingIngredients.length,
-    householdSize: 2,
-    goal: "high protein",
-    perMealBudget: 700
+    householdSize: user.householdSize || 2,
+    goal: user.dietaryGoal.toLowerCase(),
+    perMealBudget: Math.floor(user.monthlyBudget / 30)
   });
 
   return (
@@ -29,10 +93,13 @@ export default async function DashboardPage() {
           <h1 className="text-3xl font-semibold tracking-tight">Tonight&apos;s smartest move</h1>
           <p className="text-muted-foreground">Save money. Eat better. Let the copilot choose between cooking, ordering, and dining out.</p>
         </div>
-        <Button>
-          Review confirmation
-          <ArrowRight className="h-4 w-4" />
-        </Button>
+        <div className="flex items-center gap-4">
+          <Button>
+            Review confirmation
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+          <UserButton />
+        </div>
       </div>
 
       <section className="grid gap-6 xl:grid-cols-[1.55fr_0.95fr]">
@@ -81,11 +148,27 @@ export default async function DashboardPage() {
               </Button>
             </div>
           </Card>
+
+          <PantryManager pantryItems={pantryItems} />
         </div>
 
         <div className="space-y-4">
-          <ConfirmationCard recommendation={recommendation} />
-          <BudgetOverview />
+          <ConfirmationCard
+            recommendation={recommendation}
+            confirmData={
+              recommendation.source === "COOK"
+                ? { source: "COOK", addressId: "addr_demo_home", itemIds: missingIngredients.slice(0, 3) }
+                : recommendation.source === "ORDER"
+                  ? { source: "ORDER", addressId: "addr_demo_home", itemIds: [food[0]?.id ?? "f1"] }
+                  : { source: "DINEOUT", restaurantId: restaurants[0]?.id ?? "d1", partySize: user.householdSize }
+            }
+          />
+          <BudgetOverview
+            monthlyBudget={budgetStatus.monthlyBudget}
+            spent={budgetStatus.spent}
+            bySource={budgetStatus.bySource}
+          />
+          <OrderList orders={orders} />
           <Card className="glass">
             <h3 className="text-lg font-semibold">Quick Actions</h3>
             <div className="mt-3 grid gap-2">

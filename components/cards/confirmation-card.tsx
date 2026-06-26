@@ -1,11 +1,46 @@
+"use client";
+
+import { useState } from "react";
 import { CheckCircle2, Clock, IndianRupee, ShieldCheck } from "lucide-react";
 import { Recommendation } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { toast } from "sonner";
 
-export function ConfirmationCard({ recommendation }: { recommendation: Recommendation }) {
+export type ConfirmData =
+  | { source: "COOK"; addressId: string; itemIds: string[] }
+  | { source: "ORDER"; addressId: string; itemIds: string[]; paymentMethod?: string }
+  | { source: "DINEOUT"; restaurantId: string; partySize: number; slotISO?: string; slot?: { slotId: number; itemId: string; reservationTime: number } };
+
+export function ConfirmationCard({
+  recommendation,
+  confirmData
+}: {
+  recommendation: Recommendation;
+  confirmData?: ConfirmData;
+}) {
+  const [loading, setLoading] = useState(false);
   const subtotal = recommendation.confirmation.lineItems.reduce((sum, item) => sum + item.price, 0);
   const total = subtotal + recommendation.confirmation.fees;
+
+  const handleConfirm = async () => {
+    if (!confirmData) return;
+    setLoading(true);
+    try {
+      const res = await fetch("/api/confirm", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ ...confirmData, confirmed: true })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Confirmation failed");
+      toast.success("Confirmed! Your order/booking has been placed.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Confirmation failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Card className="dark-panel">
@@ -39,9 +74,9 @@ export function ConfirmationCard({ recommendation }: { recommendation: Recommend
         </div>
       </div>
 
-      <Button className="mt-5 w-full" variant="accent">
+      <Button className="mt-5 w-full" variant="accent" onClick={handleConfirm} disabled={loading || !confirmData}>
         <CheckCircle2 className="h-4 w-4" />
-        Confirm in Swiggy
+        {loading ? "Confirming..." : "Confirm in Swiggy"}
       </Button>
     </Card>
   );

@@ -1,9 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, CalendarCheck, PackagePlus, Sparkles, Utensils } from "lucide-react";
+import { CalendarCheck, PackagePlus, Sparkles, Utensils } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HeroMotion } from "@/components/dashboard/hero-motion";
 import { Card } from "@/components/ui/card";
+import { Show } from "@clerk/nextjs";
+import { UserButton } from "@clerk/nextjs";
+import { HeroCTA } from "@/components/landing/hero-cta";
 
 const bullets = [
   "Tonight's smartest move",
@@ -16,9 +19,22 @@ export default function LandingPage() {
     <main className="mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-6 sm:px-6 lg:py-8">
       <nav className="glass mb-10 flex items-center justify-between rounded-lg px-5 py-3">
         <p className="text-lg font-semibold">SmartMeal Ops</p>
-        <Button asChild>
-          <Link href="/onboarding">Get Started</Link>
-        </Button>
+        <div className="flex items-center gap-4">
+          <Show when="signed-in">
+            <Button asChild>
+              <Link href="/dashboard">Dashboard</Link>
+            </Button>
+            <UserButton />
+          </Show>
+          <Show when="signed-out">
+            <Button asChild variant="secondary">
+              <Link href={{ pathname: "/sign-in" }}>Sign In</Link>
+            </Button>
+            <Button asChild>
+              <Link href={{ pathname: "/sign-up" }}>Get Started</Link>
+            </Button>
+          </Show>
+        </div>
       </nav>
 
       <HeroMotion><section className="grid min-h-[calc(100vh-128px)] gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
@@ -31,14 +47,7 @@ export default function LandingPage() {
           <p className="mt-5 max-w-2xl text-lg text-muted-foreground">
             Plan meals, optimize costs, restock groceries, and make smarter dinner decisions with one intelligent assistant powered by Swiggy MCP.
           </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Button asChild size="lg">
-              <Link href="/dashboard">Launch Dashboard <ArrowRight className="ml-2 h-4 w-4" /></Link>
-            </Button>
-            <Button asChild variant="secondary" size="lg">
-              <Link href="/chat">Try AI Assistant</Link>
-            </Button>
-          </div>
+          <HeroCTA />
           <div className="mt-8 grid max-w-xl grid-cols-3 gap-3 text-sm">
             <div className="metric"><Utensils className="mb-2 h-4 w-4 text-primary" />Cook</div>
             <div className="metric"><PackagePlus className="mb-2 h-4 w-4 text-primary" />Order</div>

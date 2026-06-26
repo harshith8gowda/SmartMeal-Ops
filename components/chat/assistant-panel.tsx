@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Bot, Send } from "lucide-react";
+import { toast } from "sonner";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -14,6 +15,19 @@ export function AssistantPanel({ compact = false }: { compact?: boolean }) {
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    void fetch("/api/conversation")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.messages && data.messages.length > 0) {
+          setMessages(data.messages as Msg[]);
+        }
+      })
+      .catch(() => null)
+      .finally(() => setHydrated(true));
+  }, []);
 
   const send = async () => {
     if (!input.trim()) return;
@@ -28,13 +42,24 @@ export function AssistantPanel({ compact = false }: { compact?: boolean }) {
         body: JSON.stringify({ prompt: input })
       });
       const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Planner failed");
       setMessages((prev) => [...prev, { role: "assistant", content: data.summary }]);
-    } catch {
-      setMessages((prev) => [...prev, { role: "assistant", content: "I could not reach the planner. Try again in a moment." }]);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "I could not reach the planner. Try again in a moment.";
+      setMessages((prev) => [...prev, { role: "assistant", content: message }]);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
   };
+
+  if (!hydrated) {
+    return (
+      <Card className={`glass ${compact ? "h-[460px]" : "h-[70vh]"}`}>
+        <div className="flex h-full items-center justify-center text-sm text-muted-foreground">Loading conversation...</div>
+      </Card>
+    );
+  }
 
   return (
     <Card className={`glass ${compact ? "h-[460px]" : "h-[70vh]"}`}>

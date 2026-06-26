@@ -1,35 +1,29 @@
+import { env } from "@/lib/env";
 import { SwiggyMcpServer, SwiggyMcpToolResponse } from "./types";
 
 const DEFAULT_ENDPOINTS: Record<SwiggyMcpServer, string> = {
-  food: "https://mcp.swiggy.com/food",
-  instamart: "https://mcp.swiggy.com/im",
-  dineout: "https://mcp.swiggy.com/dineout"
-};
-
-const endpointEnv: Record<SwiggyMcpServer, string | undefined> = {
-  food: process.env.SWIGGY_FOOD_MCP_URL,
-  instamart: process.env.SWIGGY_INSTAMART_MCP_URL,
-  dineout: process.env.SWIGGY_DINEOUT_MCP_URL
+  food: env.SWIGGY_FOOD_MCP_URL,
+  instamart: env.SWIGGY_INSTAMART_MCP_URL,
+  dineout: env.SWIGGY_DINEOUT_MCP_URL
 };
 
 let requestId = 1;
 
-export function hasSwiggyMcpSession() {
-  return Boolean(process.env.SWIGGY_MCP_ACCESS_TOKEN);
+export function hasSwiggyMcpSession(token?: string) {
+  return Boolean(token);
 }
 
 export async function callSwiggyTool<T>(
   server: SwiggyMcpServer,
   name: string,
-  args: Record<string, unknown> = {}
+  args: Record<string, unknown> = {},
+  token?: string
 ): Promise<SwiggyMcpToolResponse<T>> {
-  const token = process.env.SWIGGY_MCP_ACCESS_TOKEN;
-
   if (!token) {
     throw new Error("Missing SWIGGY_MCP_ACCESS_TOKEN. Complete OAuth 2.1 PKCE before live Swiggy MCP calls.");
   }
 
-  const endpoint = endpointEnv[server] || DEFAULT_ENDPOINTS[server];
+  const endpoint = DEFAULT_ENDPOINTS[server];
   const response = await fetch(endpoint, {
     method: "POST",
     headers: {

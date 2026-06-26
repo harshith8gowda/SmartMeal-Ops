@@ -1,8 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { searchGroceries } from "@/lib/swiggy/instamart";
+import { getSwiggyToken } from "@/lib/swiggy/token";
+import { requireUserId } from "@/lib/auth/clerk";
+import { mapErrorToResponse } from "@/lib/errors";
+
+const SearchSchema = z.object({
+  query: z.string().min(1),
+  addressId: z.string().default("addr_demo_home")
+});
 
 export async function POST(req: NextRequest) {
-  const { query, city } = await req.json();
-  const results = await searchGroceries(query, city);
-  return NextResponse.json({ results });
+  try {
+    const userId = await requireUserId();
+    const body = await req.json();
+    const { query, addressId } = SearchSchema.parse(body);
+    const token = await getSwiggyToken(userId);
+    const results = await searchGroceries(query, addressId, token);
+    return NextResponse.json({ results });
+  } catch (error) {
+    const { status, body } = mapErrorToResponse(error);
+    return NextResponse.json(body, { status });
+  }
 }

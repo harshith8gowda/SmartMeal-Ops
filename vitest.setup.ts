@@ -1,0 +1,11 @@
+process.env.DATABASE_URL = "postgresql://localhost:5432/test";
+process.env.DATABASE_URL_UNPOOLED = "postgresql://localhost:5432/test";
+process.env.CLERK_SECRET_KEY = "sk_test_clerk";
+process.env.CLERK_WEBHOOK_SECRET = "whsec_test";
+process.env.TOKEN_ENCRYPTION_KEY = "0123456789abcdef0123456789abcdef";
+process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY = "pk_test_clerk";
+process.env.OPENAI_API_KEY = "";
+process.env.SWIGGY_MCP_ACCESS_TOKEN = "";
+process.env.SWIGGY_FOOD_MCP_URL = "https://mcp.swiggy.com/food";
+process.env.SWIGGY_INSTAMART_MCP_URL = "https://mcp.swiggy.com/im";
+process.env.SWIGGY_DINEOUT_MCP_URL = "https://mcp.swiggy.com/dineout";

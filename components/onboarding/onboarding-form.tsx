@@ -4,6 +4,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -26,13 +27,28 @@ type FormValues = z.infer<typeof schema>;
 
 export function OnboardingForm() {
   const router = useRouter();
+  const { user, isLoaded } = useUser();
   const { register, handleSubmit, setValue, control, formState: { errors, isSubmitting } } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { dietType: "veg", dietaryGoal: "balanced", cookingSkill: "medium", householdSize: 2, city: "Bengaluru" }
+    defaultValues: {
+      name: "",
+      dietType: "veg",
+      dietaryGoal: "balanced",
+      cookingSkill: "medium",
+      householdSize: 2,
+      city: "Bengaluru"
+    }
   });
 
+  if (isLoaded && user) {
+    const fullName = [user.firstName, user.lastName].filter(Boolean).join(" ").trim();
+    if (fullName && !control._formValues.name) {
+      setValue("name", fullName);
+    }
+  }
+
   const submit = async (values: FormValues) => {
-    const res = await fetch("/api/profile", {
+    const res = await fetch("/api/onboarding", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(values)

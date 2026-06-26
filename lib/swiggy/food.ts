@@ -16,23 +16,23 @@ function mockFood(query: string, cityOrAddress: string): SwiggyItem[] {
   ];
 }
 
-export async function getFoodAddresses() {
-  if (!hasSwiggyMcpSession()) {
+export async function getFoodAddresses(token?: string) {
+  if (!hasSwiggyMcpSession(token)) {
     return [{ addressId: "addr_demo_home", label: "Home", fullAddress: "Demo home address, Bengaluru" }];
   }
 
-  return callSwiggyTool("food", "get_addresses");
+  return callSwiggyTool("food", "get_addresses", {}, token);
 }
 
-export async function searchFood(query: string, cityOrAddress: string): Promise<SwiggyItem[]> {
-  if (!hasSwiggyMcpSession()) {
+export async function searchFood(query: string, cityOrAddress: string, token?: string): Promise<SwiggyItem[]> {
+  if (!hasSwiggyMcpSession(token)) {
     return mockFood(query, cityOrAddress);
   }
 
   const result = await callSwiggyTool<{ items?: SwiggyItem[]; restaurants?: SwiggyItem[] }>("food", "search_menu", {
     addressId: cityOrAddress,
     query
-  });
+  }, token);
 
   if (!result.success) {
     throw new Error(result.error?.message ?? "Swiggy Food search_menu failed");
@@ -41,15 +41,15 @@ export async function searchFood(query: string, cityOrAddress: string): Promise<
   return result.data?.items ?? result.data?.restaurants ?? [];
 }
 
-export async function searchFoodRestaurants(query: string, addressId: string): Promise<SwiggyItem[]> {
-  if (!hasSwiggyMcpSession()) {
+export async function searchFoodRestaurants(query: string, addressId: string, token?: string): Promise<SwiggyItem[]> {
+  if (!hasSwiggyMcpSession(token)) {
     return mockFood(query, addressId);
   }
 
   const result = await callSwiggyTool<{ restaurants?: SwiggyItem[] }>("food", "search_restaurants", {
     addressId,
     query
-  });
+  }, token);
 
   if (!result.success) {
     throw new Error(result.error?.message ?? "Swiggy Food search_restaurants failed");
@@ -60,9 +60,10 @@ export async function searchFoodRestaurants(query: string, addressId: string): P
 
 export async function createFoodCart(
   itemIds: string[],
-  address: DeliveryAddressRef = { addressId: "addr_demo_home" }
+  address: DeliveryAddressRef = { addressId: "addr_demo_home" },
+  token?: string
 ): Promise<CartResponse> {
-  if (!hasSwiggyMcpSession()) {
+  if (!hasSwiggyMcpSession(token)) {
     return {
       cartId: `food_${Date.now()}`,
       items: itemIds.map((id, i) => ({ id, name: `Food Item ${i + 1}`, price: 250 + i * 50 })),
@@ -83,18 +84,18 @@ export async function createFoodCart(
     restaurantId,
     addressId: address.addressId,
     cartItems: itemIds.map((id) => ({ menuItemId: id, quantity: 1 }))
-  });
+  }, token);
 
   if (!result.success) {
     throw new Error(result.error?.message ?? "Swiggy Food update_food_cart failed");
   }
 
-  const cart = await getFoodCart(address.addressId);
+  const cart = await getFoodCart(address.addressId, token);
   return { ...cart, raw: result.data };
 }
 
-export async function getFoodCart(addressId: string): Promise<CartResponse> {
-  if (!hasSwiggyMcpSession()) {
+export async function getFoodCart(addressId: string, token?: string): Promise<CartResponse> {
+  if (!hasSwiggyMcpSession(token)) {
     return {
       cartId: "food_demo_cart",
       items: [{ id: "f1", name: "Chicken rice bowl x2", price: 520 }],
@@ -106,7 +107,7 @@ export async function getFoodCart(addressId: string): Promise<CartResponse> {
     };
   }
 
-  const result = await callSwiggyTool<Record<string, unknown>>("food", "get_food_cart", { addressId });
+  const result = await callSwiggyTool<Record<string, unknown>>("food", "get_food_cart", { addressId }, token);
 
   if (!result.success) {
     throw new Error(result.error?.message ?? "Swiggy Food get_food_cart failed");
@@ -124,15 +125,15 @@ export async function getFoodCart(addressId: string): Promise<CartResponse> {
   };
 }
 
-export async function placeFoodOrder(addressId: string, paymentMethod?: string) {
-  if (!hasSwiggyMcpSession()) {
+export async function placeFoodOrder(addressId: string, paymentMethod?: string, token?: string) {
+  if (!hasSwiggyMcpSession(token)) {
     return { orderId: `order_food_${Date.now()}`, status: "CONFIRMED", trackingUrl: "/dashboard?tab=orders" };
   }
 
   const result = await callSwiggyTool("food", "place_food_order", {
     addressId,
     ...(paymentMethod ? { paymentMethod } : {})
-  });
+  }, token);
 
   if (!result.success) {
     throw new Error(result.error?.message ?? "Swiggy Food place_food_order failed");
