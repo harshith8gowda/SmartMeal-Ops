@@ -24,6 +24,12 @@ export async function setSwiggyToken(userId: string, token: string | null) {
   return updateSwiggyToken(userId, encrypted);
 }
 
+export async function hasUserSwiggyToken(userId: string): Promise<boolean> {
+  if (env.SWIGGY_MCP_ACCESS_TOKEN) return false;
+  const user = await findUserById(userId);
+  return Boolean(user?.swiggyAccessToken);
+}
+
 export function hasSwiggySession(userId?: string): boolean {
   if (env.SWIGGY_MCP_ACCESS_TOKEN) return true;
   return Boolean(userId);

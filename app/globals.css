@@ -7,20 +7,20 @@
   --foreground: 210 20% 96%;
   --card: 222 42% 9%;
   --card-foreground: 210 20% 96%;
-  --primary: 160 84% 39%;
+  --primary: 25 97% 54%;
   --primary-foreground: 210 20% 96%;
   --secondary: 222 30% 14%;
   --secondary-foreground: 210 20% 96%;
-  --accent: 258 90% 66%;
+  --accent: 35 95% 56%;
   --accent-foreground: 210 20% 96%;
   --muted: 222 30% 14%;
   --muted-foreground: 215 16% 57%;
   --border: 222 24% 18%;
   --input: 222 24% 18%;
-  --ring: 160 84% 39%;
+  --ring: 25 97% 54%;
   --success: 158 64% 52%;
   --success-foreground: 210 20% 96%;
-  --warning: 38 92% 50%;
+  --warning: 40 92% 53%;
   --warning-foreground: 210 20% 96%;
   --radius: 1rem;
 }
@@ -37,9 +37,9 @@
   body {
     @apply bg-background text-foreground antialiased;
     background:
-      radial-gradient(ellipse at 10% 10%, rgba(16, 185, 129, 0.12), transparent 40%),
-      radial-gradient(ellipse at 90% 20%, rgba(139, 92, 246, 0.10), transparent 45%),
-      radial-gradient(ellipse at 50% 90%, rgba(245, 158, 11, 0.08), transparent 40%),
+      radial-gradient(ellipse at 10% 10%, rgba(252, 128, 25, 0.13), transparent 40%),
+      radial-gradient(ellipse at 90% 20%, rgba(234, 88, 12, 0.10), transparent 45%),
+      radial-gradient(ellipse at 50% 90%, rgba(251, 191, 36, 0.08), transparent 40%),
       hsl(222 47% 6%);
     background-attachment: fixed;
   }
@@ -74,7 +74,7 @@
     inset: -1px;
     border-radius: calc(var(--radius) + 1px);
     padding: 1px;
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.5), rgba(139, 92, 246, 0.4), rgba(245, 158, 11, 0.3));
+    background: linear-gradient(135deg, rgba(252, 128, 25, 0.55), rgba(234, 88, 12, 0.45), rgba(251, 191, 36, 0.35));
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
@@ -93,7 +93,7 @@
 
   .text-gradient {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(160 84% 55%), hsl(180 70% 55%), hsl(258 90% 70%));
+    background-image: linear-gradient(135deg, hsl(25 97% 58%), hsl(35 95% 60%), hsl(15 90% 52%));
   }
 }
 

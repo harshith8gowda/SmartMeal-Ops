@@ -10,7 +10,8 @@ import { OrderList } from "@/components/orders/order-list";
 import { PantryManager } from "@/components/pantry/pantry-manager";
 import { getMissingIngredients, generateMealPlan } from "@/lib/ai/planner";
 import { buildTonightRecommendation } from "@/lib/ai/decision-engine";
-import { searchFood } from "@/lib/swiggy/food";
+import { getSwiggyToken } from "@/lib/swiggy/token";
+import { searchFood, getFoodAddresses } from "@/lib/swiggy/food";
 import { searchRestaurants } from "@/lib/swiggy/dineout";
 import { getPrisma } from "@/lib/db/prisma";
 import { getPantryItems } from "@/lib/db/pantry";
@@ -18,6 +19,7 @@ import { getMealPlans } from "@/lib/db/meal-plan";
 import { getBudgetStatus } from "@/lib/db/budget";
 import { getOrders } from "@/lib/db/orders";
 import { UserButton } from "@clerk/nextjs";
+import { SwiggyConnectStatus } from "@/components/swiggy/connect-status";
 import { ArrowRight, Bot, CalendarCheck, ChefHat, PackagePlus, ShoppingBag, Sparkles, Utensils } from "lucide-react";
 
 export const metadata = {
@@ -74,10 +76,13 @@ export default async function DashboardPage() {
 
   const missingIngredients = getMissingIngredients(meals, pantry);
 
-  const addressId = "addr_demo_home";
+  const token = await getSwiggyToken(userId);
+  const addresses = token ? await getFoodAddresses(token) : [];
+  const addressId = addresses[0]?.addressId ?? "addr_demo_home";
+
   const [food, restaurants] = await Promise.all([
-    searchFood("high protein dinner", addressId),
-    searchRestaurants("dinner", addressId)
+    searchFood("high protein dinner", addressId, token),
+    searchRestaurants("dinner", addressId, token)
   ]);
 
   const recommendation = buildTonightRecommendation({
@@ -108,7 +113,8 @@ export default async function DashboardPage() {
             Save money. Eat better. Let the copilot choose between cooking, ordering, and dining out.
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <SwiggyConnectStatus />
           <Button asChild>
             <a href="#confirm">Review confirmation <ArrowRight className="h-4 w-4" /></a>
           </Button>
@@ -178,9 +184,9 @@ export default async function DashboardPage() {
               recommendation={recommendation}
               confirmData={
                 recommendation.source === "COOK"
-                  ? { source: "COOK", addressId: "addr_demo_home", itemIds: missingIngredients.slice(0, 3) }
+                  ? { source: "COOK", addressId, itemIds: missingIngredients.slice(0, 3) }
                   : recommendation.source === "ORDER"
-                    ? { source: "ORDER", addressId: "addr_demo_home", itemIds: [food[0]?.id ?? "f1"] }
+                    ? { source: "ORDER", addressId, itemIds: [food[0]?.id ?? "f1"] }
                     : { source: "DINEOUT", restaurantId: restaurants[0]?.id ?? "d1", partySize: user.householdSize }
               }
             />

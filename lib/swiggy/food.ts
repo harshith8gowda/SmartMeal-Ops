@@ -9,6 +9,12 @@ export interface FoodCartItem {
   addons?: unknown[];
 }
 
+export interface FoodAddress {
+  addressId: string;
+  label: string;
+  fullAddress: string;
+}
+
 function mockFood(query: string, cityOrAddress: string): SwiggyItem[] {
   return [
     { id: "f1", name: `${query} from Green Bowl`, price: 320, rating: 4.4, eta: 28, metadata: { cityOrAddress, calories: 620, protein: 34 } },
@@ -16,12 +22,21 @@ function mockFood(query: string, cityOrAddress: string): SwiggyItem[] {
   ];
 }
 
-export async function getFoodAddresses(token?: string) {
+const mockAddresses: FoodAddress[] = [
+  { addressId: "addr_demo_home", label: "Home", fullAddress: "Demo home address, Bengaluru" }
+];
+
+export async function getFoodAddresses(token?: string): Promise<FoodAddress[]> {
   if (!hasSwiggyMcpSession(token)) {
-    return [{ addressId: "addr_demo_home", label: "Home", fullAddress: "Demo home address, Bengaluru" }];
+    return mockAddresses;
   }
 
-  return callSwiggyTool("food", "get_addresses", {}, token);
+  const result = await callSwiggyTool<FoodAddress[]>("food", "get_addresses", {}, token);
+  if (!result.success) {
+    throw new Error(result.error?.message ?? "Swiggy Food get_addresses failed");
+  }
+
+  return result.data ?? [];
 }
 
 export async function searchFood(query: string, cityOrAddress: string, token?: string): Promise<SwiggyItem[]> {
