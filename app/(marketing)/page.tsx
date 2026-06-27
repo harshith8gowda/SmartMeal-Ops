@@ -11,7 +11,9 @@ import { Badge } from "@/components/ui/badge";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "SmartMeal Ops — AI Food Operations Copilot",
+  title: {
+    absolute: "SmartMeal Ops — AI Food Operations Copilot"
+  },
   description: "Plan meals, optimize costs, restock groceries, and decide between cooking, ordering, and dining out with AI."
 };
 
