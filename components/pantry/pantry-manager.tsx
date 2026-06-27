@@ -4,11 +4,11 @@ import { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Card } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Trash2 } from "lucide-react";
+import { Trash2, Plus } from "lucide-react";
 
 type PantryItem = {
   id: string;
@@ -73,27 +73,37 @@ export function PantryManager({ pantryItems }: { pantryItems: PantryItem[] }) {
   };
 
   return (
-    <Card className="glass">
-      <h2 className="text-xl font-semibold">Your Pantry</h2>
-      <form onSubmit={handleSubmit(onSubmit)} className="mt-4 grid gap-2 sm:grid-cols-5">
+    <Card className="gradient-border">
+      <CardHeader>
+        <CardTitle>Your Pantry</CardTitle>
+        <CardDescription>Track staples and recurring items</CardDescription>
+      </CardHeader>
+      <form onSubmit={handleSubmit(onSubmit)} className="grid gap-3 px-5 pb-2 sm:grid-cols-5">
         <Input placeholder="Item" {...register("item")} />
         <Input type="number" step="0.1" placeholder="Qty" {...register("qty")} />
         <Input placeholder="Unit" {...register("unit")} />
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" {...register("recurring")} />
+        <label className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.05] px-3 text-sm text-muted-foreground">
+          <input type="checkbox" {...register("recurring")} className="accent-primary" />
           Recurring
         </label>
-        <Button type="submit" disabled={isLoading}>Add</Button>
+        <Button type="submit" disabled={isLoading}>
+          <Plus className="h-4 w-4" /> Add
+        </Button>
       </form>
-      {errors.item && <p className="mt-2 text-sm text-red-500">{errors.item.message}</p>}
+      {errors.item && <p className="px-5 text-sm text-red-400">{errors.item.message}</p>}
 
-      <ul className="mt-4 space-y-2">
+      <ul className="mt-4 max-h-64 space-y-2 overflow-auto px-5 pb-5 scrollbar-hide">
         {items.map((item) => (
-          <li key={item.id} className="flex items-center justify-between rounded-lg bg-white/60 px-3 py-2">
-            <span>{item.item} — {item.qty} {item.unit}</span>
+          <li
+            key={item.id}
+            className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm transition-colors hover:bg-white/[0.07]"
+          >
+            <span className="text-foreground">
+              {item.item} <span className="text-muted-foreground">— {item.qty} {item.unit}</span>
+            </span>
             <button
               onClick={() => onDelete(item.id)}
-              className="text-muted-foreground hover:text-red-500"
+              className="text-muted-foreground transition-colors hover:text-red-400"
               aria-label={`Delete ${item.item}`}
             >
               <Trash2 className="h-4 w-4" />

@@ -7,5 +7,6 @@ coverage
 prisma/dev.db
 tsconfig.tsbuildinfo
 dev-server*.log
+.playwright-mcp
 
 .vercel

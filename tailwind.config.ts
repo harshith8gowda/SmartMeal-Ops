@@ -9,6 +9,10 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["var(--font-inter)"],
+        display: ["var(--font-outfit)"]
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -34,11 +38,39 @@ export default {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))"
+        },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))"
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))"
         }
       },
       borderRadius: {
         xl: "1rem",
-        '2xl': "1.25rem"
+        "2xl": "1.25rem",
+        "3xl": "1.5rem"
+      },
+      keyframes: {
+        "gradient-x": {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" }
+        },
+        "float": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-10px)" }
+        },
+        "shimmer": {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" }
+        }
+      },
+      animation: {
+        "gradient-x": "gradient-x 15s ease infinite",
+        "float": "float 6s ease-in-out infinite",
+        "shimmer": "shimmer 2s linear infinite"
       }
     }
   },

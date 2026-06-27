@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useAuth } from "@clerk/nextjs";
 
-
 export function HeroCTA() {
   const { isSignedIn, isLoaded } = useAuth();
   if (!isLoaded) return null;
@@ -14,7 +13,9 @@ export function HeroCTA() {
     return (
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
         <Button asChild size="lg">
-          <Link href="/dashboard">Launch Dashboard <ArrowRight className="ml-2 h-4 w-4" /></Link>
+          <Link href="/dashboard">
+            Launch Dashboard <ArrowRight className="ml-2 h-4 w-4" />
+          </Link>
         </Button>
         <Button asChild variant="secondary" size="lg">
           <Link href="/chat">Try AI Assistant</Link>
@@ -26,7 +27,9 @@ export function HeroCTA() {
   return (
     <div className="mt-8 flex flex-col gap-3 sm:flex-row">
       <Button asChild size="lg">
-        <Link href={{ pathname: "/sign-up" }}>Get Started Free <ArrowRight className="ml-2 h-4 w-4" /></Link>
+        <Link href={{ pathname: "/sign-up" }}>
+          Get Started Free <ArrowRight className="ml-2 h-4 w-4" />
+        </Link>
       </Button>
       <Button asChild variant="secondary" size="lg">
         <Link href={{ pathname: "/sign-in" }}>Already have an account?</Link>
