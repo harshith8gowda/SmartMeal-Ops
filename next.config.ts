@@ -7,7 +7,7 @@ const securityHeaders = [
   {
     key: "Content-Security-Policy",
     value:
-      "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://clerk.smart-meal-ops.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https://clerk.smart-meal-ops.com https://api.openai.com https://mcp.swiggy.com https://api.clerk.com;"
+      "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*.clerk.accounts.dev https://*.clerk.com https://clerk.com; script-src-elem 'self' 'unsafe-eval' 'unsafe-inline' https://*.clerk.accounts.dev https://*.clerk.com https://clerk.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https://*.clerk.accounts.dev https://*.clerk.com https://api.clerk.com https://api.openai.com https://mcp.swiggy.com;"
   }
 ];
 
