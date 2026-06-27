@@ -3,18 +3,18 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils/cn";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 rounded-xl text-sm font-medium transition-all duration-200 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center gap-2 rounded-xl text-sm font-medium transition-[transform,box-shadow,filter] duration-150 ease-out-strong active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
         default:
           "relative overflow-hidden bg-primary text-primary-foreground shadow-[0_0_20px_-5px_hsl(var(--primary)/0.5)] hover:shadow-[0_0_28px_-4px_hsl(var(--primary)/0.6)] hover:brightness-110",
         secondary:
-          "border border-white/10 bg-white/[0.06] text-foreground backdrop-blur-sm hover:bg-white/[0.10] hover:border-white/15",
+          "border border-white/10 bg-white/[0.06] text-foreground backdrop-blur-sm transition-[transform,background-color,border-color] duration-150 ease-out-strong hover:bg-white/[0.10] hover:border-white/15",
         accent:
           "relative overflow-hidden bg-accent text-accent-foreground shadow-[0_0_20px_-5px_hsl(var(--accent)/0.5)] hover:shadow-[0_0_28px_-4px_hsl(var(--accent)/0.6)] hover:brightness-110",
-        ghost: "text-muted-foreground hover:bg-white/[0.06] hover:text-foreground",
-        outline: "border border-border bg-transparent hover:bg-white/[0.04]"
+        ghost: "text-muted-foreground transition-[transform,background-color,color] duration-150 ease-out-strong hover:bg-white/[0.06] hover:text-foreground",
+        outline: "border border-border bg-transparent transition-[transform,background-color,border-color] duration-150 ease-out-strong hover:bg-white/[0.04]"
       },
       size: {
         default: "h-11 px-5 py-2",

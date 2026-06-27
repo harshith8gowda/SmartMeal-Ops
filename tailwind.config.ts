@@ -71,6 +71,10 @@ export default {
         "gradient-x": "gradient-x 15s ease infinite",
         "float": "float 6s ease-in-out infinite",
         "shimmer": "shimmer 2s linear infinite"
+      },
+      transitionTimingFunction: {
+        "ease-out-strong": "cubic-bezier(0.23, 1, 0.32, 1)",
+        "ease-in-out-strong": "cubic-bezier(0.77, 0, 0.175, 1)"
       }
     }
   },
