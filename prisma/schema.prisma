@@ -33,25 +33,51 @@ model User {
   name              String?
   email             String         @unique
   avatarUrl         String?
-  preferences       Json?
-  householdSize     Int            @default(1)
-  dietType          String         @default("veg")
-  dietaryGoal       DietGoal       @default(BALANCED)
-  monthlyBudget     Int            @default(0)
-  cookingSkill      String         @default("medium")
-  cuisines          String[]
-  allergies         String[]
-  city              String         @default("Bengaluru")
   swiggyAccessToken String?
-  pantryItems       PantryItem[]
-  mealPlans         MealPlan[]
-  orders            Order[]
-  conversations     Conversation[]
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
+  addresses         Address[]
+  preference        Preference?
+  pantryItems       PantryItem[]
+  mealSlots         MealSlot[]
+  cartSessions      CartSession[]
+  orderHistory      OrderHistory[]
+  conversations     Conversation[]
 
   @@index([clerkId])
   @@index([email])
+}
+
+model Address {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label     String
+  address   String
+  city      String
+  pincode   String
+  lat       Float?
+  lng       Float?
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Preference {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  diet          String[] @default([])
+  allergies     String[] @default([])
+  cuisines      String[] @default([])
+  householdSize Int      @default(1)
+  monthlyBudget Int      @default(500)
+  cookingSkill  String   @default("medium")
+  dietaryGoal   DietGoal @default(BALANCED)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model PantryItem {
@@ -70,40 +96,57 @@ model PantryItem {
   @@index([userId])
 }
 
-model MealPlan {
-  id                String     @id @default(cuid())
-  userId            String
-  date              DateTime
-  type              String
-  title             String
-  calories          Int
-  protein           Int
-  cost              Int
-  source            MealSource
-  prepMinutes       Int
-  ingredients       String[]
-  reason            String?
-  providerSuggestion String?
-  user              User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt         DateTime   @default(now())
-  updatedAt         DateTime   @updatedAt
+model MealSlot {
+  id            String       @id @default(cuid())
+  userId        String
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date          DateTime
+  mealType      String       // breakfast, lunch, dinner
+  source        MealSource
+  title         String
+  description   String?
+  cost          Int          @default(0)
+  timeMinutes   Int          @default(0)
+  effort        String?
+  imageUrl      String?
+  items         Json?
+  cartSessionId String?
+  cartSession   CartSession? @relation(fields: [cartSessionId], references: [id])
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
 
   @@index([userId, date])
 }
 
-model Order {
-  id          String      @id @default(cuid())
-  userId      String
-  provider    String
-  source      MealSource
-  status      OrderStatus @default(PENDING)
-  total       Int
-  etaMinutes  Int?
-  externalId  String?
-  payload     Json?
-  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+model CartSession {
+  id           String         @id @default(cuid())
+  userId       String
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  source       MealSource
+  redirectUrl  String
+  payload      Json
+  status       String         @default("ready")
+  mealSlots    MealSlot[]
+  orderHistory OrderHistory[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@index([userId])
+}
+
+model OrderHistory {
+  id            String      @id @default(cuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cartSessionId String
+  cartSession   CartSession @relation(fields: [cartSessionId], references: [id], onDelete: Cascade)
+  source        MealSource
+  title         String
+  total         Int         @default(0)
+  status        OrderStatus @default(PENDING)
+  swiggyUrl     String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 
   @@index([userId])
   @@index([userId, createdAt])
