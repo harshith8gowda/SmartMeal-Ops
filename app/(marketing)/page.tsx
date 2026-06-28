@@ -2,15 +2,13 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   ArrowRight,
-  ChefHat,
   PackagePlus,
   Sparkles,
   Utensils,
   ShoppingBag,
   CalendarCheck,
-  MessageSquareText,
   Scale,
-  CheckCircle2
+  ExternalLink
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HeroMotion } from "@/components/dashboard/hero-motion";
@@ -21,27 +19,27 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: {
-    absolute: "SmartMeal Ops — AI Food Operations Copilot"
+    absolute: "MealMap — Decide dinner. Build the cart. Swiggy handles the rest."
   },
   description:
-    "Plan meals, optimize costs, restock groceries, and decide between cooking, ordering, and dining out with AI."
+    "Compare cooking, ordering, and dining out side by side. Plan your week and build carts in Swiggy with one tap."
 };
 
 const steps = [
   {
-    icon: MessageSquareText,
-    title: "Ask the copilot",
-    body: "Tell it your mood, budget, and time. It reads your pantry and preferences."
-  },
-  {
     icon: Scale,
-    title: "Compare every option",
-    body: "See the cost, time, and effort to cook, order, or book a table side by side."
+    title: "Compare options",
+    body: "Set your budget, time, and mood. See cook, order, and dineout picks side by side."
   },
   {
-    icon: CheckCircle2,
-    title: "Confirm in one tap",
-    body: "The copilot builds the cart, places the order, or reserves the table."
+    icon: CalendarCheck,
+    title: "Plan the week",
+    body: "Fill a 7-day meal planner with breakfast, lunch, and dinner slots."
+  },
+  {
+    icon: ExternalLink,
+    title: "Build in Swiggy",
+    body: "MealMap creates the cart or booking and redirects you to Swiggy. No real orders placed here."
   }
 ];
 
@@ -50,10 +48,10 @@ export default function LandingPage() {
     <main className="relative mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-6 sm:px-6 lg:py-8">
       <nav className="sticky top-4 z-50 mb-10 flex items-center justify-between rounded-2xl border border-white/[0.08] bg-white/[0.06] px-5 py-3 shadow-lg backdrop-blur-2xl">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/20 text-primary">
-            <Sparkles className="h-4 w-4" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-accent text-sm font-bold text-white">
+            MM
           </div>
-          <p className="font-display text-lg font-semibold">SmartMeal Ops</p>
+          <p className="font-display text-lg font-semibold">MealMap</p>
         </div>
         <div className="flex items-center gap-3">
           <Show when="signed-in">
@@ -77,13 +75,13 @@ export default function LandingPage() {
         <section className="relative grid min-h-[calc(100vh-140px)] gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
           <div className="relative z-10">
             <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-primary">
-              AI Household Food Copilot
+              Swiggy-powered food copilot
             </p>
             <h1 className="max-w-4xl text-5xl font-semibold leading-[1.1] tracking-tight md:text-7xl">
-              Your <span className="text-primary">AI Food Operations</span> Copilot
+              Decide dinner. <span className="text-primary">Build the cart.</span>
             </h1>
             <p className="mt-6 max-w-xl text-lg text-muted-foreground">
-              Plan meals, optimize costs, restock groceries, and make smarter dinner decisions with one intelligent assistant.
+              MealMap compares cooking, ordering, and dining out, then builds your cart or booking in Swiggy with one tap.
             </p>
             <HeroCTA />
 
@@ -127,52 +125,52 @@ export default function LandingPage() {
             One copilot, three ways to eat
           </h2>
           <p className="mt-3 text-muted-foreground">
-            SmartMeal Ops connects your pantry, budget, and local Swiggy options so every dinner decision is effortless.
+            MealMap connects your budget, time, and local Swiggy options so every dinner decision is effortless.
           </p>
         </ScrollReveal>
 
         <div className="grid gap-6 md:grid-cols-2">
           <StaggerReveal className="premium-card p-8 md:row-span-2">
             <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-              <ChefHat className="h-7 w-7" />
+              <Scale className="h-7 w-7" />
             </div>
-            <h3 className="font-display text-2xl font-semibold">AI Meal Plans</h3>
+            <h3 className="font-display text-2xl font-semibold">Side-by-side comparison</h3>
             <p className="mt-2 max-w-sm text-muted-foreground">
-              Weekly dinner plans tailored to your household size, budget, diet, and whatever is already in your pantry.
+              See the cost, time, and effort of cooking, ordering, and dining out for every meal. Pick what fits today.
             </p>
             <ul className="mt-6 space-y-2 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Budget-aware recipe suggestions
+                Real-time budget and time filters
               </li>
               <li className="flex items-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Pantry-first ingredient matching
+                Cook, order, and dineout cards
               </li>
               <li className="flex items-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Nutrition and cuisine preferences
+                One-tap cart building in Swiggy
               </li>
             </ul>
           </StaggerReveal>
 
-          <StaggerReveal className="premium-card p-6 transition-transform duration-150 ease-out-strong hover:-translate-y-1">
+          <StaggerReveal className="premium-card p-6 transition-transform duration-300 hover:-translate-y-1">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10 text-accent">
-              <ShoppingBag className="h-6 w-6" />
+              <CalendarCheck className="h-6 w-6" />
             </div>
-            <h3 className="font-display text-xl font-semibold">Smart Decisions</h3>
+            <h3 className="font-display text-xl font-semibold">Weekly meal planner</h3>
             <p className="mt-2 text-sm text-muted-foreground">
-              Cook, order, or dine out — the copilot compares cost, time, and effort to pick the best option.
+              Plan 7 days of breakfast, lunch, and dinner. Let AI fill slots or build carts for the whole week.
             </p>
           </StaggerReveal>
 
-          <StaggerReveal className="premium-card p-6 transition-transform duration-150 ease-out-strong hover:-translate-y-1">
+          <StaggerReveal className="premium-card p-6 transition-transform duration-300 hover:-translate-y-1">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-warning/10 text-warning">
               <PackagePlus className="h-6 w-6" />
             </div>
-            <h3 className="font-display text-xl font-semibold">Pantry Tracking</h3>
+            <h3 className="font-display text-xl font-semibold">Pantry aware</h3>
             <p className="mt-2 text-sm text-muted-foreground">
-              Track what you have and auto-build grocery restock lists when ingredients run low.
+              Track staples and recurring items so MealMap can suggest what to cook or add to your Instamart cart.
             </p>
           </StaggerReveal>
         </div>
@@ -205,10 +203,10 @@ export default function LandingPage() {
       <section className="mt-28 lg:mt-36 rounded-3xl border border-white/10 bg-gradient-to-br from-primary/10 via-accent/10 to-transparent p-8 text-center md:p-12 lg:p-16">
         <ScrollReveal>
           <h2 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">
-            Ready to eat smarter?
+            Ready to decide dinner faster?
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-            Join SmartMeal Ops and let AI decide between cooking, ordering, and dining out every night.
+            Join MealMap and let AI compare your options, plan your week, and build carts in Swiggy.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <Button asChild size="lg">
@@ -224,7 +222,7 @@ export default function LandingPage() {
       </section>
 
       <footer className="mt-20 border-t border-white/10 py-8 text-center text-sm text-muted-foreground">
-        © {new Date().getFullYear()} SmartMeal Ops. Built with Clerk, Neon, OpenAI, and Swiggy MCP.
+        © {new Date().getFullYear()} MealMap. Built with Clerk, Neon, OpenAI, and Swiggy MCP. No real orders are placed here.
       </footer>
     </main>
   );

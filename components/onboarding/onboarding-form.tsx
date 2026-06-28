@@ -16,13 +16,15 @@ import { Loader2, Save } from "lucide-react";
 const schema = z.object({
   name: z.string().min(2),
   householdSize: z.coerce.number().min(1),
-  dietType: z.string(),
-  dietaryGoal: z.string(),
-  monthlyBudgetInr: z.coerce.number().min(1000),
-  cookingSkill: z.string(),
-  cuisines: z.string(),
+  defaultBudget: z.coerce.number().min(100),
+  cookSkill: z.enum(["beginner", "medium", "expert"]),
+  diet: z.string(),
   allergies: z.string(),
-  city: z.string().min(2)
+  cuisines: z.string(),
+  addressLabel: z.string().min(1),
+  address: z.string().min(3),
+  city: z.string().min(2),
+  pincode: z.string().min(4)
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -34,11 +36,16 @@ export function OnboardingForm() {
     resolver: zodResolver(schema),
     defaultValues: {
       name: "",
-      dietType: "veg",
-      dietaryGoal: "balanced",
-      cookingSkill: "medium",
       householdSize: 2,
-      city: "Bengaluru"
+      defaultBudget: 500,
+      cookSkill: "medium",
+      diet: "veg",
+      cuisines: "",
+      allergies: "",
+      addressLabel: "Home",
+      address: "",
+      city: "Bengaluru",
+      pincode: ""
     }
   });
 
@@ -56,13 +63,11 @@ export function OnboardingForm() {
       body: JSON.stringify(values)
     });
     if (!res.ok) return toast.error("Could not save profile");
-    toast.success("Profile saved. Smart recommendations unlocked.");
+    toast.success("Profile saved. Welcome to MealMap.");
     router.push("/dashboard");
   };
 
-  const selectedGoal = useWatch({ control, name: "dietaryGoal" });
-  const selectedDiet = useWatch({ control, name: "dietType" });
-  const selectedSkill = useWatch({ control, name: "cookingSkill" });
+  const selectedDiet = useWatch({ control, name: "diet" });
 
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
@@ -82,34 +87,25 @@ export function OnboardingForm() {
               <Input type="number" placeholder="2" {...register("householdSize")} />
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-muted-foreground">Monthly budget (₹)</label>
-              <Input type="number" placeholder="6000" {...register("monthlyBudgetInr")} />
+              <label className="text-xs font-medium text-muted-foreground">Default budget (₹)</label>
+              <Input type="number" placeholder="500" {...register("defaultBudget")} />
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-muted-foreground">City</label>
-              <Input placeholder="Bengaluru" {...register("city")} />
+              <label className="text-xs font-medium text-muted-foreground">Cook skill</label>
+              <select
+                {...register("cookSkill")}
+                className="w-full rounded-xl border border-white/10 bg-white/[0.05] px-3 py-2 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary"
+              >
+                <option value="beginner">Beginner</option>
+                <option value="medium">Medium</option>
+                <option value="expert">Expert</option>
+              </select>
             </div>
           </div>
 
           <FieldGroup title="Diet type">
             {["veg", "non-veg", "eggetarian"].map((item) => (
-              <ChoiceButton key={item} active={selectedDiet === item} onClick={() => setValue("dietType", item)}>
-                {item}
-              </ChoiceButton>
-            ))}
-          </FieldGroup>
-
-          <FieldGroup title="Dietary goal">
-            {["high_protein", "weight_loss", "low_carb", "balanced"].map((item) => (
-              <ChoiceButton key={item} active={selectedGoal === item} onClick={() => setValue("dietaryGoal", item)}>
-                {item.replace("_", " ")}
-              </ChoiceButton>
-            ))}
-          </FieldGroup>
-
-          <FieldGroup title="Cooking skill">
-            {["low", "medium", "high"].map((item) => (
-              <ChoiceButton key={item} active={selectedSkill === item} onClick={() => setValue("cookingSkill", item)}>
+              <ChoiceButton key={item} active={selectedDiet === item} onClick={() => setValue("diet", item)}>
                 {item}
               </ChoiceButton>
             ))}
@@ -123,6 +119,25 @@ export function OnboardingForm() {
             <div className="space-y-1.5">
               <label className="text-xs font-medium text-muted-foreground">Allergies</label>
               <Textarea placeholder="peanuts, shellfish" {...register("allergies")} />
+            </div>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-muted-foreground">Address label</label>
+              <Input placeholder="Home" {...register("addressLabel")} />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-muted-foreground">City</label>
+              <Input placeholder="Bengaluru" {...register("city")} />
+            </div>
+            <div className="space-y-1.5 md:col-span-2">
+              <label className="text-xs font-medium text-muted-foreground">Full address</label>
+              <Input placeholder="123, 1st Main, Koramangala" {...register("address")} />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-muted-foreground">Pincode</label>
+              <Input placeholder="560034" {...register("pincode")} />
             </div>
           </div>
 

@@ -3,14 +3,12 @@ import { auth } from "@clerk/nextjs/server";
 import { getPrisma } from "@/lib/db/prisma";
 import { getPantryItems } from "@/lib/db/pantry";
 import { PantryManager } from "@/components/pantry/pantry-manager";
-import { UserButton } from "@clerk/nextjs";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, Package } from "lucide-react";
+import { AppNav } from "@/components/layout/nav";
+import { Package } from "lucide-react";
 
 export const metadata = {
   title: "Pantry",
-  description: "Manage your pantry staples and recurring items in SmartMeal Ops."
+  description: "Manage your pantry staples and recurring items in MealMap."
 };
 
 export default async function PantryPage() {
@@ -28,22 +26,18 @@ export default async function PantryPage() {
   const pantryItems = await getPantryItems(userId);
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:py-8">
-      <div className="mb-6 flex items-center justify-between">
-        <div>
+    <>
+      <AppNav />
+      <main className="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:py-8">
+        <div className="mb-6">
           <p className="flex items-center gap-2 text-sm font-medium uppercase text-primary">
             <Package className="h-4 w-4" /> Pantry
           </p>
-          <h1 className="mt-1 text-3xl font-semibold tracking-tight md:text-4xl">Manage your pantry</h1>
+          <h1 className="mt-1 text-3xl font-semibold tracking-tight md:text-4xl">Your pantry</h1>
+          <p className="mt-2 text-muted-foreground">Track staples so MealMap can suggest what to cook or restock.</p>
         </div>
-        <div className="flex items-center gap-3">
-          <Button asChild variant="secondary" size="sm">
-            <Link href="/dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Dashboard</Link>
-          </Button>
-          <UserButton />
-        </div>
-      </div>
-      <PantryManager pantryItems={pantryItems} />
-    </main>
+        <PantryManager pantryItems={pantryItems} />
+      </main>
+    </>
   );
 }

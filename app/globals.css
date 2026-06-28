@@ -23,6 +23,8 @@
   --warning: 40 92% 53%;
   --warning-foreground: 210 20% 96%;
   --radius: 1rem;
+  --font-inter: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-outfit: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 @layer base {
