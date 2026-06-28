@@ -18,10 +18,10 @@ const outfit = Outfit({
 
 export const metadata: Metadata = {
   title: {
-    default: "SmartMeal Ops",
-    template: "%s | SmartMeal Ops"
+    default: "MealMap",
+    template: "%s | MealMap"
   },
-  description: "Your AI food operations copilot for cooking, ordering, and dining out."
+  description: "Decide dinner. Build the cart. Swiggy handles the rest."
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
