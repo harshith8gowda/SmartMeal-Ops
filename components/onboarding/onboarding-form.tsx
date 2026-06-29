@@ -6,6 +6,7 @@ import { z } from "zod";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { motion } from "framer-motion";
+import { useMotionPreference } from "@/lib/hooks/use-reduced-motion";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -68,9 +69,10 @@ export function OnboardingForm() {
   };
 
   const selectedDiet = useWatch({ control, name: "diet" });
+  const { reduceMotion } = useMotionPreference();
 
   return (
-    <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+    <motion.div initial={reduceMotion ? false : { opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
       <Card className="gradient-border mx-auto max-w-3xl">
         <CardHeader>
           <CardTitle>Set up your profile</CardTitle>
