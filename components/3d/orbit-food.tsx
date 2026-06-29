@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { RoundedBox, Sphere } from '@react-three/drei';
 import * as THREE from 'three';
+import { tokens } from '@/lib/3d/tokens';
 
 type FoodShape = 'sphere' | 'box' | 'dumpling';
 
@@ -15,7 +16,7 @@ type FoodTokenProps = {
   speed?: number;
 };
 
-export function OrbitFood({ position, color, shape, scale = 1, speed = 1 }: FoodTokenProps) {
+export function OrbitFood({ position, color = tokens.primary, shape, scale = 1, speed = 1 }: FoodTokenProps) {
   const ref = useRef<THREE.Group>(null);
 
   useFrame((state) => {
