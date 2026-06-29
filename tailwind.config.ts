@@ -57,20 +57,6 @@ export default {
         "2xl": "1.25rem",
         "3xl": "1.5rem"
       },
-      rotate: {
-        "y-12": "12deg",
-        "y-180": "180deg"
-      },
-      transformStyle: {
-        "3d": "preserve-3d"
-      },
-      perspective: {
-        "1000": "1000px",
-        "1500": "1500px"
-      },
-      backfaceVisibility: {
-        hidden: "hidden"
-      },
       keyframes: {
         "gradient-x": {
           "0%, 100%": { backgroundPosition: "0% 50%" },

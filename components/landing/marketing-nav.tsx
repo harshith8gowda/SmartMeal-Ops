@@ -14,7 +14,7 @@ export function MarketingNav() {
       <header className="sticky top-4 z-50 rounded-2xl border border-white/[0.08] bg-white/[0.06] px-5 py-3 shadow-lg backdrop-blur-2xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-amber-500 text-sm font-bold text-white">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-accent text-sm font-bold text-white">
               MM
             </div>
             <span className="font-display text-lg font-semibold tracking-tight">MealMap</span>

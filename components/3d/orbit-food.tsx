@@ -28,18 +28,18 @@ export function OrbitFood({ position, color = tokens.primary, shape, scale = 1, 
   return (
     <group ref={ref} position={position} scale={scale}>
       {shape === 'sphere' && (
-        <Sphere args={[0.6, 32, 32] as [number, number, number]}>
+        <Sphere args={[0.6, 32, 32]}>
           <meshStandardMaterial color={color} roughness={0.35} metalness={0.1} />
         </Sphere>
       )}
       {shape === 'box' && (
-        <RoundedBox args={[1, 1, 1] as [number, number, number]} radius={0.12}>
+        <RoundedBox args={[1, 1, 1]} radius={0.12}>
           <meshStandardMaterial color={color} roughness={0.4} metalness={0.05} />
         </RoundedBox>
       )}
       {shape === 'dumpling' && (
         <group>
-          <Sphere args={[0.55, 32, 32] as [number, number, number]} scale={[1, 0.75, 1]}>
+          <Sphere args={[0.55, 32, 32]} scale={[1, 0.75, 1]}>
             <meshStandardMaterial color={color} roughness={0.5} />
           </Sphere>
         </group>

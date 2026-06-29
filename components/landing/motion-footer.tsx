@@ -18,6 +18,11 @@ export function MotionFooter() {
           <div className="mt-8 flex justify-center">
             <HeroCTA />
           </div>
+          <footer className="mt-12 space-y-2 text-sm text-muted-foreground">
+            <p>© {new Date().getFullYear()} MealMap. All rights reserved.</p>
+            <p>Built with Clerk, Neon, OpenAI, and Swiggy MCP.</p>
+            <p className="font-medium text-warning">No real orders are placed here.</p>
+          </footer>
         </ScrollReveal>
       </div>
     </section>

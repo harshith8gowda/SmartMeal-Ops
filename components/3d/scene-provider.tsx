@@ -14,6 +14,6 @@ export function SceneProvider({ children, fallback }: { children: ReactNode; fal
   const { reduceMotion } = useMotionPreference();
   const tier = useDeviceTier();
 
-  if (reduceMotion) return <>{fallback}</>;
+  if (reduceMotion || tier === 'low') return <>{fallback}</>;
   return <SceneTierContext.Provider value={tier}>{children}</SceneTierContext.Provider>;
 }
