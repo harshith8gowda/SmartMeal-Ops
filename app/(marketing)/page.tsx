@@ -3,6 +3,7 @@ import { Hero3D } from "@/components/landing/3d-hero";
 import { OrbitFeatures } from "@/components/landing/orbit-features";
 import { Steps3D } from "@/components/landing/steps-3d";
 import { MotionFooter } from "@/components/landing/motion-footer";
+import { MarketingNav } from "@/components/landing/marketing-nav";
 
 export const metadata: Metadata = {
   title: {
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
 export default function MarketingPage() {
   return (
     <main className="bg-background">
+      <MarketingNav />
       <Hero3D />
       <OrbitFeatures />
       <Steps3D />
