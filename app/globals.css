@@ -153,4 +153,7 @@
 
 .r3f-canvas { position: absolute; inset: 0; z-index: 0; }
 .r3f-fallback { display: none; }
-.r3f-canvas canvas { transform: translateZ(0); }
+.r3f-canvas canvas {
+  transform: translateZ(0);
+  will-change: transform;
+}

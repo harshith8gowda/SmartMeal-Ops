@@ -5,6 +5,7 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { OrbitFood } from './orbit-food';
 import { tokens } from '@/lib/3d/tokens';
+import { DeviceTier } from '@/lib/hooks/use-device-tier';
 
 const foodTokens = [
   { angle: 0, color: tokens.primary, shape: 'box' as const, scale: 1.2 },
@@ -19,10 +20,12 @@ export type OrbitRingProps = {
   speed?: number;
   radius?: number;
   autoRotate?: boolean;
+  tier?: DeviceTier;
 };
 
-export function OrbitRing({ speed = 0.2, radius = 3.5, autoRotate = true }: OrbitRingProps) {
+export function OrbitRing({ speed = 0.2, radius = 3.5, autoRotate = true, tier = 'high' }: OrbitRingProps) {
   const ringRef = useRef<THREE.Group>(null);
+  const displayTokens = tier === 'low' ? foodTokens.slice(0, 3) : foodTokens;
 
   useFrame((_, delta) => {
     if (!ringRef.current || !autoRotate) return;
@@ -31,7 +34,7 @@ export function OrbitRing({ speed = 0.2, radius = 3.5, autoRotate = true }: Orbi
 
   return (
     <group ref={ringRef} rotation={[0.2, 0, 0]}>
-      {foodTokens.map((t, i) => {
+      {displayTokens.map((t, i) => {
         const rad = (t.angle * Math.PI) / 180;
         return (
           <OrbitFood
