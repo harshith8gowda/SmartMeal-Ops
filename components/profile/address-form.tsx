@@ -32,7 +32,7 @@ type AddressFormData = z.infer<typeof addressSchema>;
 export function AddressForm({ addresses }: { addresses: Address[] }) {
   const [items, setItems] = useState<Address[]>(addresses);
   const [loading, setLoading] = useState(false);
-  const { register, handleSubmit, reset, watch, setValue } = useForm<AddressFormData>({
+  const { register, handleSubmit, reset } = useForm<AddressFormData>({
     resolver: zodResolver(addressSchema),
     defaultValues: { label: "", address: "", city: "", pincode: "", isDefault: false }
   });

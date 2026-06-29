@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AppNav } from "@/components/layout/nav";
 import { InputBar, type InputValues } from "@/components/dashboard/input-bar";
 import { ComparisonCard, type ComparisonRecommendation } from "@/components/dashboard/comparison-card";
@@ -16,14 +16,9 @@ type Recommendations = {
 };
 
 export default function DashboardPage() {
-  const [values, setValues] = useState<InputValues>({ budget: 500, timeMinutes: 30, mood: "hungry" });
   const [recommendations, setRecommendations] = useState<Recommendations | null>(null);
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState<ComparisonRecommendation | null>(null);
-
-  useEffect(() => {
-    fetchRecommendations(values);
-  }, []);
 
   async function fetchRecommendations(input: InputValues) {
     setLoading(true);
@@ -41,11 +36,6 @@ export default function DashboardPage() {
     } finally {
       setLoading(false);
     }
-  }
-
-  function handleInputChange(input: InputValues) {
-    setValues(input);
-    fetchRecommendations(input);
   }
 
   return (
@@ -66,7 +56,7 @@ export default function DashboardPage() {
 
         <ScrollReveal delay={0.1}>
           <div className="mb-8">
-            <InputBar onChange={handleInputChange} />
+            <InputBar onChange={fetchRecommendations} />
           </div>
         </ScrollReveal>
 

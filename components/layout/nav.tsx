@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
-import { ChefHat, CalendarDays, ShoppingBag, Package, User, LayoutDashboard } from "lucide-react";
+import { CalendarDays, ShoppingBag, Package, User, LayoutDashboard } from "lucide-react";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -65,7 +65,7 @@ export function AppNav() {
               asChild
               className="gap-1 px-2"
             >
-              <Link href={item.href}>
+              <Link href={{ pathname: item.href }}>
                 <Icon className="h-4 w-4" />
                 <span className="text-xs">{item.label}</span>
               </Link>

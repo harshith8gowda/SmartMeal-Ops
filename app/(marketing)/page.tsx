@@ -3,7 +3,6 @@ import Image from "next/image";
 import {
   ArrowRight,
   PackagePlus,
-  Sparkles,
   Utensils,
   ShoppingBag,
   CalendarCheck,
