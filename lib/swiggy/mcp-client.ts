@@ -13,7 +13,7 @@ export function hasSwiggyMcpSession(token?: string) {
   return Boolean(token);
 }
 
-export async function callSwiggyTool<T>(
+async function sendSwiggyRequest<T>(
   server: SwiggyMcpServer,
   name: string,
   args: Record<string, unknown> = {},
@@ -62,4 +62,21 @@ export async function callSwiggyTool<T>(
   }
 
   return payload.result ?? payload;
+}
+
+export async function callSwiggyTool<T>(
+  server: SwiggyMcpServer,
+  name: string,
+  args: Record<string, unknown> = {},
+  token?: string,
+  retries = 1
+): Promise<SwiggyMcpToolResponse<T>> {
+  try {
+    return await sendSwiggyRequest<T>(server, name, args, token);
+  } catch (err) {
+    if (retries > 0 && err instanceof Error && err.message.toLowerCase().includes("timeout")) {
+      return callSwiggyTool<T>(server, name, args, token, retries - 1);
+    }
+    throw err;
+  }
 }

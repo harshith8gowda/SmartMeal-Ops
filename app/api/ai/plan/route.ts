@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { requireUserId } from "@/lib/auth/clerk";
-import { getPrisma } from "@/lib/db/prisma";
+import { auth } from "@clerk/nextjs/server";
+import { ensureDbUser } from "@/lib/auth/clerk";
 import { getPantryItems } from "@/lib/db/pantry";
 import { getMonthlySpend } from "@/lib/db/orders";
-import { createMealPlans } from "@/lib/db/meal-plan";
+import { bulkCreateMealSlots } from "@/lib/db/meal-slot";
+import { getPreference } from "@/lib/db/preference";
+import { getAddresses } from "@/lib/db/address";
 import { appendMessage } from "@/lib/db/conversation";
 import { generateMealPlan, getMissingIngredients } from "@/lib/ai/planner";
 import { buildTonightRecommendation } from "@/lib/ai/decision-engine";
@@ -14,6 +16,7 @@ import { searchRestaurants } from "@/lib/swiggy/dineout";
 import { getSwiggyToken } from "@/lib/swiggy/token";
 import { mapErrorToResponse } from "@/lib/errors";
 import { rateLimit } from "@/lib/rate-limit";
+import { Prisma } from "@prisma/client";
 
 const PlanInputSchema = z.object({
   prompt: z.string().min(1)
@@ -21,37 +24,45 @@ const PlanInputSchema = z.object({
 
 export async function POST(req: NextRequest) {
   try {
-    const userId = await requireUserId();
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     await rateLimit(`plan:${userId}`, 10, 60);
-    const prisma = getPrisma();
+
+    const user = await ensureDbUser(userId);
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     const body = await req.json();
     const { prompt } = PlanInputSchema.parse(body);
 
-    const [user, pantryItems] = await Promise.all([
-      prisma.user.findUnique({ where: { id: userId } }),
-      getPantryItems(userId)
+    const [preference, pantryItems, addresses] = await Promise.all([
+      getPreference(user.id),
+      getPantryItems(user.id),
+      getAddresses(user.id)
     ]);
 
-    if (!user) {
-      return NextResponse.json({ error: "Profile not found. Complete onboarding first." }, { status: 404 });
-    }
-
-    const monthlySpend = await getMonthlySpend(userId);
-    const budgetRemaining = Math.max(0, user.monthlyBudget - monthlySpend.total);
+    const monthlySpend = await getMonthlySpend(user.id);
+    const monthlyBudget = preference?.monthlyBudget ?? 500;
+    const budgetRemaining = Math.max(0, monthlyBudget - monthlySpend.total);
     const pantry = pantryItems.map((p) => p.item);
     const normalizedPrompt = prompt.toLowerCase();
+    const address = addresses.find((a) => a.isDefault) || addresses[0];
+    const addressId = address?.id ?? "addr_demo_home";
 
     const meals = await generateMealPlan(prompt, {
-      householdSize: user.householdSize,
-      monthlyBudget: user.monthlyBudget,
+      householdSize: preference?.householdSize ?? 2,
+      monthlyBudget,
       budgetRemaining,
-      dietType: user.dietType,
-      dietaryGoal: user.dietaryGoal.toLowerCase(),
-      cookingSkill: user.cookingSkill,
-      cuisines: user.cuisines,
-      allergies: user.allergies,
-      city: user.city,
+      dietType: preference?.diet?.[0] ?? "non-veg",
+      dietaryGoal: (preference?.dietaryGoal ?? "BALANCED").toLowerCase(),
+      cookingSkill: preference?.cookingSkill ?? "medium",
+      cuisines: preference?.cuisines ?? [],
+      allergies: preference?.allergies ?? [],
+      city: address?.city ?? "Bengaluru",
       pantry
     });
 
@@ -62,16 +73,12 @@ export async function POST(req: NextRequest) {
       timeAvailableMins: normalizedPrompt.includes("book") || normalizedPrompt.includes("dine") ? 90 : 30,
       energyLevel: normalizedPrompt.includes("tired") ? "low" : "medium",
       missingIngredientsCount: normalizedPrompt.includes("book") || normalizedPrompt.includes("dine") ? 8 : missingIngredients.length,
-      householdSize: normalizedPrompt.includes("for 4") ? 4 : user.householdSize || 2,
+      householdSize: normalizedPrompt.includes("for 4") ? 4 : (preference?.householdSize || 2),
       goal: prompt,
       perMealBudget: 700
     });
 
-    const addressId = user.preferences && typeof user.preferences === "object" && "defaultAddressId" in user.preferences
-      ? String(user.preferences.defaultAddressId)
-      : "addr_demo_home";
-
-    const swiggyToken = await getSwiggyToken(userId);
+    const swiggyToken = await getSwiggyToken(user.id);
     const [food, groceries, restaurants] = await Promise.all([
       searchFood("high protein dinner", addressId, swiggyToken),
       searchGroceries(missingIngredients[0] ?? "eggs", addressId, swiggyToken),
@@ -79,24 +86,24 @@ export async function POST(req: NextRequest) {
     ]);
 
     await Promise.all([
-      createMealPlans(
+      bulkCreateMealSlots(
+        user.id,
         meals.map((meal, index) => ({
-          userId,
           date: new Date(Date.now() + index * 24 * 60 * 60 * 1000),
-          type: "Dinner",
-          title: meal.title,
-          calories: meal.calories,
-          protein: meal.protein,
-          cost: meal.cost,
+          mealType: "dinner",
           source: meal.source,
-          prepMinutes: meal.prepMinutes,
-          ingredients: meal.ingredients ?? [],
-          reason: meal.reason,
-          providerSuggestion: meal.providerSuggestion
+          title: meal.title,
+          description: meal.reason,
+          cost: meal.cost,
+          timeMinutes: meal.prepMinutes,
+          items: {
+            ingredients: meal.ingredients ?? [],
+            providerSuggestion: meal.providerSuggestion
+          } as Prisma.InputJsonValue
         }))
       ),
-      appendMessage(userId, { role: "user", content: prompt, createdAt: new Date().toISOString() }),
-      appendMessage(userId, {
+      appendMessage(user.id, { role: "user", content: prompt, createdAt: new Date().toISOString() }),
+      appendMessage(user.id, {
         role: "assistant",
         content: `${recommendation.headline}. ${recommendation.reason}`,
         createdAt: new Date().toISOString()

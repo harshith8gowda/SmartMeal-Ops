@@ -13,7 +13,7 @@ import { buildTonightRecommendation } from "@/lib/ai/decision-engine";
 import { getSwiggyToken } from "@/lib/swiggy/token";
 import { searchFood, getFoodAddresses } from "@/lib/swiggy/food";
 import { searchRestaurants } from "@/lib/swiggy/dineout";
-import { getPrisma } from "@/lib/db/prisma";
+import { getUserWithPreferences } from "@/lib/db/user";
 import { getPantryItems } from "@/lib/db/pantry";
 import { getMealPlans } from "@/lib/db/meal-plan";
 import { getBudgetStatus } from "@/lib/db/budget";
@@ -33,8 +33,7 @@ export default async function DashboardPage() {
     redirect("/sign-in" as never);
   }
 
-  const prisma = getPrisma();
-  const user = await prisma.user.findUnique({ where: { id: userId } });
+  const user = await getUserWithPreferences(userId);
 
   if (!user) {
     redirect("/onboarding" as never);

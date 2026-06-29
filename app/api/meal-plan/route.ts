@@ -1,0 +1,100 @@
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
+import { z } from "zod";
+import {
+  getMealSlots,
+  createMealSlot,
+  updateMealSlot,
+  clearMealSlots,
+  type MealSlotInput
+} from "@/lib/db/meal-slot";
+import { ensureDbUser } from "@/lib/auth/clerk";
+import { mapErrorToResponse } from "@/lib/errors";
+
+const slotSchema = z.object({
+  id: z.string().optional(),
+  date: z.string().datetime(),
+  mealType: z.enum(["breakfast", "lunch", "dinner"]),
+  source: z.enum(["COOK", "ORDER", "DINEOUT"]),
+  title: z.string(),
+  description: z.string().optional(),
+  cost: z.number().default(0),
+  timeMinutes: z.number().default(0),
+  effort: z.string().optional(),
+  imageUrl: z.string().optional(),
+  items: z.any().optional(),
+  cartSessionId: z.string().optional()
+});
+
+export async function GET(req: NextRequest) {
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const user = await ensureDbUser(userId);
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(req.url);
+    const start = new Date(searchParams.get("start") || Date.now());
+    const end = new Date(searchParams.get("end") || Date.now() + 7 * 24 * 60 * 60 * 1000);
+    const slots = await getMealSlots(user.id, start, end);
+
+    return NextResponse.json({ slots });
+  } catch (error) {
+    const { status, body } = mapErrorToResponse(error);
+    return NextResponse.json(body, { status });
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const user = await ensureDbUser(userId);
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const body = await req.json();
+    const action = body.action;
+
+    if (action === "clear") {
+      const start = new Date(body.start);
+      const end = new Date(body.end);
+      await clearMealSlots(user.id, start, end);
+      return NextResponse.json({ success: true });
+    }
+
+    const slots = z.array(slotSchema).parse(body.slots);
+    const results = await Promise.all(
+      slots.map((slot) => {
+        const data: MealSlotInput = {
+          date: new Date(slot.date),
+          mealType: slot.mealType,
+          source: slot.source,
+          title: slot.title,
+          description: slot.description,
+          cost: slot.cost,
+          timeMinutes: slot.timeMinutes,
+          effort: slot.effort,
+          imageUrl: slot.imageUrl,
+          items: slot.items,
+          cartSessionId: slot.cartSessionId
+        };
+        return slot.id ? updateMealSlot(slot.id, user.id, data) : createMealSlot(user.id, data);
+      })
+    );
+
+    return NextResponse.json({ slots: results });
+  } catch (error) {
+    const { status, body } = mapErrorToResponse(error);
+    return NextResponse.json(body, { status });
+  }
+}

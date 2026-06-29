@@ -6,17 +6,16 @@ import { requireUserId } from "@/lib/auth/clerk";
 import { mapErrorToResponse } from "@/lib/errors";
 
 const CartSchema = z.object({
-  itemIds: z.array(z.string()).min(1),
-  selectedAddressId: z.string().default("addr_demo_home")
+  items: z.array(z.object({ name: z.string(), quantity: z.string().optional(), price: z.number().optional() })).min(1)
 });
 
 export async function POST(req: NextRequest) {
   try {
     const userId = await requireUserId();
     const body = await req.json();
-    const { itemIds, selectedAddressId } = CartSchema.parse(body);
+    const { items } = CartSchema.parse(body);
     const token = await getSwiggyToken(userId);
-    const cart = await createGroceryCart(itemIds, selectedAddressId, token);
+    const cart = await createGroceryCart(items, token);
     return NextResponse.json(cart);
   } catch (error) {
     const { status, body } = mapErrorToResponse(error);

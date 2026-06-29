@@ -51,41 +51,19 @@ export async function getAvailableSlots(restaurantId: string, date: string, geo:
   return result.data;
 }
 
-export async function bookTable(
-  restaurantId: string,
-  partySize: number,
-  slotISO: string,
-  geo: GeoPoint = BENGALURU,
-  slot?: { slotId: number; itemId: string; reservationTime: number },
-  token?: string
-) {
-  if (partySize < 1 || partySize > 20) {
-    throw new Error("Party size must be between 1 and 20");
-  }
-
+export async function bookTable(providerData: unknown, token?: string): Promise<unknown> {
   if (!hasSwiggyMcpSession(token)) {
+    const data = providerData as Record<string, unknown> | undefined;
     return {
-      bookingId: `book_${restaurantId}_${Date.now()}`,
-      restaurantId,
-      partySize,
-      slotISO,
+      bookingId: `book_${data?.restaurantId ?? "demo"}_${Date.now()}`,
+      restaurantId: data?.restaurantId ?? "demo_restaurant",
+      partySize: data?.partySize ?? 2,
+      slotISO: data?.slotISO ?? new Date().toISOString().split("T")[0],
       status: "BOOKED"
     };
   }
 
-  if (!slot) {
-    throw new Error("Dineout booking requires a free slot from get_available_slots.");
-  }
-
-  const result = await callSwiggyTool("dineout", "book_table", {
-    restaurantId,
-    slotId: slot.slotId,
-    itemId: slot.itemId,
-    reservationTime: slot.reservationTime,
-    guestCount: partySize,
-    latitude: geo.latitude,
-    longitude: geo.longitude
-  }, token);
+  const result = await callSwiggyTool("dineout", "book_table", { ...(providerData as object), freeOnly: true }, token);
 
   if (!result.success) {
     throw new Error(result.error?.message ?? "Swiggy Dineout book_table failed");

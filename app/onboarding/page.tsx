@@ -1,12 +1,12 @@
 import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 import { OnboardingForm } from "@/components/onboarding/onboarding-form";
-import { getPrisma } from "@/lib/db/prisma";
+import { getUserWithPreferences } from "@/lib/db/user";
 import { Sparkles } from "lucide-react";
 
 export const metadata = {
   title: "Onboarding",
-  description: "Complete your SmartMeal Ops profile to unlock personalized AI meal planning and budget optimization."
+  description: "Complete your MealMap profile to unlock personalized AI meal planning and budget optimization."
 };
 
 export default async function OnboardingPage() {
@@ -15,8 +15,7 @@ export default async function OnboardingPage() {
     redirect("/sign-in" as never);
   }
 
-  const prisma = getPrisma();
-  const user = await prisma.user.findUnique({ where: { id: userId } });
+  const user = await getUserWithPreferences(userId);
 
   if (user && user.monthlyBudget > 0) {
     redirect("/dashboard" as never);
@@ -28,7 +27,7 @@ export default async function OnboardingPage() {
         <p className="flex items-center justify-center gap-2 text-sm font-medium uppercase text-primary">
           <Sparkles className="h-4 w-4" /> Profile
         </p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">Welcome to SmartMeal Ops</h1>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">Welcome to MealMap</h1>
         <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
           Tell us about your household and preferences. The AI uses this to build personalized meal plans and budget recommendations.
         </p>
