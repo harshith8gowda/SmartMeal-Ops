@@ -1,6 +1,6 @@
 'use client';
 
-import { useSyncExternalStore } from 'react';
+import { useEffect, useState } from 'react';
 
 export type DeviceTier = 'high' | 'medium' | 'low';
 
@@ -53,5 +53,16 @@ function subscribe(onChange: () => void) {
 }
 
 export function useDeviceTier(): DeviceTier {
-  return useSyncExternalStore(subscribe, getTier, () => 'high');
+  const [tier, setTier] = useState<DeviceTier>('high');
+
+  useEffect(() => {
+    // Compute the real tier only after hydration so the first render always
+    // matches the server snapshot ('high') and avoids a hydration mismatch.
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- client-only hydration update
+    setTier(getTier());
+
+    return subscribe(() => setTier(getTier()));
+  }, []);
+
+  return tier;
 }
