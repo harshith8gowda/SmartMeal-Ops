@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { PulseButton } from "@/components/3d/pulse-button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowRight } from "lucide-react";
 import type { Route } from "next";
@@ -21,28 +21,28 @@ export function HeroCTA() {
   if (isSignedIn) {
     return (
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-        <Button asChild size="lg">
+        <PulseButton asChild size="lg">
           <Link href={"/dashboard" as Route}>
             Launch Dashboard <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
-        </Button>
-        <Button asChild variant="secondary" size="lg">
+        </PulseButton>
+        <PulseButton asChild variant="secondary" size="lg">
           <Link href={"/chat" as Route}>Try AI Assistant</Link>
-        </Button>
+        </PulseButton>
       </div>
     );
   }
 
   return (
     <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-      <Button asChild size="lg">
+      <PulseButton asChild size="lg">
         <Link href={"/sign-up" as Route}>
           Get Started Free <ArrowRight className="ml-2 h-4 w-4" />
         </Link>
-      </Button>
-      <Button asChild variant="secondary" size="lg">
+      </PulseButton>
+      <PulseButton asChild variant="secondary" size="lg">
         <Link href={"/sign-in" as Route}>Already have an account?</Link>
-      </Button>
+      </PulseButton>
     </div>
   );
 }
