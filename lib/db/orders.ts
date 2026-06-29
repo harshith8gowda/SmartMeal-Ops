@@ -1,39 +1,70 @@
-import { MealSource, OrderStatus, Prisma } from "@prisma/client";
+import { MealSource, OrderStatus } from "@prisma/client";
 import { getPrisma } from "./prisma";
 
-export type OrderInput = {
+export type OrderHistoryInput = {
   userId: string;
-  provider: string;
+  cartSessionId: string;
   source: MealSource;
-  status: OrderStatus;
+  title: string;
   total: number;
-  etaMinutes?: number | null;
-  externalId?: string | null;
-  payload?: Record<string, unknown>;
+  status?: OrderStatus;
+  swiggyUrl?: string;
 };
 
-export async function getOrders(userId: string, limit = 50) {
+export type Order = {
+  id: string;
+  provider: string;
+  source: MealSource;
+  status: string;
+  total: number;
+  etaMinutes: number | null;
+  createdAt: Date;
+};
+
+function mapToOrder(order: Awaited<ReturnType<typeof getOrderHistory>>[number]): Order {
+  return {
+    id: order.id,
+    provider: order.source.toLowerCase(),
+    source: order.source,
+    status: order.status,
+    total: order.total,
+    etaMinutes: null,
+    createdAt: order.createdAt
+  };
+}
+
+export async function getOrderHistory(userId: string, limit = 50) {
   const prisma = getPrisma();
-  return prisma.order.findMany({
+  return prisma.orderHistory.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
     take: limit
   });
 }
 
-export async function createOrder(input: OrderInput) {
+export async function getOrders(userId: string, limit = 50): Promise<Order[]> {
+  const history = await getOrderHistory(userId, limit);
+  return history.map(mapToOrder);
+}
+
+export async function createOrderHistory(input: OrderHistoryInput) {
   const prisma = getPrisma();
-  return prisma.order.create({
+  return prisma.orderHistory.create({
     data: {
-      ...input,
-      payload: input.payload ? (input.payload as unknown as Prisma.InputJsonValue) : undefined
+      userId: input.userId,
+      cartSessionId: input.cartSessionId,
+      source: input.source,
+      title: input.title,
+      total: input.total,
+      status: input.status ?? "PENDING",
+      swiggyUrl: input.swiggyUrl
     }
   });
 }
 
-export async function updateOrderStatus(id: string, userId: string, status: OrderStatus) {
+export async function updateOrderHistoryStatus(id: string, userId: string, status: OrderStatus) {
   const prisma = getPrisma();
-  return prisma.order.updateMany({
+  return prisma.orderHistory.updateMany({
     where: { id, userId },
     data: { status }
   });
@@ -44,7 +75,7 @@ export async function getMonthlySpend(userId: string) {
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-  const orders = await prisma.order.findMany({
+  const orders = await prisma.orderHistory.findMany({
     where: {
       userId,
       createdAt: { gte: startOfMonth },
@@ -56,11 +87,11 @@ export async function getMonthlySpend(userId: string) {
     }
   });
 
-  const total = orders.reduce((sum, o) => sum + o.total, 0);
-  const bySource = orders.reduce((acc, o) => {
+  const total = orders.reduce((sum: number, o) => sum + o.total, 0);
+  const bySource = orders.reduce((acc: Record<string, number>, o) => {
     acc[o.source] = (acc[o.source] || 0) + o.total;
     return acc;
-  }, {} as Record<string, number>);
+  }, {});
 
   return { total, bySource };
 }

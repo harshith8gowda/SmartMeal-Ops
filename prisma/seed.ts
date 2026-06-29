@@ -6,21 +6,42 @@ const prisma = new PrismaClient();
 
 async function main() {
   const user = await prisma.user.upsert({
-    where: { email: "demo@smartmealops.ai" },
+    where: { email: "demo@mealmap.ai" },
     update: {},
     create: {
       clerkId: DEMO_CLERK_ID,
       name: "Demo User",
-      email: "demo@smartmealops.ai",
+      email: "demo@mealmap.ai"
+    }
+  });
+
+  await prisma.preference.upsert({
+    where: { userId: user.id },
+    update: {},
+    create: {
+      userId: user.id,
+      diet: ["non-veg"],
+      allergies: ["Peanuts"],
+      cuisines: ["Indian", "Mediterranean"],
       householdSize: 3,
-      dietType: "non-veg",
-      dietaryGoal: DietGoal.HIGH_PROTEIN,
       monthlyBudget: 12000,
       cookingSkill: "medium",
-      cuisines: ["Indian", "Mediterranean"],
-      allergies: ["Peanuts"],
+      dietaryGoal: DietGoal.HIGH_PROTEIN
+    }
+  });
+
+  await prisma.address.upsert({
+    where: {
+      id: "addr_demo_home"
+    },
+    update: {},
+    create: {
+      userId: user.id,
+      label: "Home",
+      address: "Demo home address",
       city: "Bengaluru",
-      preferences: { energy: "medium" }
+      pincode: "560001",
+      isDefault: true
     }
   });
 
@@ -29,22 +50,20 @@ async function main() {
       { userId: user.id, item: "Eggs", qty: 6, unit: "pcs", recurring: true },
       { userId: user.id, item: "Milk", qty: 1, unit: "litre", recurring: true },
       { userId: user.id, item: "Rice", qty: 2, unit: "kg", recurring: true }
-    ]
+    ],
+    skipDuplicates: true
   });
 
-  await prisma.mealPlan.create({
+  await prisma.mealSlot.create({
     data: {
       userId: user.id,
       date: new Date(),
-      type: "Dinner",
-      title: "Chicken Rice Bowl",
-      calories: 610,
-      protein: 41,
-      cost: 320,
-      prepMinutes: 35,
+      mealType: "dinner",
       source: MealSource.COOK,
-      ingredients: ["Chicken breast", "Rice", "Curd", "Cucumber"],
-      reason: "Best protein-to-cost ratio."
+      title: "Chicken Rice Bowl",
+      description: "Best protein-to-cost ratio.",
+      cost: 320,
+      timeMinutes: 35
     }
   });
 }

@@ -1,16 +1,18 @@
 import { describe, expect, it } from "vitest";
-import { buildTonightRecommendation, decideMealAction } from "./decision-engine";
+import { buildRecommendations, buildTonightRecommendation, decideMealAction } from "./decision-engine";
+
+const baseInput = {
+  budgetLeft: 2000,
+  timeAvailableMins: 30,
+  energyLevel: "low" as const,
+  missingIngredientsCount: 2,
+  householdSize: 2,
+  perMealBudget: 500
+};
 
 describe("decideMealAction", () => {
   it("orders when energy is low and time is short", () => {
-    const result = decideMealAction({
-      budgetLeft: 2000,
-      timeAvailableMins: 30,
-      energyLevel: "low",
-      missingIngredientsCount: 2,
-      householdSize: 2,
-      perMealBudget: 500
-    });
+    const result = decideMealAction(baseInput);
     expect(result.source).toBe("ORDER");
   });
 
@@ -52,19 +54,41 @@ describe("decideMealAction", () => {
 
 describe("buildTonightRecommendation", () => {
   it("returns a recommendation with required fields", () => {
-    const recommendation = buildTonightRecommendation({
-      budgetLeft: 2000,
-      timeAvailableMins: 30,
-      energyLevel: "low",
-      missingIngredientsCount: 2,
-      householdSize: 2,
-      perMealBudget: 500
-    });
+    const recommendation = buildTonightRecommendation(baseInput);
 
     expect(recommendation.source).toBe("ORDER");
     expect(recommendation.headline).toBeTruthy();
     expect(recommendation.totalCost).toBeGreaterThan(0);
     expect(recommendation.etaMinutes).toBeGreaterThan(0);
     expect(recommendation.confirmation).toBeDefined();
+  });
+});
+
+describe("buildRecommendations", () => {
+  it("returns all three sources without network calls", async () => {
+    const result = await buildRecommendations({
+      budget: 500,
+      timeMinutes: 30,
+      mood: "lazy",
+      diet: [],
+      allergies: [],
+      pantry: []
+    });
+
+    expect(result.cook.source).toBe("cook");
+    expect(result.order.source).toBe("order");
+    expect(result.dineout.source).toBe("dineout");
+
+    expect(result.cook.title).toBeTruthy();
+    expect(result.order.title).toBeTruthy();
+    expect(result.dineout.title).toBeTruthy();
+
+    expect(result.cook.cost).toBeGreaterThan(0);
+    expect(result.order.cost).toBeGreaterThan(0);
+    expect(result.dineout.cost).toBeGreaterThan(0);
+
+    expect(result.cook.items.length).toBeGreaterThan(0);
+    expect(result.order.items.length).toBeGreaterThan(0);
+    expect(result.dineout.items.length).toBeGreaterThan(0);
   });
 });

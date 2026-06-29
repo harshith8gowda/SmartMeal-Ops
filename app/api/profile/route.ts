@@ -1,104 +1,95 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { getPrisma } from "@/lib/db/prisma";
-import { requireUserId, getCurrentUser } from "@/lib/auth/clerk";
+import { auth } from "@clerk/nextjs/server";
+import { ensureDbUser } from "@/lib/auth/clerk";
+import { getPreference, updatePreference } from "@/lib/db/preference";
+import { getAddresses } from "@/lib/db/address";
+import { updateUserProfile } from "@/lib/db/user";
+import { mapErrorToResponse } from "@/lib/errors";
 
 const ProfileSchema = z.object({
-  name: z.string().min(2),
-  householdSize: z.coerce.number().min(1).max(20),
-  dietType: z.enum(["veg", "non-veg", "eggetarian"]),
-  dietaryGoal: z.enum(["high_protein", "weight_loss", "low_carb", "balanced"]),
-  monthlyBudgetInr: z.coerce.number().min(1000),
-  cookingSkill: z.enum(["low", "medium", "high"]),
-  cuisines: z.string(),
-  allergies: z.string(),
-  city: z.string().min(2)
+  name: z.string().min(2).optional(),
+  householdSize: z.coerce.number().min(1).max(20).optional(),
+  diet: z.array(z.string()).optional(),
+  dietaryGoal: z.enum(["high_protein", "weight_loss", "low_carb", "balanced"]).optional(),
+  monthlyBudgetInr: z.coerce.number().min(100).optional(),
+  cookingSkill: z.enum(["low", "medium", "high"]).optional(),
+  cuisines: z.union([z.array(z.string()), z.string()]).optional(),
+  allergies: z.union([z.array(z.string()), z.string()]).optional()
 });
 
-const prismaToClient = (user: Awaited<ReturnType<ReturnType<typeof getPrisma>["user"]["findUnique"]>>) => {
-  if (!user) return null;
-  return {
-    id: user.id,
-    clerkId: user.clerkId,
-    name: user.name,
-    email: user.email,
-    householdSize: user.householdSize,
-    dietType: user.dietType,
-    dietaryGoal: user.dietaryGoal,
-    monthlyBudgetInr: user.monthlyBudget,
-    cookingSkill: user.cookingSkill,
-    cuisines: user.cuisines,
-    allergies: user.allergies,
-    city: user.city,
-    preferences: user.preferences
-  };
-};
+function normalizeStringList(value: string | string[] | undefined): string[] | undefined {
+  if (value === undefined) return undefined;
+  if (Array.isArray(value)) return value;
+  return value.split(",").map((s) => s.trim()).filter(Boolean);
+}
 
 export async function GET() {
   try {
-    const userId = await requireUserId();
-    const prisma = getPrisma();
-    const user = await prisma.user.findUnique({ where: { id: userId } });
-    return NextResponse.json(prismaToClient(user));
-  } catch (error) {
-    if (error instanceof Error && error.message === "Unauthorized") {
+    const { userId } = await auth();
+    if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    console.error(error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+
+    const user = await ensureDbUser(userId);
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const [preference, addresses] = await Promise.all([
+      getPreference(user.id),
+      getAddresses(user.id)
+    ]);
+
+    return NextResponse.json({
+      user: {
+        id: user.id,
+        clerkId: user.clerkId,
+        name: user.name,
+        email: user.email,
+        avatarUrl: user.avatarUrl
+      },
+      preference,
+      addresses
+    });
+  } catch (error) {
+    const { status, body } = mapErrorToResponse(error);
+    return NextResponse.json(body, { status });
   }
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const userId = await requireUserId();
-    const clerkUser = await getCurrentUser();
-    if (!clerkUser) {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const user = await ensureDbUser(userId);
+    if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body = await req.json();
     const parsed = ProfileSchema.parse(body);
 
-    const prisma = getPrisma();
-    const user = await prisma.user.upsert({
-      where: { id: userId },
-      update: {
-        name: parsed.name,
-        householdSize: parsed.householdSize,
-        dietType: parsed.dietType,
-        dietaryGoal: parsed.dietaryGoal.toUpperCase() as "HIGH_PROTEIN" | "WEIGHT_LOSS" | "LOW_CARB" | "BALANCED",
-        monthlyBudget: parsed.monthlyBudgetInr,
-        cookingSkill: parsed.cookingSkill,
-        cuisines: parsed.cuisines.split(",").map((s) => s.trim()).filter(Boolean),
-        allergies: parsed.allergies.split(",").map((s) => s.trim()).filter(Boolean),
-        city: parsed.city
-      },
-      create: {
-        id: userId,
-        clerkId: userId,
-        email: clerkUser.email,
-        name: parsed.name,
-        householdSize: parsed.householdSize,
-        dietType: parsed.dietType,
-        dietaryGoal: parsed.dietaryGoal.toUpperCase() as "HIGH_PROTEIN" | "WEIGHT_LOSS" | "LOW_CARB" | "BALANCED",
-        monthlyBudget: parsed.monthlyBudgetInr,
-        cookingSkill: parsed.cookingSkill,
-        cuisines: parsed.cuisines.split(",").map((s) => s.trim()).filter(Boolean),
-        allergies: parsed.allergies.split(",").map((s) => s.trim()).filter(Boolean),
-        city: parsed.city
-      }
-    });
+    if (parsed.name) {
+      await updateUserProfile(user.id, { name: parsed.name });
+    }
 
-    return NextResponse.json({ ok: true, user: prismaToClient(user) });
+    const preferenceUpdate: Parameters<typeof updatePreference>[1] = {};
+    if (parsed.householdSize !== undefined) preferenceUpdate.householdSize = parsed.householdSize;
+    if (parsed.diet !== undefined) preferenceUpdate.diet = parsed.diet;
+    if (parsed.dietaryGoal !== undefined) preferenceUpdate.dietaryGoal = parsed.dietaryGoal.toUpperCase() as "HIGH_PROTEIN" | "WEIGHT_LOSS" | "LOW_CARB" | "BALANCED";
+    if (parsed.monthlyBudgetInr !== undefined) preferenceUpdate.monthlyBudget = parsed.monthlyBudgetInr;
+    if (parsed.cookingSkill !== undefined) preferenceUpdate.cookingSkill = parsed.cookingSkill;
+    if (parsed.cuisines !== undefined) preferenceUpdate.cuisines = normalizeStringList(parsed.cuisines);
+    if (parsed.allergies !== undefined) preferenceUpdate.allergies = normalizeStringList(parsed.allergies);
+
+    const preference = await updatePreference(user.id, preferenceUpdate);
+    return NextResponse.json({ ok: true, preference });
   } catch (error) {
-    if (error instanceof Error && error.message === "Unauthorized") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-    if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: "Invalid input", details: error.flatten() }, { status: 400 });
-    }
-    console.error(error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    const { status, body } = mapErrorToResponse(error);
+    return NextResponse.json(body, { status });
   }
 }

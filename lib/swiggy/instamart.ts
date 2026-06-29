@@ -1,9 +1,10 @@
 import { callSwiggyTool, hasSwiggyMcpSession } from "./mcp-client";
-import { CartResponse, SwiggyItem } from "./types";
+import { SwiggyItem } from "./types";
 
 export interface GroceryCartItem {
-  spinId: string;
-  quantity: number;
+  name: string;
+  quantity?: string;
+  price?: number;
 }
 
 export async function searchGroceries(query: string, addressId: string, token?: string): Promise<SwiggyItem[]> {
@@ -26,80 +27,21 @@ export async function searchGroceries(query: string, addressId: string, token?: 
   return result.data?.products ?? [];
 }
 
-export async function createGroceryCart(
-  itemIds: string[],
-  selectedAddressId = "addr_demo_home",
-  token?: string
-): Promise<CartResponse> {
+export async function createGroceryCart(items: GroceryCartItem[], token?: string): Promise<unknown> {
   if (!hasSwiggyMcpSession(token)) {
     return {
       cartId: `grocery_${Date.now()}`,
-      items: itemIds.map((id, i) => ({ id, name: `Grocery ${i + 1}`, price: 90 + i * 40 })),
-      total: itemIds.length * 160,
-      fees: 29,
-      eta: 18,
-      provider: "instamart",
-      requiresConfirmation: true
+      items: items.map((item, i) => ({ id: `g${i + 1}`, name: item.name, price: item.price ?? 90 + i * 40 })),
+      total: items.reduce((sum, item) => sum + (item.price ?? 120), 0),
+      provider: "instamart"
     };
   }
 
-  const result = await callSwiggyTool("instamart", "update_cart", {
-    selectedAddressId,
-    items: itemIds.map((spinId) => ({ spinId, quantity: 1 }))
-  }, token);
+  const result = await callSwiggyTool("instamart", "update_cart", { items }, token);
 
   if (!result.success) {
     throw new Error(result.error?.message ?? "Swiggy Instamart update_cart failed");
   }
 
-  const cart = await getGroceryCart(token);
-  return { ...cart, raw: result.data };
-}
-
-export async function getGroceryCart(token?: string): Promise<CartResponse> {
-  if (!hasSwiggyMcpSession(token)) {
-    return {
-      cartId: "grocery_demo_cart",
-      items: [{ id: "g1", name: "Eggs, paneer, tomatoes", price: 375 }],
-      total: 375,
-      fees: 29,
-      eta: 18,
-      provider: "instamart",
-      requiresConfirmation: true
-    };
-  }
-
-  const result = await callSwiggyTool<Record<string, unknown>>("instamart", "get_cart", {}, token);
-
-  if (!result.success) {
-    throw new Error(result.error?.message ?? "Swiggy Instamart get_cart failed");
-  }
-
-  return {
-    cartId: "grocery_live_cart",
-    items: [],
-    total: 0,
-    fees: 0,
-    eta: 0,
-    provider: "instamart",
-    requiresConfirmation: true,
-    raw: result.data
-  };
-}
-
-export async function checkoutGroceries(addressId: string, paymentMethod?: string, token?: string) {
-  if (!hasSwiggyMcpSession(token)) {
-    return { orderId: `order_im_${Date.now()}`, status: "CONFIRMED", trackingUrl: "/dashboard?tab=orders" };
-  }
-
-  const result = await callSwiggyTool("instamart", "checkout", {
-    addressId,
-    ...(paymentMethod ? { paymentMethod } : {})
-  }, token);
-
-  if (!result.success) {
-    throw new Error(result.error?.message ?? "Swiggy Instamart checkout failed");
-  }
-
-  return result.data ?? { status: "CONFIRMED", message: result.message };
+  return result.data ?? result;
 }
