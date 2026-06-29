@@ -46,12 +46,30 @@ export default {
         warning: {
           DEFAULT: "hsl(var(--warning))",
           foreground: "hsl(var(--warning-foreground))"
+        },
+        dineout: {
+          DEFAULT: "hsl(var(--dineout))",
+          foreground: "hsl(var(--dineout-foreground))"
         }
       },
       borderRadius: {
         xl: "1rem",
         "2xl": "1.25rem",
         "3xl": "1.5rem"
+      },
+      rotate: {
+        "y-12": "12deg",
+        "y-180": "180deg"
+      },
+      transformStyle: {
+        "3d": "preserve-3d"
+      },
+      perspective: {
+        "1000": "1000px",
+        "1500": "1500px"
+      },
+      backfaceVisibility: {
+        hidden: "hidden"
       },
       keyframes: {
         "gradient-x": {
@@ -65,16 +83,22 @@ export default {
         "shimmer": {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" }
+        },
+        "float-3d": {
+          "0%, 100%": { transform: "translateY(0) rotateX(0deg) rotateY(0deg)" },
+          "50%": { transform: "translateY(-12px) rotateX(2deg) rotateY(4deg)" }
         }
       },
       animation: {
         "gradient-x": "gradient-x 15s ease infinite",
         "float": "float 6s ease-in-out infinite",
-        "shimmer": "shimmer 2s linear infinite"
+        "shimmer": "shimmer 2s linear infinite",
+        "float-3d": "float-3d 6s ease-in-out infinite"
       },
       transitionTimingFunction: {
         "ease-out-strong": "cubic-bezier(0.23, 1, 0.32, 1)",
-        "ease-in-out-strong": "cubic-bezier(0.77, 0, 0.175, 1)"
+        "ease-in-out-strong": "cubic-bezier(0.77, 0, 0.175, 1)",
+        "out-expo": "cubic-bezier(0.16, 1, 0.3, 1)"
       }
     }
   },
