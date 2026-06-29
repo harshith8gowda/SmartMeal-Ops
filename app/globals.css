@@ -151,6 +151,9 @@
   .r3f-fallback { display: block !important; }
 }
 
+[data-reduced-motion="true"] .r3f-canvas { display: none !important; }
+[data-reduced-motion="true"] .r3f-fallback { display: block !important; }
+
 .r3f-canvas { position: absolute; inset: 0; z-index: 0; }
 .r3f-fallback { display: none; }
 .r3f-canvas canvas {
