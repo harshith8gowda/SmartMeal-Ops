@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { X, ChefHat, ShoppingBag, UtensilsCrossed, Loader2 } from "lucide-react";
@@ -32,6 +33,7 @@ export function SlotSheet({
   const [cost, setCost] = useState(slot.cost || 0);
   const [timeMinutes, setTimeMinutes] = useState(slot.timeMinutes || 30);
   const [loading, setLoading] = useState(false);
+  const reducedMotion = useReducedMotion();
 
   async function handleSave() {
     setLoading(true);
@@ -56,7 +58,12 @@ export function SlotSheet({
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-black/70 p-0 backdrop-blur-sm">
-      <div className="premium-card h-full w-full max-w-md overflow-y-auto p-6">
+      <motion.div
+        className="premium-card h-full w-full max-w-md overflow-y-auto p-6"
+        initial={reducedMotion ? false : { x: 40, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
+      >
         <div className="mb-6 flex items-center justify-between">
           <div>
             <p className="text-xs font-semibold uppercase text-muted-foreground">{slot.mealType}</p>
@@ -135,7 +142,7 @@ export function SlotSheet({
             Save slot
           </Button>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

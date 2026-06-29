@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { useMotionPreference } from "@/lib/hooks/use-reduced-motion";
 import { IndianRupee, Clock, Sparkles } from "lucide-react";
 
 export type InputValues = {
@@ -14,6 +16,8 @@ export function InputBar({ onChange }: { onChange: (values: InputValues) => void
   const [budget, setBudget] = useState(500);
   const [time, setTime] = useState(30);
   const [mood, setMood] = useState("hungry");
+  const [focused, setFocused] = useState(false);
+  const { reduceMotion } = useMotionPreference();
 
   const moods = ["hungry", "lazy", "healthy", "social", "budget"];
   const times = [
@@ -24,7 +28,21 @@ export function InputBar({ onChange }: { onChange: (values: InputValues) => void
   ];
 
   return (
-    <div className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-sm">
+    <motion.div
+      className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-sm"
+      onFocus={() => setFocused(true)}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+          setFocused(false);
+        }
+      }}
+      animate={
+        focused
+          ? { boxShadow: "0 0 0 2px hsl(var(--primary)/0.5)" }
+          : { boxShadow: "0 0 0 0px transparent" }
+      }
+      transition={reduceMotion ? { duration: 0 } : { duration: 0.2 }}
+    >
       <div className="flex flex-wrap items-center gap-5">
         <div className="flex items-center gap-3">
           <IndianRupee className="h-4 w-4 text-primary" />
@@ -80,6 +98,6 @@ export function InputBar({ onChange }: { onChange: (values: InputValues) => void
           Find options
         </Button>
       </div>
-    </div>
+    </motion.div>
   );
 }

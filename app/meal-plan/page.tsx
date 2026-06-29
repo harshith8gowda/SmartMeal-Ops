@@ -7,6 +7,7 @@ import { SlotSheet, type SlotFormData } from "@/components/meal-plan/slot-sheet"
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Loader2, Sparkles, Trash2, ExternalLink } from "lucide-react";
+import { ScrollReveal } from "@/components/landing/scroll-reveal";
 
 export default function MealPlanPage() {
   const [slots, setSlots] = useState<MealSlot[]>([]);
@@ -113,15 +114,17 @@ export default function MealPlanPage() {
       <AppNav />
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:py-8">
         <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="flex items-center gap-2 text-sm font-medium uppercase text-primary">
-              <Sparkles className="h-4 w-4" /> Weekly plan
-            </p>
-            <h1 className="mt-1 text-3xl font-semibold tracking-tight md:text-4xl">Meal planner</h1>
-            <p className="mt-2 text-muted-foreground">
-              Plan 7 days of breakfast, lunch, and dinner. Tap any slot to choose cook, order, or dineout.
-            </p>
-          </div>
+          <ScrollReveal>
+            <div>
+              <p className="flex items-center gap-2 text-sm font-medium uppercase text-primary">
+                <Sparkles className="h-4 w-4" /> Weekly plan
+              </p>
+              <h1 className="mt-1 text-3xl font-semibold tracking-tight md:text-4xl">Meal planner</h1>
+              <p className="mt-2 text-muted-foreground">
+                Plan 7 days of breakfast, lunch, and dinner. Tap any slot to choose cook, order, or dineout.
+              </p>
+            </div>
+          </ScrollReveal>
           <div className="flex flex-wrap gap-2">
             <Button variant="secondary" onClick={handleAiPlan} disabled={aiPlanning} className="gap-2">
               {aiPlanning && <Loader2 className="h-4 w-4 animate-spin" />}

@@ -5,9 +5,9 @@ import { AppNav } from "@/components/layout/nav";
 import { InputBar, type InputValues } from "@/components/dashboard/input-bar";
 import { ComparisonCard, type ComparisonRecommendation } from "@/components/dashboard/comparison-card";
 import { CartSummary } from "@/components/dashboard/cart-summary";
+import { DashboardHero3D } from "@/components/dashboard/hero-3d";
 import { ScrollReveal } from "@/components/landing/scroll-reveal";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Sparkles } from "lucide-react";
 
 type Recommendations = {
   cook: ComparisonRecommendation;
@@ -42,17 +42,7 @@ export default function DashboardPage() {
     <>
       <AppNav />
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:py-8">
-        <ScrollReveal>
-          <div className="mb-8">
-            <p className="flex items-center gap-2 text-sm font-medium uppercase text-primary">
-              <Sparkles className="h-4 w-4" /> MealMap
-            </p>
-            <h1 className="mt-1 text-3xl font-semibold tracking-tight md:text-4xl">Tonight&apos;s options</h1>
-            <p className="mt-2 max-w-xl text-muted-foreground">
-              Compare cooking, ordering, and dining out side by side. Pick one and we&apos;ll build the cart in Swiggy.
-            </p>
-          </div>
-        </ScrollReveal>
+        <DashboardHero3D />
 
         <ScrollReveal delay={0.1}>
           <div className="mb-8">
