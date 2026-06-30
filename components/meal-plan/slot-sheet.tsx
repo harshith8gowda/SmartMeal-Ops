@@ -57,9 +57,9 @@ export function SlotSheet({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end bg-black/70 p-0 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex justify-end bg-black/40 p-0 backdrop-blur-sm">
       <motion.div
-        className="premium-card h-full w-full max-w-md overflow-y-auto p-6"
+        className="h-full w-full max-w-md overflow-y-auto border-l border-border bg-flour p-6 text-foreground"
         initial={reducedMotion ? false : { x: 40, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
@@ -79,15 +79,17 @@ export function SlotSheet({
         <div className="mb-6 grid grid-cols-3 gap-2">
           {sourceOptions.map((option) => {
             const Icon = option.icon;
+            const isActive = source === option.value;
             return (
               <button
                 key={option.value}
                 onClick={() => setSource(option.value)}
                 className={`flex flex-col items-center gap-2 rounded-xl border p-3 transition-colors ${
-                  source === option.value
-                    ? "border-primary bg-primary/10 text-primary"
-                    : "border-white/10 bg-white/[0.04] text-muted-foreground hover:bg-white/[0.07]"
+                  isActive
+                    ? "border-primary bg-primary-light text-primary"
+                    : "border-border bg-porcelain/50 text-muted-foreground hover:bg-porcelain"
                 }`}
+                aria-pressed={isActive}
               >
                 <Icon className="h-5 w-5" />
                 <span className="text-xs font-medium">{option.label}</span>

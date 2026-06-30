@@ -1,7 +1,6 @@
 "use client";
 
 import { ChefHat, ShoppingBag, UtensilsCrossed } from "lucide-react";
-import { TiltCard } from "@/components/3d/tilt-card";
 
 export type MealSlot = {
   id: string;
@@ -14,9 +13,9 @@ export type MealSlot = {
 };
 
 const sourceConfig = {
-  cook: { icon: ChefHat, color: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20" },
-  order: { icon: ShoppingBag, color: "text-primary", bg: "bg-primary/10", border: "border-primary/20" },
-  dineout: { icon: UtensilsCrossed, color: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20" }
+  cook: { icon: ChefHat, color: "text-cook", bg: "bg-cook-light", border: "border-cook/20" },
+  order: { icon: ShoppingBag, color: "text-order", bg: "bg-order-light", border: "border-order/20" },
+  dineout: { icon: UtensilsCrossed, color: "text-dineout", bg: "bg-dineout-light", border: "border-dineout/20" }
 };
 
 export function WeekGrid({
@@ -41,59 +40,60 @@ export function WeekGrid({
   };
 
   return (
-    <div className="grid gap-4 md:grid-cols-7">
+    <div className="grid gap-3 sm:gap-4 md:grid-cols-7">
       {days.map((day) => (
-        <TiltCard key={day.toISOString()} scale={1.01}>
-          <div className="h-full space-y-3">
-            <div className="text-center">
-              <p className="text-xs font-semibold uppercase text-muted-foreground">
-                {day.toLocaleDateString("en-IN", { weekday: "short" })}
-              </p>
-              <p className="text-lg font-semibold">{day.getDate()}</p>
-            </div>
-            {mealTypes.map((mealType) => {
-              const slot = getSlot(day, mealType);
-              const config = slot?.source ? sourceConfig[slot.source] : null;
-              const Icon = config?.icon;
-              return (
-                <button
-                  key={mealType}
-                  onClick={() =>
-                    onSlotClick(
-                      slot || {
-                        id: "",
-                        date: day.toISOString(),
-                        mealType,
-                        source: null,
-                        title: "",
-                        cost: 0,
-                        timeMinutes: 0
-                      }
-                    )
-                  }
-                  className={`w-full rounded-xl border p-3 text-left transition-colors ${
-                    config
-                      ? `${config.bg} ${config.border}`
-                      : "border-white/10 bg-white/[0.04] hover:bg-white/[0.07]"
-                  }`}
-                >
-                  <p className="text-[10px] font-semibold uppercase text-muted-foreground">{mealType}</p>
-                  {slot ? (
-                    <div className="mt-1">
-                      <div className={`flex items-center gap-1.5 ${config?.color}`}>
-                        {Icon && <Icon className="h-3.5 w-3.5" />}
-                        <span className="text-xs font-medium capitalize">{slot.source}</span>
-                      </div>
-                      <p className="mt-1 line-clamp-2 text-sm font-medium">{slot.title}</p>
-                    </div>
-                  ) : (
-                    <p className="mt-1 text-sm text-muted-foreground">+ Add</p>
-                  )}
-                </button>
-              );
-            })}
+        <div
+          key={day.toISOString()}
+          className="h-full space-y-3 rounded-2xl border border-border bg-flour p-3 shadow-sm sm:p-4"
+        >
+          <div className="text-center">
+            <p className="text-xs font-semibold uppercase text-muted-foreground">
+              {day.toLocaleDateString("en-IN", { weekday: "short" })}
+            </p>
+            <p className="text-lg font-semibold text-foreground">{day.getDate()}</p>
           </div>
-        </TiltCard>
+          {mealTypes.map((mealType) => {
+            const slot = getSlot(day, mealType);
+            const config = slot?.source ? sourceConfig[slot.source] : null;
+            const Icon = config?.icon;
+            return (
+              <button
+                key={mealType}
+                onClick={() =>
+                  onSlotClick(
+                    slot || {
+                      id: "",
+                      date: day.toISOString(),
+                      mealType,
+                      source: null,
+                      title: "",
+                      cost: 0,
+                      timeMinutes: 0
+                    }
+                  )
+                }
+                className={`w-full rounded-xl border p-3 text-left transition-colors ${
+                  config
+                    ? `${config.bg} ${config.border}`
+                    : "border-border bg-porcelain/50 hover:bg-porcelain"
+                }`}
+              >
+                <p className="text-[10px] font-semibold uppercase text-muted-foreground">{mealType}</p>
+                {slot ? (
+                  <div className="mt-1">
+                    <div className={`flex items-center gap-1.5 ${config?.color}`}>
+                      {Icon && <Icon className="h-3.5 w-3.5" />}
+                      <span className="text-xs font-medium capitalize">{slot.source}</span>
+                    </div>
+                    <p className="mt-1 line-clamp-2 text-sm font-medium text-foreground">{slot.title}</p>
+                  </div>
+                ) : (
+                  <p className="mt-1 text-sm text-muted-foreground">+ Add</p>
+                )}
+              </button>
+            );
+          })}
+        </div>
       ))}
     </div>
   );
