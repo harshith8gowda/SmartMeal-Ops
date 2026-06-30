@@ -94,6 +94,8 @@
   --duration-slow: 350ms;
 
   /* Semantic: Color */
+  --color-accent: var(--color-order);
+  --color-accent-foreground: var(--color-charcoal);
   --color-background: var(--color-rice-paper);
   --color-foreground: var(--color-charcoal);
   --color-primary: var(--color-tamarind-500);

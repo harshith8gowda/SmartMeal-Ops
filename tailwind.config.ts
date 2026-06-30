@@ -46,6 +46,10 @@ export default {
       error: "var(--color-error)",
       info: "var(--color-info)",
       // Keep old aliases only during transition if needed; remove before final build.
+      accent: {
+        DEFAULT: "var(--color-accent)",
+        foreground: "var(--color-accent-foreground)",
+      },
       card: "var(--color-secondary)",
       "card-foreground": "var(--color-secondary-foreground)",
       ring: "var(--color-ring)",

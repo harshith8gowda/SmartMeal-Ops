@@ -11,3 +11,4 @@ dev-server*.log
 .playwright-mcp
 
 .vercel
+.gstack/
