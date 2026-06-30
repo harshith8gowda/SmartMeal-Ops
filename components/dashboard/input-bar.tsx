@@ -6,16 +6,29 @@ import { Button } from "@/components/ui/button";
 import { useMotionPreference } from "@/lib/hooks/use-reduced-motion";
 import { IndianRupee, Clock, Sparkles } from "lucide-react";
 
+type Preference = {
+  monthlyBudget: number;
+  dietaryGoal: string;
+};
+
 export type InputValues = {
   budget: number;
   timeMinutes: number;
   mood: string;
 };
 
-export function InputBar({ onChange }: { onChange: (values: InputValues) => void }) {
-  const [budget, setBudget] = useState(500);
+function getDefaultMood(dietaryGoal?: string | null): string {
+  const goal = dietaryGoal?.toUpperCase();
+  if (goal === "HIGH_PROTEIN" || goal === "WEIGHT_LOSS" || goal === "LOW_CARB") {
+    return "healthy";
+  }
+  return "hungry";
+}
+
+export function InputBar({ onChange, preference }: { onChange: (values: InputValues) => void; preference?: Preference | null }) {
+  const [budget, setBudget] = useState(preference?.monthlyBudget || 500);
   const [time, setTime] = useState(30);
-  const [mood, setMood] = useState("hungry");
+  const [mood, setMood] = useState(getDefaultMood(preference?.dietaryGoal));
   const [focused, setFocused] = useState(false);
   const { reduceMotion } = useMotionPreference();
 

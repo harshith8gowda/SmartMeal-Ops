@@ -15,8 +15,9 @@ export type Preference = {
   allergies: string[];
   cuisines: string[];
   householdSize: number;
-  defaultBudget: number;
-  cookSkill: string;
+  monthlyBudget: number;
+  cookingSkill: string;
+  dietaryGoal: string;
 };
 
 const preferenceSchema = z.object({
@@ -24,11 +25,25 @@ const preferenceSchema = z.object({
   allergies: z.string(),
   cuisines: z.string(),
   householdSize: z.coerce.number().min(1),
-  defaultBudget: z.coerce.number().min(100),
-  cookSkill: z.enum(["beginner", "medium", "expert"])
+  monthlyBudgetInr: z.coerce.number().min(100),
+  cookingSkill: z.enum(["low", "medium", "high"]),
+  dietaryGoal: z.enum(["high_protein", "weight_loss", "low_carb", "balanced"])
 });
 
 type PreferenceFormData = z.infer<typeof preferenceSchema>;
+
+const COOKING_SKILL_OPTIONS = [
+  { value: "low", label: "Beginner" },
+  { value: "medium", label: "Medium" },
+  { value: "high", label: "Expert" }
+];
+
+const DIETARY_GOAL_OPTIONS = [
+  { value: "balanced", label: "Balanced" },
+  { value: "high_protein", label: "High protein" },
+  { value: "weight_loss", label: "Weight loss" },
+  { value: "low_carb", label: "Low carb" }
+];
 
 export function PreferenceForm({ preference }: { preference?: Preference }) {
   const [loading, setLoading] = useState(false);
@@ -39,8 +54,9 @@ export function PreferenceForm({ preference }: { preference?: Preference }) {
       allergies: preference?.allergies.join(", ") || "",
       cuisines: preference?.cuisines.join(", ") || "",
       householdSize: preference?.householdSize || 2,
-      defaultBudget: preference?.defaultBudget || 500,
-      cookSkill: (preference?.cookSkill as PreferenceFormData["cookSkill"]) || "medium"
+      monthlyBudgetInr: preference?.monthlyBudget || 500,
+      cookingSkill: (preference?.cookingSkill as PreferenceFormData["cookingSkill"]) || "medium",
+      dietaryGoal: (preference?.dietaryGoal?.toLowerCase() as PreferenceFormData["dietaryGoal"]) || "balanced"
     }
   });
 
@@ -48,15 +64,16 @@ export function PreferenceForm({ preference }: { preference?: Preference }) {
     setLoading(true);
     try {
       const res = await fetch("/api/profile", {
-        method: "PUT",
+        method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           diet: data.diet.split(",").map((s) => s.trim()).filter(Boolean),
           allergies: data.allergies.split(",").map((s) => s.trim()).filter(Boolean),
           cuisines: data.cuisines.split(",").map((s) => s.trim()).filter(Boolean),
           householdSize: data.householdSize,
-          defaultBudget: data.defaultBudget,
-          cookSkill: data.cookSkill
+          monthlyBudgetInr: data.monthlyBudgetInr,
+          cookingSkill: data.cookingSkill,
+          dietaryGoal: data.dietaryGoal
         })
       });
       if (!res.ok) throw new Error("Failed to update preferences");
@@ -95,19 +112,30 @@ export function PreferenceForm({ preference }: { preference?: Preference }) {
           </div>
           <div>
             <label className="text-sm text-muted-foreground">Default budget (₹)</label>
-            <Input type="number" {...register("defaultBudget")} />
+            <Input type="number" {...register("monthlyBudgetInr")} />
           </div>
           <div>
             <label className="text-sm text-muted-foreground">Cook skill</label>
             <select
-              {...register("cookSkill")}
+              {...register("cookingSkill")}
               className="w-full rounded-xl border border-border bg-secondary px-3 py-2 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring"
             >
-              <option value="beginner">Beginner</option>
-              <option value="medium">Medium</option>
-              <option value="expert">Expert</option>
+              {COOKING_SKILL_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
             </select>
           </div>
+        </div>
+        <div>
+          <label className="text-sm text-muted-foreground">Dietary goal</label>
+          <select
+            {...register("dietaryGoal")}
+            className="w-full rounded-xl border border-border bg-secondary px-3 py-2 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring"
+          >
+            {DIETARY_GOAL_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>{option.label}</option>
+            ))}
+          </select>
         </div>
         <Button type="submit" disabled={loading} className="gap-2 sm:w-fit">
           {loading && <Loader2 className="h-4 w-4 animate-spin" />}

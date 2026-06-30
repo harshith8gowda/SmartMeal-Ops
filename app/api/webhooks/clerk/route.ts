@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
   const body = JSON.stringify(payload);
 
   const wh = new Webhook(env.CLERK_WEBHOOK_SECRET);
-  let evt: { type: string; data: { id: string; email_addresses: { email_address: string }[]; first_name: string | null; last_name: string | null } };
+  let evt: { type: string; data: { id: string; email_addresses: { email_address: string }[]; first_name: string | null; last_name: string | null; image_url?: string | null } };
 
   try {
     evt = wh.verify(body, {
@@ -32,19 +32,21 @@ export async function POST(req: NextRequest) {
 
   const eventType = evt.type;
   if (eventType === "user.created" || eventType === "user.updated") {
-    const { id, email_addresses, first_name, last_name } = evt.data;
+    const { id, email_addresses, first_name, last_name, image_url } = evt.data;
     const email = email_addresses[0]?.email_address ?? "";
     const name = [first_name, last_name].filter(Boolean).join(" ").trim() || null;
+    const avatarUrl = image_url ?? null;
 
     const prisma = getPrisma();
     await prisma.user.upsert({
       where: { id },
-      update: { email, name },
+      update: { email, name, avatarUrl },
       create: {
         id,
         clerkId: id,
         email,
-        name
+        name,
+        avatarUrl
       }
     });
   }

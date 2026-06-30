@@ -29,15 +29,17 @@ export async function ensureDbUser(userId: string) {
 
   const email = clerkUser.emailAddresses[0]?.emailAddress ?? "";
   const name = [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(" ").trim() || null;
+  const avatarUrl = clerkUser.imageUrl ?? null;
 
   return prisma.user.upsert({
     where: { id: userId },
-    update: { email, name },
+    update: { email, name, avatarUrl },
     create: {
       id: userId,
       clerkId: userId,
       email,
-      name
+      name,
+      avatarUrl
     }
   });
 }

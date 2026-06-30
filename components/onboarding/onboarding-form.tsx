@@ -17,9 +17,10 @@ import { Loader2, Save } from "lucide-react";
 const schema = z.object({
   name: z.string().min(2),
   householdSize: z.coerce.number().min(1),
-  defaultBudget: z.coerce.number().min(100),
-  cookSkill: z.enum(["beginner", "medium", "expert"]),
+  monthlyBudgetInr: z.coerce.number().min(100),
+  cookingSkill: z.enum(["low", "medium", "high"]),
   diet: z.string(),
+  dietaryGoal: z.enum(["high_protein", "weight_loss", "low_carb", "balanced"]),
   allergies: z.string(),
   cuisines: z.string(),
   addressLabel: z.string().min(1),
@@ -30,6 +31,19 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>;
 
+const COOKING_SKILL_OPTIONS = [
+  { value: "low", label: "Beginner" },
+  { value: "medium", label: "Medium" },
+  { value: "high", label: "Expert" }
+];
+
+const DIETARY_GOAL_OPTIONS = [
+  { value: "balanced", label: "Balanced" },
+  { value: "high_protein", label: "High protein" },
+  { value: "weight_loss", label: "Weight loss" },
+  { value: "low_carb", label: "Low carb" }
+];
+
 export function OnboardingForm() {
   const router = useRouter();
   const { user, isLoaded } = useUser();
@@ -38,9 +52,10 @@ export function OnboardingForm() {
     defaultValues: {
       name: "",
       householdSize: 2,
-      defaultBudget: 500,
-      cookSkill: "medium",
+      monthlyBudgetInr: 500,
+      cookingSkill: "medium",
       diet: "veg",
+      dietaryGoal: "balanced",
       cuisines: "",
       allergies: "",
       addressLabel: "Home",
@@ -58,10 +73,27 @@ export function OnboardingForm() {
   }
 
   const submit = async (values: FormValues) => {
+    const payload = {
+      name: values.name,
+      householdSize: values.householdSize,
+      monthlyBudgetInr: values.monthlyBudgetInr,
+      cookingSkill: values.cookingSkill,
+      diet: [values.diet],
+      dietaryGoal: values.dietaryGoal,
+      cuisines: values.cuisines,
+      allergies: values.allergies,
+      address: {
+        label: values.addressLabel,
+        address: values.address,
+        city: values.city,
+        pincode: values.pincode
+      }
+    };
+
     const res = await fetch("/api/onboarding", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify(values)
+      body: JSON.stringify(payload)
     });
     if (!res.ok) return toast.error("Could not save profile");
     toast.success("Profile saved. Welcome to MealMap.");
@@ -90,17 +122,17 @@ export function OnboardingForm() {
             </div>
             <div className="space-y-1.5">
               <label className="text-xs font-medium text-muted-foreground">Default budget (₹)</label>
-              <Input type="number" placeholder="500" {...register("defaultBudget")} />
+              <Input type="number" placeholder="500" {...register("monthlyBudgetInr")} />
             </div>
             <div className="space-y-1.5">
               <label className="text-xs font-medium text-muted-foreground">Cook skill</label>
               <select
-                {...register("cookSkill")}
+                {...register("cookingSkill")}
                 className="w-full rounded-xl border border-border bg-porcelain px-3 py-2 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring"
               >
-                <option value="beginner">Beginner</option>
-                <option value="medium">Medium</option>
-                <option value="expert">Expert</option>
+                {COOKING_SKILL_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
               </select>
             </div>
           </div>
@@ -112,6 +144,18 @@ export function OnboardingForm() {
               </ChoiceButton>
             ))}
           </FieldGroup>
+
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-muted-foreground">Dietary goal</label>
+            <select
+              {...register("dietaryGoal")}
+              className="w-full rounded-xl border border-border bg-porcelain px-3 py-2 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring"
+            >
+              {DIETARY_GOAL_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
+            </select>
+          </div>
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-1.5">
