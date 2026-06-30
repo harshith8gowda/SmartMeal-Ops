@@ -14,8 +14,14 @@ const serverEnvSchema = z.object({
   SWIGGY_MCP_CLIENT_ID: z.string().optional(),
   SWIGGY_MCP_REDIRECT_URI: z.string().url().default("https://smart-meal-ops.vercel.app/api/swiggy/callback"),
   SWIGGY_MCP_SCOPES: z.string().default("mcp:tools"),
-  UPSTASH_REDIS_REST_URL: z.string().url().optional(),
-  UPSTASH_REDIS_REST_TOKEN: z.string().optional()
+  UPSTASH_REDIS_REST_URL: z.preprocess(
+    (v) => (v === "" ? undefined : v),
+    z.string().url().optional()
+  ),
+  UPSTASH_REDIS_REST_TOKEN: z.preprocess(
+    (v) => (v === "" ? undefined : v),
+    z.string().optional()
+  )
 });
 
 const clientEnvSchema = z.object({
