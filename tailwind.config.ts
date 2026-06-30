@@ -14,6 +14,7 @@ export default {
     colors: {
       background: "var(--color-background)",
       foreground: "var(--color-foreground)",
+      flour: "var(--color-flour)",
       primary: {
         DEFAULT: "var(--color-primary)",
         hover: "var(--color-primary-hover)",
