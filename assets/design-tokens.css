@@ -1,0 +1,173 @@
+/**
+ * MealMap Design Tokens v2.0
+ * Generated from assets/design-tokens.json
+ * Brand: docs/brand-guidelines.md
+ */
+
+:root {
+  /* Primitive: Tamarind */
+  --color-tamarind-50: #FFCCBC;
+  --color-tamarind-100: #FFAB91;
+  --color-tamarind-400: #FF7043;
+  --color-tamarind-500: #D84315;
+  --color-tamarind-600: #BF360C;
+  --color-tamarind-700: #A12E0A;
+
+  /* Primitive: Basil */
+  --color-basil-50: #E8F5E9;
+  --color-basil-100: #C8E6C9;
+  --color-basil-400: #4CAF50;
+  --color-basil-500: #2E7D32;
+  --color-basil-600: #1B5E20;
+
+  /* Primitive: Saffron */
+  --color-saffron-50: #FFF8E1;
+  --color-saffron-100: #FFECB3;
+  --color-saffron-400: #FFCA28;
+  --color-saffron-500: #F9A825;
+  --color-saffron-600: #F57F17;
+
+  /* Primitive: Eggplant */
+  --color-eggplant-50: #F3E5F5;
+  --color-eggplant-100: #E1BEE7;
+  --color-eggplant-400: #AB47BC;
+  --color-eggplant-500: #6A1B9A;
+  --color-eggplant-600: #4A148C;
+
+  /* Primitive: Neutral */
+  --color-rice-paper: #FAF9F6;
+  --color-flour: #FFFFFF;
+  --color-porcelain: #F5F5F4;
+  --color-linen: #E7E5E4;
+  --color-stone: #78716C;
+  --color-pepper: #44403C;
+  --color-charcoal: #1C1917;
+
+  /* Primitive: Semantic state */
+  --color-success: #2E7D32;
+  --color-warning: #F9A825;
+  --color-error: #C62828;
+  --color-info: #455A64;
+
+  /* Spacing */
+  --spacing-0: 0;
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-5: 1.5rem;
+  --spacing-6: 2rem;
+  --spacing-7: 3rem;
+  --spacing-8: 4rem;
+  --spacing-9: 6rem;
+
+  /* Font size */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.75rem;
+  --font-size-4xl: 2.5rem;
+  --font-size-5xl: 3.5rem;
+  --font-size-6xl: 4.5rem;
+
+  /* Radius */
+  --radius-none: 0;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-full: 9999px;
+
+  /* Shadow */
+  --shadow-none: none;
+  --shadow-sm: 0 1px 2px 0 rgb(28 25 23 / 0.04);
+  --shadow-md: 0 4px 12px -2px rgb(28 25 23 / 0.06);
+  --shadow-lg: 0 8px 24px -4px rgb(28 25 23 / 0.08);
+  --shadow-xl: 0 16px 40px -8px rgb(28 25 23 / 0.10);
+
+  /* Duration */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 350ms;
+
+  /* Semantic: Color */
+  --color-background: var(--color-rice-paper);
+  --color-foreground: var(--color-charcoal);
+  --color-primary: var(--color-tamarind-500);
+  --color-primary-hover: var(--color-tamarind-600);
+  --color-primary-light: var(--color-tamarind-50);
+  --color-primary-foreground: var(--color-flour);
+  --color-secondary: var(--color-porcelain);
+  --color-secondary-foreground: var(--color-charcoal);
+  --color-muted: var(--color-porcelain);
+  --color-muted-foreground: var(--color-stone);
+  --color-border: var(--color-linen);
+  --color-ring: var(--color-tamarind-400);
+  --color-cook: var(--color-basil-500);
+  --color-cook-light: var(--color-basil-50);
+  --color-order: var(--color-saffron-500);
+  --color-order-light: var(--color-saffron-50);
+  --color-dineout: var(--color-eggplant-500);
+  --color-dineout-light: var(--color-eggplant-50);
+
+  /* Semantic: Spacing */
+  --spacing-tight: var(--spacing-2);
+  --spacing-standard: var(--spacing-4);
+  --spacing-relaxed: var(--spacing-5);
+  --spacing-section-inner: var(--spacing-6);
+  --spacing-section-outer: var(--spacing-7);
+  --spacing-hero: var(--spacing-9);
+
+  /* Semantic: Typography */
+  --font-size-display: var(--font-size-6xl);
+  --font-size-h1: var(--font-size-5xl);
+  --font-size-h2: var(--font-size-4xl);
+  --font-size-h3: var(--font-size-3xl);
+  --font-size-h4: var(--font-size-2xl);
+  --font-size-body-lg: var(--font-size-lg);
+  --font-size-body: var(--font-size-base);
+  --font-size-small: var(--font-size-sm);
+  --font-size-caption: var(--font-size-xs);
+
+  /* Component: Button */
+  --button-primary-bg: var(--color-primary);
+  --button-primary-fg: var(--color-primary-foreground);
+  --button-primary-hover-bg: var(--color-primary-hover);
+  --button-secondary-bg: var(--color-secondary);
+  --button-secondary-fg: var(--color-secondary-foreground);
+  --button-secondary-border: var(--color-border);
+  --button-radius: var(--radius-md);
+  --button-padding-x: var(--spacing-5);
+  --button-padding-y: var(--spacing-3);
+  --button-font-size: var(--font-size-sm);
+
+  /* Component: Card */
+  --card-bg: var(--color-secondary);
+  --card-border: var(--color-border);
+  --card-radius: var(--radius-lg);
+  --card-padding: var(--spacing-5);
+  --card-shadow: var(--shadow-sm);
+  --card-shadow-hover: var(--shadow-md);
+
+  /* Component: Input */
+  --input-bg: var(--color-secondary);
+  --input-border: var(--color-border);
+  --input-focus-ring: var(--color-ring);
+  --input-radius: var(--radius-md);
+  --input-padding-x: var(--spacing-4);
+  --input-padding-y: var(--spacing-3);
+
+  /* Component: Nav */
+  --nav-height: 4rem;
+  --nav-bg: var(--color-flour);
+  --nav-border: var(--color-border);
+
+  /* Component: Food Map Card */
+  --food-map-card-bg: var(--color-flour);
+  --food-map-card-border: var(--color-border);
+  --food-map-card-radius: var(--radius-lg);
+  --food-map-card-shadow: var(--shadow-md);
+}

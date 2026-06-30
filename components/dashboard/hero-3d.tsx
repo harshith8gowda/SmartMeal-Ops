@@ -1,8 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { MealMapOrbit } from "@/components/3d/mealmap-orbit";
-import { SceneProvider } from "@/components/3d/scene-provider";
 import { useMotionPreference } from "@/lib/hooks/use-reduced-motion";
 
 export function DashboardHero3D() {
@@ -10,15 +8,7 @@ export function DashboardHero3D() {
 
   return (
     <section className="relative mb-8 overflow-hidden rounded-3xl border border-border/40 bg-card/50 p-8">
-      <SceneProvider
-        fallback={
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent" />
-        }
-      >
-        <div className="pointer-events-none absolute inset-y-0 right-0 top-0 h-full w-full opacity-30 md:w-1/2 md:opacity-60">
-          <MealMapOrbit className="h-full w-full" speed={0.25} />
-        </div>
-      </SceneProvider>
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent" />
 
       <div className="relative z-10 max-w-lg">
         {reduceMotion ? (

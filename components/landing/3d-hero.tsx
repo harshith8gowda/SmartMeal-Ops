@@ -2,8 +2,6 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { HeroCTA } from "./hero-cta";
-import { MealMapOrbit } from "@/components/3d/mealmap-orbit";
-import { SceneProvider } from "@/components/3d/scene-provider";
 
 const reducedMotionProps = { initial: false, animate: false } as const;
 
@@ -23,13 +21,7 @@ export function Hero3D() {
 
   return (
     <section className="relative flex min-h-screen items-center overflow-hidden bg-background">
-      <SceneProvider
-        fallback={
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_40%,hsl(var(--primary)/0.15),transparent_50%)]" />
-        }
-      >
-        <MealMapOrbit className="opacity-70" speed={0.15} interaction={true} />
-      </SceneProvider>
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_40%,var(--color-primary)/0.15,transparent_50%)]" />
 
       <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-32 lg:px-8">
         <div className="max-w-2xl">
