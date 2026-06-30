@@ -75,7 +75,7 @@ export function AddressForm({ addresses }: { addresses: Address[] }) {
   }
 
   return (
-    <Card className="gradient-border p-5">
+    <Card className="p-5">
       <h2 className="font-display text-lg font-semibold">Saved addresses</h2>
       <p className="text-sm text-muted-foreground">Used for delivery and dineout suggestions.</p>
 
@@ -87,7 +87,7 @@ export function AddressForm({ addresses }: { addresses: Address[] }) {
         <Input placeholder="Full address" {...register("address")} />
         <div className="grid gap-3 sm:grid-cols-2">
           <Input placeholder="Pincode" {...register("pincode")} />
-          <label className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.05] px-3 text-sm text-muted-foreground">
+          <label className="flex items-center gap-2 rounded-xl border border-border bg-secondary px-3 text-sm text-muted-foreground">
             <input type="checkbox" {...register("isDefault")} className="accent-primary" />
             Default address
           </label>
@@ -100,7 +100,7 @@ export function AddressForm({ addresses }: { addresses: Address[] }) {
 
       <ul className="mt-6 space-y-3">
         {items.map((a) => (
-          <li key={a.id} className="flex items-start justify-between rounded-xl border border-white/10 bg-white/[0.04] p-4">
+          <li key={a.id} className="flex items-start justify-between rounded-xl border border-border bg-porcelain p-4">
             <div className="flex items-start gap-3">
               <MapPin className="mt-0.5 h-4 w-4 text-primary" />
               <div>

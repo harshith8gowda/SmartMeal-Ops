@@ -73,7 +73,7 @@ export function PantryManager({ pantryItems }: { pantryItems: PantryItem[] }) {
   };
 
   return (
-    <Card className="gradient-border">
+    <Card className="border-border bg-flour">
       <CardHeader>
         <CardTitle>Your Pantry</CardTitle>
         <CardDescription>Track staples and recurring items</CardDescription>
@@ -82,7 +82,7 @@ export function PantryManager({ pantryItems }: { pantryItems: PantryItem[] }) {
         <Input placeholder="Item" {...register("item")} />
         <Input type="number" step="0.1" placeholder="Qty" {...register("qty")} />
         <Input placeholder="Unit" {...register("unit")} />
-        <label className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.05] px-3 text-sm text-muted-foreground">
+        <label className="flex items-center gap-2 rounded-xl border border-border bg-secondary px-3 text-sm text-muted-foreground">
           <input type="checkbox" {...register("recurring")} className="accent-primary" />
           Recurring
         </label>
@@ -96,7 +96,7 @@ export function PantryManager({ pantryItems }: { pantryItems: PantryItem[] }) {
         {items.map((item) => (
           <li
             key={item.id}
-            className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm transition-colors hover:bg-white/[0.07]"
+            className="flex items-center justify-between rounded-xl border border-border bg-porcelain px-4 py-3 text-sm transition-colors hover:bg-secondary"
           >
             <span className="text-foreground">
               {item.item} <span className="text-muted-foreground">— {item.qty} {item.unit}</span>

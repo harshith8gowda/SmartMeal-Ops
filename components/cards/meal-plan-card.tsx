@@ -17,7 +17,7 @@ const sourceVariant = {
 
 export function MealPlanCard({ meal }: { meal: MealCard }) {
   return (
-    <Card className="group gradient-border transition-all duration-300 hover:-translate-y-0.5">
+    <Card className="group transition-all duration-300 hover:-translate-y-0.5">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{meal.day}</p>
@@ -33,7 +33,7 @@ export function MealPlanCard({ meal }: { meal: MealCard }) {
         <p className="flex items-center gap-2"><Clock className="h-4 w-4 text-accent" />{meal.prepMinutes} mins</p>
       </div>
       {meal.ingredients?.length ? (
-        <p className="mt-3 border-t border-white/10 pt-3 text-xs text-muted-foreground">
+        <p className="mt-3 border-t border-border pt-3 text-xs text-muted-foreground">
           Ingredients: {meal.ingredients.join(", ")}
         </p>
       ) : null}

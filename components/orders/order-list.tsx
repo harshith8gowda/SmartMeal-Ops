@@ -24,7 +24,7 @@ const statusVariant: Record<string, "default" | "secondary" | "accent" | "succes
 export function OrderList({ orders }: { orders: Order[] }) {
   if (!orders.length) {
     return (
-      <Card className="gradient-border">
+      <Card className="border-border bg-flour">
         <CardHeader>
           <CardTitle>Recent Orders</CardTitle>
           <CardDescription>No orders yet — your first smart move is one click away.</CardDescription>
@@ -34,7 +34,7 @@ export function OrderList({ orders }: { orders: Order[] }) {
   }
 
   return (
-    <Card className="gradient-border">
+    <Card className="border-border bg-flour">
       <CardHeader>
         <CardTitle>Recent Orders</CardTitle>
         <CardDescription>Your last {orders.length} actions</CardDescription>
@@ -43,7 +43,7 @@ export function OrderList({ orders }: { orders: Order[] }) {
         {orders.map((order) => (
           <li
             key={order.id}
-            className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm transition-colors hover:bg-white/[0.07]"
+            className="flex items-center justify-between rounded-xl border border-border bg-porcelain px-4 py-3 text-sm transition-colors hover:bg-secondary"
           >
             <div className="flex items-center gap-3">
               <span className="capitalize text-foreground">{order.source.toLowerCase()}</span>

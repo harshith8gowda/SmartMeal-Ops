@@ -36,8 +36,9 @@ export function CartSummary({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-      <div className="premium-card relative w-full max-w-md p-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-foreground opacity-30 backdrop-blur-sm" />
+      <div className="relative w-full max-w-md rounded-2xl border border-border bg-flour p-6 shadow-lg">
         <button
           onClick={onClose}
           className="absolute right-4 top-4 text-muted-foreground transition-colors hover:text-foreground"
@@ -46,7 +47,7 @@ export function CartSummary({
           <X className="h-5 w-5" />
         </button>
 
-        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-primary-light text-primary">
           <ShoppingBag className="h-5 w-5" />
         </div>
         <h3 className="font-display text-xl font-semibold">{recommendation.title}</h3>
@@ -61,12 +62,12 @@ export function CartSummary({
           ))}
         </ul>
 
-        <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-4 text-sm">
+        <div className="mt-5 flex items-center justify-between border-t border-border pt-4 text-sm">
           <span className="text-muted-foreground">Total estimated</span>
           <span className="font-semibold">₹{recommendation.cost}</span>
         </div>
 
-        {error ? <p className="mt-4 text-sm text-red-400">{error}</p> : null}
+        {error ? <p className="mt-4 text-sm text-error">{error}</p> : null}
 
         <div className="mt-5 flex gap-3">
           <Button variant="secondary" onClick={onClose} className="flex-1">

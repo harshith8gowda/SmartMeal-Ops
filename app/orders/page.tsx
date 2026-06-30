@@ -60,13 +60,13 @@ export default function OrdersPage() {
             ))}
           </div>
         ) : orders.length === 0 ? (
-          <Card className="gradient-border p-8 text-center">
+          <Card className="p-8 text-center">
             <p className="text-muted-foreground">No carts or bookings yet. Head to the dashboard to build your first one.</p>
           </Card>
         ) : (
           <div className="grid gap-4">
             {orders.map((order) => (
-              <Card key={order.id} className="gradient-border p-5">
+              <Card key={order.id} className="p-5">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <p className="font-display text-lg font-semibold">{order.title}</p>

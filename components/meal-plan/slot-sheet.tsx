@@ -57,9 +57,10 @@ export function SlotSheet({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end bg-black/40 p-0 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex justify-end p-0">
+      <div className="absolute inset-0 bg-foreground opacity-30 backdrop-blur-sm" />
       <motion.div
-        className="h-full w-full max-w-md overflow-y-auto border-l border-border bg-flour p-6 text-foreground"
+        className="relative h-full w-full max-w-md overflow-y-auto border-l border-border bg-flour p-6 text-foreground"
         initial={reducedMotion ? false : { x: 40, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
@@ -87,7 +88,7 @@ export function SlotSheet({
                 className={`flex flex-col items-center gap-2 rounded-xl border p-3 transition-colors ${
                   isActive
                     ? "border-primary bg-primary-light text-primary"
-                    : "border-border bg-porcelain/50 text-muted-foreground hover:bg-porcelain"
+                    : "border-border bg-porcelain text-muted-foreground hover:bg-secondary"
                 }`}
                 aria-pressed={isActive}
               >

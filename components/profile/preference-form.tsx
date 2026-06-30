@@ -69,7 +69,7 @@ export function PreferenceForm({ preference }: { preference?: Preference }) {
   }
 
   return (
-    <Card className="gradient-border p-5">
+    <Card className="p-5">
       <h2 className="font-display text-lg font-semibold">Dietary preferences</h2>
       <p className="text-sm text-muted-foreground">Personalize recommendations and budget defaults.</p>
 
@@ -101,7 +101,7 @@ export function PreferenceForm({ preference }: { preference?: Preference }) {
             <label className="text-sm text-muted-foreground">Cook skill</label>
             <select
               {...register("cookSkill")}
-              className="w-full rounded-xl border border-white/10 bg-white/[0.05] px-3 py-2 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary"
+              className="w-full rounded-xl border border-border bg-secondary px-3 py-2 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring"
             >
               <option value="beginner">Beginner</option>
               <option value="medium">Medium</option>

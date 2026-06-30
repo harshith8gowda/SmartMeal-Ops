@@ -54,7 +54,7 @@ export default function DashboardPage() {
         <div className="grid gap-6 md:grid-cols-3">
           {loading || !recommendations ? (
             [1, 2, 3].map((i) => (
-              <div key={i} className="premium-card flex flex-col p-5">
+              <div key={i} className="flex flex-col rounded-2xl border border-border bg-flour p-5 shadow-sm">
                 <Skeleton className="mb-5 h-12 w-12 rounded-xl" />
                 <Skeleton className="h-6 w-3/4" />
                 <Skeleton className="mt-2 h-4 w-full" />

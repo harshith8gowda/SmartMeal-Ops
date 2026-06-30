@@ -29,7 +29,7 @@ export function InputBar({ onChange }: { onChange: (values: InputValues) => void
 
   return (
     <motion.div
-      className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-sm"
+      className="flex flex-col gap-4 rounded-2xl border border-border bg-secondary p-4 shadow-sm"
       onFocus={() => setFocused(true)}
       onBlur={(e) => {
         if (!e.currentTarget.contains(e.relatedTarget as Node)) {
@@ -38,7 +38,7 @@ export function InputBar({ onChange }: { onChange: (values: InputValues) => void
       }}
       animate={
         focused
-          ? { boxShadow: "0 0 0 2px hsl(var(--primary)/0.5)" }
+          ? { boxShadow: "0 0 0 2px var(--color-ring)" }
           : { boxShadow: "0 0 0 0px transparent" }
       }
       transition={reduceMotion ? { duration: 0 } : { duration: 0.2 }}
