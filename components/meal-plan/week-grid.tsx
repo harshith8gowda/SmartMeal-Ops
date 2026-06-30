@@ -8,8 +8,10 @@ export type MealSlot = {
   mealType: "breakfast" | "lunch" | "dinner";
   source: "cook" | "order" | "dineout" | null;
   title: string;
+  description?: string;
   cost: number;
   timeMinutes: number;
+  effort?: string;
 };
 
 const sourceConfig = {

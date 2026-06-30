@@ -5,6 +5,7 @@ import {
   getMealSlots,
   createMealSlot,
   updateMealSlot,
+  deleteMealSlot,
   clearMealSlots,
   type MealSlotInput
 } from "@/lib/db/meal-slot";
@@ -69,6 +70,12 @@ export async function POST(req: NextRequest) {
       const start = new Date(body.start);
       const end = new Date(body.end);
       await clearMealSlots(user.id, start, end);
+      return NextResponse.json({ success: true });
+    }
+
+    if (action === "delete") {
+      const id = z.string().parse(body.id);
+      await deleteMealSlot(id, user.id);
       return NextResponse.json({ success: true });
     }
 

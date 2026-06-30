@@ -11,28 +11,37 @@ export type SlotFormData = {
   id?: string;
   date: string;
   mealType: "breakfast" | "lunch" | "dinner";
-  source: "cook" | "order" | "dineout";
+  source: "COOK" | "ORDER" | "DINEOUT";
   title: string;
   description: string;
   cost: number;
   timeMinutes: number;
 };
 
+const SOURCE_OPTIONS: { value: "cook" | "order" | "dineout"; label: string; icon: typeof ChefHat }[] = [
+  { value: "cook", label: "Cook", icon: ChefHat },
+  { value: "order", label: "Order", icon: ShoppingBag },
+  { value: "dineout", label: "Dineout", icon: UtensilsCrossed }
+];
+
 export function SlotSheet({
   slot,
   onClose,
-  onSave
+  onSave,
+  onDelete
 }: {
   slot: MealSlot;
   onClose: () => void;
   onSave: (data: SlotFormData) => Promise<void>;
+  onDelete?: () => Promise<void>;
 }) {
-  const [source, setSource] = useState<SlotFormData["source"]>(slot.source || "cook");
+  const [source, setSource] = useState<"cook" | "order" | "dineout">(slot.source || "cook");
   const [title, setTitle] = useState(slot.title || "");
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState(slot.description || "");
   const [cost, setCost] = useState(slot.cost || 0);
   const [timeMinutes, setTimeMinutes] = useState(slot.timeMinutes || 30);
   const [loading, setLoading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const reducedMotion = useReducedMotion();
 
   async function handleSave() {
@@ -41,7 +50,7 @@ export function SlotSheet({
       id: slot.id || undefined,
       date: slot.date,
       mealType: slot.mealType,
-      source,
+      source: source.toUpperCase() as SlotFormData["source"],
       title: title || `${source} option`,
       description,
       cost,
@@ -50,11 +59,12 @@ export function SlotSheet({
     setLoading(false);
   }
 
-  const sourceOptions: { value: SlotFormData["source"]; label: string; icon: typeof ChefHat }[] = [
-    { value: "cook", label: "Cook", icon: ChefHat },
-    { value: "order", label: "Order", icon: ShoppingBag },
-    { value: "dineout", label: "Dineout", icon: UtensilsCrossed }
-  ];
+  async function handleDelete() {
+    if (!onDelete) return;
+    setDeleting(true);
+    await onDelete();
+    setDeleting(false);
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end p-0">
@@ -78,7 +88,7 @@ export function SlotSheet({
         </div>
 
         <div className="mb-6 grid grid-cols-3 gap-2">
-          {sourceOptions.map((option) => {
+          {SOURCE_OPTIONS.map((option) => {
             const Icon = option.icon;
             const isActive = source === option.value;
             return (
@@ -145,6 +155,18 @@ export function SlotSheet({
             Save slot
           </Button>
         </div>
+
+        {slot.id && onDelete && (
+          <Button
+            variant="outline"
+            onClick={handleDelete}
+            disabled={deleting}
+            className="mt-3 w-full border-error text-error hover:bg-error/10 hover:text-error"
+          >
+            {deleting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Delete slot
+          </Button>
+        )}
       </motion.div>
     </div>
   );

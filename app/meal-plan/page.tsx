@@ -49,6 +49,22 @@ export default function MealPlanPage() {
     await fetchSlots();
   }
 
+  async function handleDelete() {
+    if (!activeSlot?.id) return;
+    const res = await fetch("/api/meal-plan", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ action: "delete", id: activeSlot.id })
+    });
+    if (!res.ok) {
+      toast.error("Could not delete slot");
+      return;
+    }
+    toast.success("Slot deleted");
+    setActiveSlot(null);
+    await fetchSlots();
+  }
+
   async function handleClear() {
     const start = new Date();
     const end = new Date();
@@ -69,7 +85,13 @@ export default function MealPlanPage() {
   async function handleAiPlan() {
     setAiPlanning(true);
     try {
-      const res = await fetch("/api/ai/plan", { method: "POST" });
+      const start = new Date();
+      start.setHours(0, 0, 0, 0);
+      const res = await fetch("/api/ai/plan", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ prompt: "Plan my week", startDate: start.toISOString() })
+      });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "AI planning failed");
       toast.success(data.slots?.length ? "AI plan generated" : "AI plan generated (mock)");
@@ -154,6 +176,7 @@ export default function MealPlanPage() {
             slot={activeSlot}
             onClose={() => setActiveSlot(null)}
             onSave={handleSave}
+            onDelete={handleDelete}
           />
         )}
       </main>

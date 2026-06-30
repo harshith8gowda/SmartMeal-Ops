@@ -19,7 +19,8 @@ import { rateLimit } from "@/lib/rate-limit";
 import { Prisma } from "@prisma/client";
 
 const PlanInputSchema = z.object({
-  prompt: z.string().min(1)
+  prompt: z.string().min(1),
+  startDate: z.string().datetime().optional()
 });
 
 export async function POST(req: NextRequest) {
@@ -37,7 +38,8 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { prompt } = PlanInputSchema.parse(body);
+    const { prompt, startDate: startDateInput } = PlanInputSchema.parse(body);
+    const startDate = startDateInput ? new Date(startDateInput) : new Date();
 
     const [preference, pantryItems, addresses] = await Promise.all([
       getPreference(user.id),
@@ -89,7 +91,7 @@ export async function POST(req: NextRequest) {
       bulkCreateMealSlots(
         user.id,
         meals.map((meal, index) => ({
-          date: new Date(Date.now() + index * 24 * 60 * 60 * 1000),
+          date: new Date(startDate.getTime() + index * 24 * 60 * 60 * 1000),
           mealType: "dinner",
           source: meal.source,
           title: meal.title,
