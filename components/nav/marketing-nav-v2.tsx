@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { Route } from "next";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button-v2";
 import { MapPin } from "lucide-react";
 
 export function MarketingNavV2() {
