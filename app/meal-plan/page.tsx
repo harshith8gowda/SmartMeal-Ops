@@ -119,7 +119,7 @@ export default function MealPlanPage() {
               <p className="flex items-center gap-2 text-sm font-medium uppercase text-primary">
                 <Sparkles className="h-4 w-4" /> Weekly plan
               </p>
-              <h1 className="mt-1 text-3xl font-semibold tracking-tight md:text-4xl">Meal planner</h1>
+              <h1 className="font-display mt-1 text-3xl font-semibold tracking-tight text-foreground md:text-4xl">Meal planner</h1>
               <p className="mt-2 text-muted-foreground">
                 Plan 7 days of breakfast, lunch, and dinner. Tap any slot to choose cook, order, or dineout.
               </p>

@@ -12,7 +12,7 @@ export function BudgetOverview({
   const labels = [
     { label: "Groceries", key: "COOK", color: "bg-primary" },
     { label: "Ordering", key: "ORDER", color: "bg-accent" },
-    { label: "Dineout", key: "DINEOUT", color: "bg-warning" }
+    { label: "Dineout", key: "DINEOUT", color: "bg-dineout" }
   ];
 
   const maxValue = Math.max(monthlyBudget, spent, 1);
@@ -20,14 +20,14 @@ export function BudgetOverview({
   const percent = Math.min(100, Math.round((spent / monthlyBudget) * 100));
 
   return (
-    <Card className="gradient-border">
+    <Card className="border-border bg-flour">
       <CardHeader>
         <div className="flex items-start justify-between">
           <div>
             <CardTitle>Budget Tracker</CardTitle>
             <CardDescription>Monthly spend split</CardDescription>
           </div>
-          <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-medium">
+          <span className="rounded-full border border-border bg-secondary px-3 py-1 text-xs font-medium">
             ₹{spent.toLocaleString("en-IN")} / ₹{monthlyBudget.toLocaleString("en-IN")}
           </span>
         </div>
@@ -38,9 +38,9 @@ export function BudgetOverview({
             <span className="text-muted-foreground">Remaining</span>
             <span className="font-medium text-success">₹{remaining.toLocaleString("en-IN")}</span>
           </div>
-          <div className="mt-2 h-2.5 rounded-full bg-white/10">
+          <div className="mt-2 h-2.5 rounded-full bg-porcelain">
             <div
-              className="h-2.5 rounded-full bg-gradient-to-r from-primary to-accent"
+              className="h-2.5 rounded-full bg-primary"
               style={{ width: `${percent}%` }}
             />
           </div>
@@ -55,7 +55,7 @@ export function BudgetOverview({
                   <span className="text-muted-foreground">{item.label}</span>
                   <span className="font-medium">₹{value.toLocaleString("en-IN")}</span>
                 </div>
-                <div className="h-2 rounded-full bg-white/10">
+                <div className="h-2 rounded-full bg-porcelain">
                   <div className={`h-2 rounded-full ${item.color}`} style={{ width }} />
                 </div>
               </div>

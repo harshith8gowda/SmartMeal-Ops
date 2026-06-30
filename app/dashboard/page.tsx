@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { AppNav } from "@/components/layout/nav";
 import { InputBar, type InputValues } from "@/components/dashboard/input-bar";
-import { ComparisonCard, type ComparisonRecommendation } from "@/components/dashboard/comparison-card";
+import { ComparisonCardV2, ComparisonRecommendation } from "@/components/dashboard/comparison-card-v2";
 import { CartSummary } from "@/components/dashboard/cart-summary";
-import { DashboardHero3D } from "@/components/dashboard/hero-3d";
+import { DashboardHeaderV2 } from "@/components/dashboard/dashboard-header-v2";
 import { ScrollReveal } from "@/components/landing/scroll-reveal";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -42,18 +42,19 @@ export default function DashboardPage() {
     <>
       <AppNav />
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:py-8">
-        <DashboardHero3D />
-
         <ScrollReveal delay={0.1}>
           <div className="mb-8">
-            <InputBar onChange={fetchRecommendations} />
+            <DashboardHeaderV2 />
+            <div className="mt-6">
+              <InputBar onChange={fetchRecommendations} />
+            </div>
           </div>
         </ScrollReveal>
 
         <div className="grid gap-6 md:grid-cols-3">
           {loading || !recommendations ? (
             [1, 2, 3].map((i) => (
-              <div key={i} className="premium-card flex flex-col p-5">
+              <div key={i} className="flex flex-col rounded-2xl border border-border bg-flour p-5 shadow-sm">
                 <Skeleton className="mb-5 h-12 w-12 rounded-xl" />
                 <Skeleton className="h-6 w-3/4" />
                 <Skeleton className="mt-2 h-4 w-full" />
@@ -64,22 +65,49 @@ export default function DashboardPage() {
           ) : (
             <>
               <ScrollReveal delay={0.2}>
-                <ComparisonCard
-                  recommendation={recommendations.cook}
-                  onSelect={() => setSelected(recommendations.cook)}
-                />
+                <button
+                  type="button"
+                  onClick={() => setSelected(recommendations.cook)}
+                  className="block w-full text-left"
+                >
+                  <ComparisonCardV2
+                    mode={recommendations.cook.source}
+                    title={recommendations.cook.title}
+                    description={recommendations.cook.description}
+                    price={`₹${recommendations.cook.cost}`}
+                    time={`${recommendations.cook.timeMinutes} min`}
+                  />
+                </button>
               </ScrollReveal>
               <ScrollReveal delay={0.3}>
-                <ComparisonCard
-                  recommendation={recommendations.order}
-                  onSelect={() => setSelected(recommendations.order)}
-                />
+                <button
+                  type="button"
+                  onClick={() => setSelected(recommendations.order)}
+                  className="block w-full text-left"
+                >
+                  <ComparisonCardV2
+                    mode={recommendations.order.source}
+                    title={recommendations.order.title}
+                    description={recommendations.order.description}
+                    price={`₹${recommendations.order.cost}`}
+                    time={`${recommendations.order.timeMinutes} min`}
+                  />
+                </button>
               </ScrollReveal>
               <ScrollReveal delay={0.4}>
-                <ComparisonCard
-                  recommendation={recommendations.dineout}
-                  onSelect={() => setSelected(recommendations.dineout)}
-                />
+                <button
+                  type="button"
+                  onClick={() => setSelected(recommendations.dineout)}
+                  className="block w-full text-left"
+                >
+                  <ComparisonCardV2
+                    mode={recommendations.dineout.source}
+                    title={recommendations.dineout.title}
+                    description={recommendations.dineout.description}
+                    price={`₹${recommendations.dineout.cost}`}
+                    time={`${recommendations.dineout.timeMinutes} min`}
+                  />
+                </button>
               </ScrollReveal>
             </>
           )}

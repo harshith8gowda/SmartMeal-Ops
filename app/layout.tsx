@@ -3,6 +3,21 @@ import "./globals.css";
 import Script from "next/script";
 import { Toaster } from "sonner";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Space_Grotesk, DM_Sans } from "next/font/google";
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-body",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: {
@@ -15,7 +30,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="min-h-screen font-sans">
+      <body className={`${spaceGrotesk.variable} ${dmSans.variable} font-body antialiased`}>
         <Script
           id="reduced-motion"
           strategy="beforeInteractive"

@@ -73,7 +73,7 @@ export function PantryManager({ pantryItems }: { pantryItems: PantryItem[] }) {
   };
 
   return (
-    <Card className="gradient-border">
+    <Card className="border-border bg-flour">
       <CardHeader>
         <CardTitle>Your Pantry</CardTitle>
         <CardDescription>Track staples and recurring items</CardDescription>
@@ -82,7 +82,7 @@ export function PantryManager({ pantryItems }: { pantryItems: PantryItem[] }) {
         <Input placeholder="Item" {...register("item")} />
         <Input type="number" step="0.1" placeholder="Qty" {...register("qty")} />
         <Input placeholder="Unit" {...register("unit")} />
-        <label className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.05] px-3 text-sm text-muted-foreground">
+        <label className="flex items-center gap-2 rounded-xl border border-border bg-secondary px-3 text-sm text-muted-foreground">
           <input type="checkbox" {...register("recurring")} className="accent-primary" />
           Recurring
         </label>
@@ -90,20 +90,20 @@ export function PantryManager({ pantryItems }: { pantryItems: PantryItem[] }) {
           <Plus className="h-4 w-4" /> Add
         </Button>
       </form>
-      {errors.item && <p className="px-5 text-sm text-red-400">{errors.item.message}</p>}
+      {errors.item && <p className="px-5 text-sm text-error">{errors.item.message}</p>}
 
       <ul className="mt-4 max-h-64 space-y-2 overflow-auto px-5 pb-5 scrollbar-hide">
         {items.map((item) => (
           <li
             key={item.id}
-            className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm transition-colors hover:bg-white/[0.07]"
+            className="flex items-center justify-between rounded-xl border border-border bg-porcelain px-4 py-3 text-sm transition-colors hover:bg-secondary"
           >
             <span className="text-foreground">
               {item.item} <span className="text-muted-foreground">— {item.qty} {item.unit}</span>
             </span>
             <button
               onClick={() => onDelete(item.id)}
-              className="text-muted-foreground transition-colors hover:text-red-400"
+              className="text-muted-foreground transition-colors hover:text-error"
               aria-label={`Delete ${item.item}`}
             >
               <Trash2 className="h-4 w-4" />

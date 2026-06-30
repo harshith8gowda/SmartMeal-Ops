@@ -1,91 +1,95 @@
 import type { Config } from "tailwindcss";
 
 export default {
-  darkMode: ["class"],
   content: [
     "./app/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
     "./lib/**/*.{ts,tsx}"
   ],
   theme: {
+    fontFamily: {
+      display: ["var(--font-display)", "system-ui", "sans-serif"],
+      body: ["var(--font-body)", "system-ui", "sans-serif"],
+    },
+    colors: {
+      background: "var(--color-background)",
+      foreground: "var(--color-foreground)",
+      flour: "var(--color-flour)",
+      primary: {
+        DEFAULT: "var(--color-primary)",
+        hover: "var(--color-primary-hover)",
+        foreground: "var(--color-primary-foreground)",
+        light: "var(--color-primary-light)",
+      },
+      secondary: {
+        DEFAULT: "var(--color-secondary)",
+        foreground: "var(--color-secondary-foreground)",
+      },
+      muted: {
+        DEFAULT: "var(--color-muted)",
+        foreground: "var(--color-muted-foreground)",
+      },
+      border: "var(--color-border)",
+      cook: {
+        DEFAULT: "var(--color-cook)",
+        light: "var(--color-cook-light)",
+      },
+      order: {
+        DEFAULT: "var(--color-order)",
+        light: "var(--color-order-light)",
+      },
+      dineout: {
+        DEFAULT: "var(--color-dineout)",
+        light: "var(--color-dineout-light)",
+      },
+      success: "var(--color-success)",
+      warning: "var(--color-warning)",
+      error: "var(--color-error)",
+      info: "var(--color-info)",
+      // Keep old aliases only during transition if needed; remove before final build.
+      accent: {
+        DEFAULT: "var(--color-accent)",
+        foreground: "var(--color-accent-foreground)",
+      },
+      card: "var(--color-secondary)",
+      "card-foreground": "var(--color-secondary-foreground)",
+      ring: "var(--color-ring)",
+    },
+    borderRadius: {
+      sm: "var(--radius-sm)",
+      md: "var(--radius-md)",
+      lg: "var(--radius-lg)",
+      xl: "var(--radius-xl)",
+      full: "var(--radius-full)",
+    },
+    boxShadow: {
+      sm: "var(--shadow-sm)",
+      md: "var(--shadow-md)",
+      lg: "var(--shadow-lg)",
+      xl: "var(--shadow-xl)",
+    },
     extend: {
-      fontFamily: {
-        sans: ["var(--font-inter)"],
-        display: ["var(--font-outfit)"]
+      spacing: {
+        "section-inner": "var(--spacing-section-inner)",
+        "section-outer": "var(--spacing-section-outer)",
+        hero: "var(--spacing-hero)",
       },
-      colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))"
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))"
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))"
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))"
-        },
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))"
-        },
-        success: {
-          DEFAULT: "hsl(var(--success))",
-          foreground: "hsl(var(--success-foreground))"
-        },
-        warning: {
-          DEFAULT: "hsl(var(--warning))",
-          foreground: "hsl(var(--warning-foreground))"
-        },
-        dineout: {
-          DEFAULT: "hsl(var(--dineout))",
-          foreground: "hsl(var(--dineout-foreground))"
-        }
+      fontSize: {
+        display: ["var(--font-size-display)", { lineHeight: "1.05", letterSpacing: "-0.02em" }],
+        h1: ["var(--font-size-h1)", { lineHeight: "1.1", letterSpacing: "-0.02em" }],
+        h2: ["var(--font-size-h2)", { lineHeight: "1.2", letterSpacing: "-0.01em" }],
+        h3: ["var(--font-size-h3)", { lineHeight: "1.3" }],
+        h4: ["var(--font-size-h4)", { lineHeight: "1.35" }],
+        "body-lg": ["var(--font-size-body-lg)", { lineHeight: "1.6" }],
+        body: ["var(--font-size-body)", { lineHeight: "1.6" }],
+        small: ["var(--font-size-small)", { lineHeight: "1.5" }],
+        caption: ["var(--font-size-caption)", { lineHeight: "1.4" }],
       },
-      borderRadius: {
-        xl: "1rem",
-        "2xl": "1.25rem",
-        "3xl": "1.5rem"
+      transitionDuration: {
+        fast: "var(--duration-fast)",
+        normal: "var(--duration-normal)",
+        slow: "var(--duration-slow)",
       },
-      keyframes: {
-        "gradient-x": {
-          "0%, 100%": { backgroundPosition: "0% 50%" },
-          "50%": { backgroundPosition: "100% 50%" }
-        },
-        "float": {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-10px)" }
-        },
-        "shimmer": {
-          "0%": { backgroundPosition: "-200% 0" },
-          "100%": { backgroundPosition: "200% 0" }
-        },
-        "float-3d": {
-          "0%, 100%": { transform: "translateY(0) rotateX(0deg) rotateY(0deg)" },
-          "50%": { transform: "translateY(-12px) rotateX(2deg) rotateY(4deg)" }
-        }
-      },
-      animation: {
-        "gradient-x": "gradient-x 15s ease infinite",
-        "float": "float 6s ease-in-out infinite",
-        "shimmer": "shimmer 2s linear infinite",
-        "float-3d": "float-3d 6s ease-in-out infinite"
-      },
-      transitionTimingFunction: {
-        "ease-out-strong": "cubic-bezier(0.23, 1, 0.32, 1)",
-        "ease-in-out-strong": "cubic-bezier(0.77, 0, 0.175, 1)",
-        "out-expo": "cubic-bezier(0.16, 1, 0.3, 1)"
-      }
     }
   },
   plugins: []

@@ -1,0 +1,181 @@
+{
+  "$schema": "https://design-tokens.org/schema.json",
+  "primitive": {
+    "color": {
+      "tamarind": {
+        "50": { "$value": "#FFCCBC", "$type": "color" },
+        "100": { "$value": "#FFAB91", "$type": "color" },
+        "400": { "$value": "#FF7043", "$type": "color" },
+        "500": { "$value": "#D84315", "$type": "color" },
+        "600": { "$value": "#BF360C", "$type": "color" },
+        "700": { "$value": "#A12E0A", "$type": "color" }
+      },
+      "basil": {
+        "50": { "$value": "#E8F5E9", "$type": "color" },
+        "100": { "$value": "#C8E6C9", "$type": "color" },
+        "400": { "$value": "#4CAF50", "$type": "color" },
+        "500": { "$value": "#2E7D32", "$type": "color" },
+        "600": { "$value": "#1B5E20", "$type": "color" }
+      },
+      "saffron": {
+        "50": { "$value": "#FFF8E1", "$type": "color" },
+        "100": { "$value": "#FFECB3", "$type": "color" },
+        "400": { "$value": "#FFCA28", "$type": "color" },
+        "500": { "$value": "#F9A825", "$type": "color" },
+        "600": { "$value": "#F57F17", "$type": "color" }
+      },
+      "eggplant": {
+        "50": { "$value": "#F3E5F5", "$type": "color" },
+        "100": { "$value": "#E1BEE7", "$type": "color" },
+        "400": { "$value": "#AB47BC", "$type": "color" },
+        "500": { "$value": "#6A1B9A", "$type": "color" },
+        "600": { "$value": "#4A148C", "$type": "color" }
+      },
+      "neutral": {
+        "rice-paper": { "$value": "#FAF9F6", "$type": "color" },
+        "flour": { "$value": "#FFFFFF", "$type": "color" },
+        "porcelain": { "$value": "#F5F5F4", "$type": "color" },
+        "linen": { "$value": "#E7E5E4", "$type": "color" },
+        "stone": { "$value": "#78716C", "$type": "color" },
+        "pepper": { "$value": "#44403C", "$type": "color" },
+        "charcoal": { "$value": "#1C1917", "$type": "color" }
+      },
+      "semantic-state": {
+        "success": { "$value": "#2E7D32", "$type": "color" },
+        "warning": { "$value": "#F9A825", "$type": "color" },
+        "error": { "$value": "#C62828", "$type": "color" },
+        "info": { "$value": "#455A64", "$type": "color" }
+      }
+    },
+    "spacing": {
+      "0": { "$value": "0", "$type": "dimension" },
+      "1": { "$value": "0.25rem", "$type": "dimension" },
+      "2": { "$value": "0.5rem", "$type": "dimension" },
+      "3": { "$value": "0.75rem", "$type": "dimension" },
+      "4": { "$value": "1rem", "$type": "dimension" },
+      "5": { "$value": "1.5rem", "$type": "dimension" },
+      "6": { "$value": "2rem", "$type": "dimension" },
+      "7": { "$value": "3rem", "$type": "dimension" },
+      "8": { "$value": "4rem", "$type": "dimension" },
+      "9": { "$value": "6rem", "$type": "dimension" }
+    },
+    "fontSize": {
+      "xs": { "$value": "0.75rem", "$type": "dimension" },
+      "sm": { "$value": "0.875rem", "$type": "dimension" },
+      "base": { "$value": "1rem", "$type": "dimension" },
+      "lg": { "$value": "1.125rem", "$type": "dimension" },
+      "xl": { "$value": "1.25rem", "$type": "dimension" },
+      "2xl": { "$value": "1.5rem", "$type": "dimension" },
+      "3xl": { "$value": "1.75rem", "$type": "dimension" },
+      "4xl": { "$value": "2.5rem", "$type": "dimension" },
+      "5xl": { "$value": "3.5rem", "$type": "dimension" },
+      "6xl": { "$value": "4.5rem", "$type": "dimension" }
+    },
+    "radius": {
+      "none": { "$value": "0", "$type": "dimension" },
+      "sm": { "$value": "0.5rem", "$type": "dimension" },
+      "md": { "$value": "0.75rem", "$type": "dimension" },
+      "lg": { "$value": "1rem", "$type": "dimension" },
+      "xl": { "$value": "1.25rem", "$type": "dimension" },
+      "full": { "$value": "9999px", "$type": "dimension" }
+    },
+    "shadow": {
+      "none": { "$value": "none", "$type": "shadow" },
+      "sm": { "$value": "0 1px 2px 0 rgb(28 25 23 / 0.04)", "$type": "shadow" },
+      "md": { "$value": "0 4px 12px -2px rgb(28 25 23 / 0.06)", "$type": "shadow" },
+      "lg": { "$value": "0 8px 24px -4px rgb(28 25 23 / 0.08)", "$type": "shadow" },
+      "xl": { "$value": "0 16px 40px -8px rgb(28 25 23 / 0.10)", "$type": "shadow" }
+    },
+    "duration": {
+      "fast": { "$value": "150ms", "$type": "duration" },
+      "normal": { "$value": "250ms", "$type": "duration" },
+      "slow": { "$value": "350ms", "$type": "duration" }
+    }
+  },
+  "semantic": {
+    "color": {
+      "background": { "$value": "{primitive.color.neutral.rice-paper}", "$type": "color" },
+      "foreground": { "$value": "{primitive.color.neutral.charcoal}", "$type": "color" },
+      "primary": { "$value": "{primitive.color.tamarind.500}", "$type": "color" },
+      "primary-hover": { "$value": "{primitive.color.tamarind.600}", "$type": "color" },
+      "primary-light": { "$value": "{primitive.color.tamarind.50}", "$type": "color" },
+      "primary-foreground": { "$value": "{primitive.color.neutral.flour}", "$type": "color" },
+      "secondary": { "$value": "{primitive.color.neutral.porcelain}", "$type": "color" },
+      "secondary-foreground": { "$value": "{primitive.color.neutral.charcoal}", "$type": "color" },
+      "muted": { "$value": "{primitive.color.neutral.porcelain}", "$type": "color" },
+      "muted-foreground": { "$value": "{primitive.color.neutral.stone}", "$type": "color" },
+      "border": { "$value": "{primitive.color.neutral.linen}", "$type": "color" },
+      "ring": { "$value": "{primitive.color.tamarind.400}", "$type": "color" },
+      "cook": { "$value": "{primitive.color.basil.500}", "$type": "color" },
+      "cook-light": { "$value": "{primitive.color.basil.50}", "$type": "color" },
+      "order": { "$value": "{primitive.color.saffron.500}", "$type": "color" },
+      "order-light": { "$value": "{primitive.color.saffron.50}", "$type": "color" },
+      "dineout": { "$value": "{primitive.color.eggplant.500}", "$type": "color" },
+      "dineout-light": { "$value": "{primitive.color.eggplant.50}", "$type": "color" },
+      "success": { "$value": "{primitive.color.semantic-state.success}", "$type": "color" },
+      "warning": { "$value": "{primitive.color.semantic-state.warning}", "$type": "color" },
+      "error": { "$value": "{primitive.color.semantic-state.error}", "$type": "color" },
+      "info": { "$value": "{primitive.color.semantic-state.info}", "$type": "color" }
+    },
+    "spacing": {
+      "tight": { "$value": "{primitive.spacing.2}", "$type": "dimension" },
+      "standard": { "$value": "{primitive.spacing.4}", "$type": "dimension" },
+      "relaxed": { "$value": "{primitive.spacing.5}", "$type": "dimension" },
+      "section-inner": { "$value": "{primitive.spacing.6}", "$type": "dimension" },
+      "section-outer": { "$value": "{primitive.spacing.7}", "$type": "dimension" },
+      "hero": { "$value": "{primitive.spacing.9}", "$type": "dimension" }
+    },
+    "typography": {
+      "display": { "$value": "{primitive.fontSize.6xl}", "$type": "dimension" },
+      "h1": { "$value": "{primitive.fontSize.5xl}", "$type": "dimension" },
+      "h2": { "$value": "{primitive.fontSize.4xl}", "$type": "dimension" },
+      "h3": { "$value": "{primitive.fontSize.3xl}", "$type": "dimension" },
+      "h4": { "$value": "{primitive.fontSize.2xl}", "$type": "dimension" },
+      "body-lg": { "$value": "{primitive.fontSize.lg}", "$type": "dimension" },
+      "body": { "$value": "{primitive.fontSize.base}", "$type": "dimension" },
+      "small": { "$value": "{primitive.fontSize.sm}", "$type": "dimension" },
+      "caption": { "$value": "{primitive.fontSize.xs}", "$type": "dimension" }
+    }
+  },
+  "component": {
+    "button": {
+      "primary-bg": { "$value": "{semantic.color.primary}", "$type": "color" },
+      "primary-fg": { "$value": "{semantic.color.primary-foreground}", "$type": "color" },
+      "primary-hover-bg": { "$value": "{semantic.color.primary-hover}", "$type": "color" },
+      "secondary-bg": { "$value": "{semantic.color.secondary}", "$type": "color" },
+      "secondary-fg": { "$value": "{semantic.color.secondary-foreground}", "$type": "color" },
+      "secondary-border": { "$value": "{semantic.color.border}", "$type": "color" },
+      "radius": { "$value": "{primitive.radius.md}", "$type": "dimension" },
+      "padding-x": { "$value": "{primitive.spacing.5}", "$type": "dimension" },
+      "padding-y": { "$value": "{primitive.spacing.3}", "$type": "dimension" },
+      "font-size": { "$value": "{primitive.fontSize.sm}", "$type": "dimension" }
+    },
+    "card": {
+      "bg": { "$value": "{semantic.color.secondary}", "$type": "color" },
+      "border": { "$value": "{semantic.color.border}", "$type": "color" },
+      "radius": { "$value": "{primitive.radius.lg}", "$type": "dimension" },
+      "padding": { "$value": "{primitive.spacing.5}", "$type": "dimension" },
+      "shadow": { "$value": "{primitive.shadow.sm}", "$type": "shadow" },
+      "shadow-hover": { "$value": "{primitive.shadow.md}", "$type": "shadow" }
+    },
+    "input": {
+      "bg": { "$value": "{semantic.color.secondary}", "$type": "color" },
+      "border": { "$value": "{semantic.color.border}", "$type": "color" },
+      "focus-ring": { "$value": "{semantic.color.ring}", "$type": "color" },
+      "radius": { "$value": "{primitive.radius.md}", "$type": "dimension" },
+      "padding-x": { "$value": "{primitive.spacing.4}", "$type": "dimension" },
+      "padding-y": { "$value": "{primitive.spacing.3}", "$type": "dimension" }
+    },
+    "nav": {
+      "height": { "$value": "4rem", "$type": "dimension" },
+      "bg": { "$value": "{primitive.color.neutral.flour}", "$type": "color" },
+      "border": { "$value": "{semantic.color.border}", "$type": "color" }
+    },
+    "food-map-card": {
+      "bg": { "$value": "{primitive.color.neutral.flour}", "$type": "color" },
+      "border": { "$value": "{semantic.color.border}", "$type": "color" },
+      "radius": { "$value": "{primitive.radius.lg}", "$type": "dimension" },
+      "shadow": { "$value": "{primitive.shadow.md}", "$type": "shadow" }
+    }
+  }
+}

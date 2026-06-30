@@ -30,7 +30,7 @@ export default async function OnboardingPage() {
           <p className="flex items-center justify-center gap-2 text-sm font-medium uppercase text-primary">
             <Sparkles className="h-4 w-4" /> Profile
           </p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">Welcome to MealMap</h1>
+          <h1 className="font-display mt-2 text-3xl font-semibold tracking-tight text-foreground md:text-4xl">Welcome to MealMap</h1>
           <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
             Tell us about your household, preferences, and default address. The AI uses this to compare cook, order, and dineout options.
           </p>

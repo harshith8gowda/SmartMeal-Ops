@@ -43,29 +43,29 @@ export function ConfirmationCard({
   };
 
   return (
-    <Card className="gradient-border overflow-hidden">
-      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary via-accent to-warning opacity-60" />
+    <Card className="overflow-hidden border-border bg-flour">
+      <div className="absolute inset-x-0 top-0 h-1 bg-primary" />
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-success">
+          <p className="flex items-center gap-1.5 text-xs font-semibold text-success">
             <ShieldCheck className="h-3.5 w-3.5" /> Final confirmation
           </p>
           <h3 className="mt-1 font-display text-xl font-semibold">{recommendation.confirmation.title}</h3>
           <p className="mt-2 text-sm text-muted-foreground">No order or reservation is placed until you confirm here.</p>
         </div>
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-success/10 text-success">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cook-light text-success">
           <ShieldCheck className="h-5 w-5" />
         </div>
       </div>
 
       <div className="mt-5 space-y-3 text-sm">
         {recommendation.confirmation.lineItems.map((item) => (
-          <div key={item.label} className="flex justify-between gap-4 text-foreground/90">
+          <div key={item.label} className="flex justify-between gap-4 text-foreground">
             <span>{item.label}</span>
             <span>{item.price === 0 ? "Included" : `₹${item.price}`}</span>
           </div>
         ))}
-        <div className="flex justify-between border-t border-white/10 pt-3 text-muted-foreground">
+        <div className="flex justify-between border-t border-border pt-3 text-muted-foreground">
           <span>Fees</span>
           <span>₹{recommendation.confirmation.fees}</span>
         </div>

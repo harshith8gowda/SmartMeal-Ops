@@ -18,13 +18,13 @@ export function AppNav() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-white/10 bg-slate-950/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-border bg-flour backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-accent text-sm font-bold text-white">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">
             MM
           </div>
-          <span className="font-display text-lg font-semibold tracking-tight">MealMap</span>
+          <span className="font-display text-lg font-semibold tracking-tight text-foreground">MealMap</span>
         </div>
 
         <nav className="hidden items-center gap-1 md:flex">
@@ -53,7 +53,7 @@ export function AppNav() {
         </div>
       </div>
 
-      <nav className="flex items-center justify-center gap-1 border-t border-white/10 px-4 py-2 md:hidden">
+      <nav className="flex items-center justify-center gap-1 border-t border-border px-4 py-2 md:hidden">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = pathname === item.href || pathname.startsWith(`${item.href}/`);

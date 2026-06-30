@@ -73,7 +73,7 @@ export function OnboardingForm() {
 
   return (
     <motion.div initial={reduceMotion ? false : { opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-      <Card className="gradient-border mx-auto max-w-3xl">
+      <Card className="mx-auto max-w-3xl border-border bg-flour text-foreground shadow-sm">
         <CardHeader>
           <CardTitle>Set up your profile</CardTitle>
           <CardDescription>Personalize the copilot for your household</CardDescription>
@@ -96,7 +96,7 @@ export function OnboardingForm() {
               <label className="text-xs font-medium text-muted-foreground">Cook skill</label>
               <select
                 {...register("cookSkill")}
-                className="w-full rounded-xl border border-white/10 bg-white/[0.05] px-3 py-2 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary"
+                className="w-full rounded-xl border border-border bg-porcelain px-3 py-2 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring"
               >
                 <option value="beginner">Beginner</option>
                 <option value="medium">Medium</option>
@@ -144,7 +144,7 @@ export function OnboardingForm() {
           </div>
 
           {Object.values(errors)[0] && (
-            <p className="text-sm text-red-400">Please fill all required fields correctly.</p>
+            <p className="text-sm text-error">Please fill all required fields correctly.</p>
           )}
 
           <Button disabled={isSubmitting} className="w-full md:w-fit">
@@ -171,10 +171,11 @@ function ChoiceButton({ active, onClick, children }: { active: boolean; onClick:
     <button
       type="button"
       onClick={onClick}
+      aria-pressed={active}
       className={`rounded-xl border px-4 py-2 text-sm capitalize transition-all duration-200 ${
         active
-          ? "border-primary/50 bg-primary/15 text-primary shadow-[0_0_16px_-4px_hsl(var(--primary)/0.4)]"
-          : "border-white/10 bg-white/[0.05] text-muted-foreground hover:bg-white/[0.10] hover:text-foreground"
+          ? "border-primary/50 bg-primary-light text-primary"
+          : "border-border bg-porcelain/50 text-muted-foreground hover:bg-porcelain hover:text-foreground"
       }`}
     >
       {children}

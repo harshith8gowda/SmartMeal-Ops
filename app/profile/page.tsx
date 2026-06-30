@@ -64,7 +64,7 @@ export default function ProfilePage() {
           </div>
         ) : (
           <div className="grid gap-6">
-            <Card className="gradient-border p-5">
+            <Card className="p-5">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <h2 className="font-display text-lg font-semibold">{profile.name || "MealMap user"}</h2>

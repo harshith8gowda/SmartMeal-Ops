@@ -64,7 +64,7 @@ export function AssistantPanel({ compact = false }: { compact?: boolean }) {
 
   if (!hydrated) {
     return (
-      <Card className={`gradient-border flex flex-col ${compact ? "h-[460px]" : "h-full min-h-[60vh]"}`}>
+      <Card className={`flex flex-col ${compact ? "h-[460px]" : "h-full min-h-[60vh]"}`}>
         <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
           <Sparkles className="mr-2 h-4 w-4 animate-pulse" /> Loading conversation...
         </div>
@@ -73,9 +73,9 @@ export function AssistantPanel({ compact = false }: { compact?: boolean }) {
   }
 
   return (
-    <Card className={`gradient-border flex flex-col overflow-hidden ${compact ? "h-[460px]" : "h-full min-h-[60vh]"}`}>
-      <div className="flex items-center gap-3 border-b border-white/10 px-5 py-4">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/15 text-primary">
+    <Card className={`flex flex-col overflow-hidden ${compact ? "h-[460px]" : "h-full min-h-[60vh]"}`}>
+      <div className="flex items-center gap-3 border-b border-border px-5 py-4">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-light text-primary">
           <Bot className="h-5 w-5" />
         </div>
         <div>
@@ -99,7 +99,7 @@ export function AssistantPanel({ compact = false }: { compact?: boolean }) {
             >
               <div
                 className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
-                  m.role === "assistant" ? "bg-primary/15 text-primary" : "bg-accent/15 text-accent"
+                  m.role === "assistant" ? "bg-primary-light text-primary" : "bg-order-light text-order"
                 }`}
               >
                 {m.role === "assistant" ? <Bot className="h-4 w-4" /> : <User className="h-4 w-4" />}
@@ -107,7 +107,7 @@ export function AssistantPanel({ compact = false }: { compact?: boolean }) {
               <div
                 className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                   m.role === "assistant"
-                    ? "border border-white/10 bg-white/[0.05] text-foreground"
+                    ? "border border-border bg-secondary text-foreground"
                     : "bg-primary text-primary-foreground"
                 }`}
               >
@@ -122,10 +122,10 @@ export function AssistantPanel({ compact = false }: { compact?: boolean }) {
             animate={{ opacity: 1, y: 0 }}
             className="flex gap-3"
           >
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/15 text-primary">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-light text-primary">
               <Bot className="h-4 w-4" />
             </div>
-            <div className="border border-white/10 bg-white/[0.05] px-4 py-3 text-sm text-muted-foreground">
+            <div className="border border-border bg-secondary px-4 py-3 text-sm text-muted-foreground">
               <span className="mr-1 inline-block h-2 w-2 animate-bounce rounded-full bg-primary" />
               <span className="mr-1 inline-block h-2 w-2 animate-bounce rounded-full bg-primary [animation-delay:0.2s]" />
               <span className="inline-block h-2 w-2 animate-bounce rounded-full bg-primary [animation-delay:0.4s]" />
@@ -134,7 +134,7 @@ export function AssistantPanel({ compact = false }: { compact?: boolean }) {
         )}
       </div>
 
-      <div className="border-t border-white/10 bg-white/[0.03] p-4">
+      <div className="border-t border-border bg-secondary p-4">
         <div className="flex gap-2">
           <Input
             value={input}
@@ -146,7 +146,7 @@ export function AssistantPanel({ compact = false }: { compact?: boolean }) {
               }
             }}
             placeholder="Dinner for 2 tonight under ₹700"
-            className="bg-white/[0.06]"
+            className="bg-flour"
           />
           <Button onClick={send} disabled={loading} aria-label="Send message" size="icon" className="shrink-0">
             <Send className="h-4 w-4" />

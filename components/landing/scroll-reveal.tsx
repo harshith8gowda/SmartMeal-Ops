@@ -1,7 +1,8 @@
 "use client";
 
-import { motion, useReducedMotion, Variants } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { ReactNode } from "react";
+import { useMotionPreference } from "@/lib/hooks/use-reduced-motion";
 
 const revealVariants: Variants = {
   hidden: { opacity: 0, y: 24 },
@@ -21,7 +22,7 @@ export function ScrollReveal({
   className?: string;
   delay?: number;
 }) {
-  const reduceMotion = useReducedMotion();
+  const { reduceMotion } = useMotionPreference();
   if (reduceMotion) {
     return <div className={className}>{children}</div>;
   }
@@ -49,7 +50,7 @@ export function StaggerReveal({
   className?: string;
   delay?: number;
 }) {
-  const reduceMotion = useReducedMotion();
+  const { reduceMotion } = useMotionPreference();
   if (reduceMotion) {
     return <div className={className}>{children}</div>;
   }
