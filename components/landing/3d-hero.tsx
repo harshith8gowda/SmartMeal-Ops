@@ -28,7 +28,7 @@ export function Hero3D() {
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_40%,hsl(var(--primary)/0.15),transparent_50%)]" />
         }
       >
-        <MealMapOrbit className="opacity-80" speed={0.15} interaction={true} />
+        <MealMapOrbit className="opacity-70" speed={0.15} interaction={true} />
       </SceneProvider>
 
       <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-32 lg:px-8">

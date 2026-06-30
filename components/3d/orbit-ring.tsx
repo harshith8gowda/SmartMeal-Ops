@@ -33,7 +33,7 @@ export function OrbitRing({ speed = 0.2, radius = 3.5, autoRotate = true, tier =
   });
 
   return (
-    <group ref={ringRef} rotation={[0.2, 0, 0]}>
+    <group ref={ringRef} rotation={[0.2, 0, 0]} position={[1.5, 0, 0]}>
       {displayTokens.map((t, i) => {
         const rad = (t.angle * Math.PI) / 180;
         return (

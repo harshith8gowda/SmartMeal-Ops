@@ -35,7 +35,7 @@ export function Steps3D() {
             <ScrollReveal key={s.n} delay={i * 0.12}>
               <TiltCard>
                 <div className="premium-card p-8">
-                  <span className="text-5xl font-bold text-primary/20">
+                  <span className="text-5xl font-bold text-primary/40">
                     {s.n}
                   </span>
                   <h3 className="mt-4 text-xl font-semibold text-foreground">
