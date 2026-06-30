@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, Loader2, X, ShoppingBag } from "lucide-react";
-import type { ComparisonRecommendation } from "./comparison-card";
+import type { ComparisonRecommendation } from "./comparison-card-v2";
 
 export function CartSummary({
   recommendation,

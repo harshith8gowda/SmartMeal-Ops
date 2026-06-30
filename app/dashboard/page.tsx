@@ -3,12 +3,11 @@
 import { useState } from "react";
 import { AppNav } from "@/components/layout/nav";
 import { InputBar, type InputValues } from "@/components/dashboard/input-bar";
-import { ComparisonCardV2 } from "@/components/dashboard/comparison-card-v2";
+import { ComparisonCardV2, ComparisonRecommendation } from "@/components/dashboard/comparison-card-v2";
 import { CartSummary } from "@/components/dashboard/cart-summary";
 import { DashboardHeaderV2 } from "@/components/dashboard/dashboard-header-v2";
 import { ScrollReveal } from "@/components/landing/scroll-reveal";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ComparisonRecommendation } from "@/components/dashboard/comparison-card";
 
 type Recommendations = {
   cook: ComparisonRecommendation;

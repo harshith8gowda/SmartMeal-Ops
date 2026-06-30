@@ -7,6 +7,18 @@ import { cn } from "@/lib/utils/cn";
 
 export type ComparisonMode = "cook" | "order" | "dineout";
 
+export type ComparisonRecommendation = {
+  source: ComparisonMode;
+  title: string;
+  description: string;
+  cost: number;
+  timeMinutes: number;
+  effort: "low" | "medium" | "high";
+  imageUrl?: string;
+  items: { name: string; quantity?: string; price?: number }[];
+  actionLabel: string;
+};
+
 export type ComparisonCardV2Props = {
   mode: ComparisonMode;
   title: string;
