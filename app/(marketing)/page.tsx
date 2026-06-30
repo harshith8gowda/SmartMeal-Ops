@@ -1,26 +1,15 @@
-import type { Metadata } from "next";
-import { Hero3D } from "@/components/landing/3d-hero";
-import { OrbitFeatures } from "@/components/landing/orbit-features";
-import { Steps3D } from "@/components/landing/steps-3d";
-import { MotionFooter } from "@/components/landing/motion-footer";
-import { MarketingNavV2 } from "@/components/nav/marketing-nav-v2";
-
-export const metadata: Metadata = {
-  title: {
-    absolute: "MealMap — Decide dinner. Build the cart. Swiggy handles the rest.",
-  },
-  description:
-    "Compare cooking, ordering, and dining out side by side. Plan your week and build carts in Swiggy with one tap.",
-};
+import { HeroV2 } from "@/components/landing/hero-v2";
+import { FeaturesV2 } from "@/components/landing/features-v2";
+import { HowItWorksV2 } from "@/components/landing/how-it-works-v2";
+import { FooterV2 } from "@/components/landing/footer-v2";
 
 export default function MarketingPage() {
   return (
     <main className="bg-background">
-      <MarketingNavV2 />
-      <Hero3D />
-      <OrbitFeatures />
-      <Steps3D />
-      <MotionFooter />
+      <HeroV2 />
+      <FeaturesV2 />
+      <HowItWorksV2 />
+      <FooterV2 />
     </main>
   );
 }
