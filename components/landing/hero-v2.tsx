@@ -18,7 +18,7 @@ export function HeroV2() {
             <motion.p
               initial={reduceMotion ? undefined : { opacity: 0, y: 12 }}
               animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-              className="text-sm font-semibold uppercase tracking-wide text-primary"
+              className="text-sm font-semibold text-primary"
             >
               Swiggy-powered food copilot
             </motion.p>
