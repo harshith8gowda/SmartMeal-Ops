@@ -45,17 +45,17 @@ export function HeroV2() {
               transition={{ delay: 0.15 }}
               className="mt-8 flex flex-wrap items-center gap-4"
             >
-              <Link href={"/sign-up" as Route}>
-                <Button size="lg" className="h-12 px-6 text-base">
+              <Button asChild size="lg" className="h-12 px-6 text-base">
+                <Link href={"/sign-up" as Route}>
                   Get started free
                   <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
-              <Link href={"/sign-in" as Route}>
-                <Button variant="secondary" size="lg" className="h-12 px-6 text-base">
+                </Link>
+              </Button>
+              <Button asChild variant="secondary" size="lg" className="h-12 px-6 text-base">
+                <Link href={"/sign-in" as Route}>
                   Already have an account?
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </motion.div>
           </div>
 
