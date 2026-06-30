@@ -15,12 +15,12 @@ export function FooterV2() {
           Join MealMap and let Swiggy do the heavy lifting.
         </p>
         <div className="mt-8 flex justify-center gap-4">
-          <Link href={"/sign-up" as Route}>
-            <Button size="lg">Get started free</Button>
-          </Link>
-          <Link href={"/sign-in" as Route}>
-            <Button variant="secondary" size="lg">Already have an account?</Button>
-          </Link>
+          <Button asChild size="lg">
+            <Link href={"/sign-up" as Route}>Get started free</Link>
+          </Button>
+          <Button asChild variant="secondary" size="lg">
+            <Link href={"/sign-in" as Route}>Already have an account?</Link>
+          </Button>
         </div>
         <p className="mt-12 text-xs text-muted-foreground">
           © {new Date().getFullYear()} MealMap. No real orders are placed here.
