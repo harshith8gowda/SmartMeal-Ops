@@ -9,6 +9,7 @@ const badgeVariants = cva("inline-flex items-center rounded-full border px-2.5 p
       accent: "border-border bg-order-light text-order",
       success: "border-border bg-cook-light text-cook",
       warning: "border-border bg-order-light text-order",
+      dineout: "border-border bg-dineout-light text-dineout",
       outline: "border-border bg-transparent text-foreground"
     }
   },

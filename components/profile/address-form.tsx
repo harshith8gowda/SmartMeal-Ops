@@ -110,7 +110,7 @@ export function AddressForm({ addresses }: { addresses: Address[] }) {
                 <p className="text-sm text-muted-foreground">{a.address}, {a.city} - {a.pincode}</p>
               </div>
             </div>
-            <button onClick={() => onDelete(a.id)} className="text-muted-foreground hover:text-red-400">
+            <button onClick={() => onDelete(a.id)} className="text-muted-foreground hover:text-error">
               <Trash2 className="h-4 w-4" />
             </button>
           </li>

@@ -90,7 +90,7 @@ export function PantryManager({ pantryItems }: { pantryItems: PantryItem[] }) {
           <Plus className="h-4 w-4" /> Add
         </Button>
       </form>
-      {errors.item && <p className="px-5 text-sm text-red-400">{errors.item.message}</p>}
+      {errors.item && <p className="px-5 text-sm text-error">{errors.item.message}</p>}
 
       <ul className="mt-4 max-h-64 space-y-2 overflow-auto px-5 pb-5 scrollbar-hide">
         {items.map((item) => (
@@ -103,7 +103,7 @@ export function PantryManager({ pantryItems }: { pantryItems: PantryItem[] }) {
             </span>
             <button
               onClick={() => onDelete(item.id)}
-              className="text-muted-foreground transition-colors hover:text-red-400"
+              className="text-muted-foreground transition-colors hover:text-error"
               aria-label={`Delete ${item.item}`}
             >
               <Trash2 className="h-4 w-4" />

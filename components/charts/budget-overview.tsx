@@ -12,7 +12,7 @@ export function BudgetOverview({
   const labels = [
     { label: "Groceries", key: "COOK", color: "bg-primary" },
     { label: "Ordering", key: "ORDER", color: "bg-accent" },
-    { label: "Dineout", key: "DINEOUT", color: "bg-warning" }
+    { label: "Dineout", key: "DINEOUT", color: "bg-dineout" }
   ];
 
   const maxValue = Math.max(monthlyBudget, spent, 1);

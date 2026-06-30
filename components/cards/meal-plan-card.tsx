@@ -12,7 +12,7 @@ const sourceLabels = {
 const sourceVariant = {
   COOK: "default" as const,
   ORDER: "accent" as const,
-  DINEOUT: "warning" as const
+  DINEOUT: "dineout" as const
 };
 
 export function MealPlanCard({ meal }: { meal: MealCard }) {
@@ -20,7 +20,7 @@ export function MealPlanCard({ meal }: { meal: MealCard }) {
     <Card className="group transition-all duration-300 hover:-translate-y-0.5">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{meal.day}</p>
+          <p className="text-xs font-semibold text-muted-foreground">{meal.day}</p>
           <h3 className="mt-1 font-display text-lg font-semibold">{meal.title}</h3>
           {meal.reason ? <p className="mt-1 text-sm text-muted-foreground">{meal.reason}</p> : null}
         </div>

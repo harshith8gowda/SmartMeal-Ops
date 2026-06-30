@@ -47,7 +47,7 @@ export function ConfirmationCard({
       <div className="absolute inset-x-0 top-0 h-1 bg-primary" />
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-success">
+          <p className="flex items-center gap-1.5 text-xs font-semibold text-success">
             <ShieldCheck className="h-3.5 w-3.5" /> Final confirmation
           </p>
           <h3 className="mt-1 font-display text-xl font-semibold">{recommendation.confirmation.title}</h3>
