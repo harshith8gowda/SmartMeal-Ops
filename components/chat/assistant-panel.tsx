@@ -45,16 +45,16 @@ export function AssistantPanel({ compact = false }: { compact?: boolean }) {
     setInput("");
     setLoading(true);
     try {
-      const res = await fetch("/api/ai/plan", {
+      const res = await fetch("/api/ai/chat", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ prompt: input })
+        body: JSON.stringify({ message: input })
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Planner failed");
-      setMessages((prev) => [...prev, { role: "assistant", content: data.summary }]);
+      if (!res.ok) throw new Error(data.error || "Assistant failed");
+      setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "I could not reach the planner. Try again in a moment.";
+      const message = error instanceof Error ? error.message : "I could not reach the assistant. Try again in a moment.";
       setMessages((prev) => [...prev, { role: "assistant", content: message }]);
       toast.error(message);
     } finally {

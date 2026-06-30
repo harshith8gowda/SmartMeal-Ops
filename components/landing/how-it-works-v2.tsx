@@ -5,18 +5,18 @@ import { motion, useReducedMotion } from "framer-motion";
 const steps = [
   {
     n: "01",
-    title: "Set your mood",
-    body: "Tell MealMap what you crave, your budget, and dietary goals.",
+    title: "Set your goal",
+    body: "Tell MealMap your budget, household size, diet, and what you want to improve.",
   },
   {
     n: "02",
     title: "See the map",
-    body: "AI surfaces the best Cook, Order, and Dineout options for tonight.",
+    body: "AI surfaces the best Cook, Order, and Dineout options for tonight and the week.",
   },
   {
     n: "03",
     title: "Build and go",
-    body: "Add the winning choice to your Swiggy cart and checkout there.",
+    body: "Add the winning choice to your Swiggy cart or grocery list and checkout there.",
   },
 ];
 

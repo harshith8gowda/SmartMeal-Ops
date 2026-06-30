@@ -8,8 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
-import { User, Link2, Loader2 } from "lucide-react";
+import { User, Link2 } from "lucide-react";
 
 type ProfileUser = {
   id: string;
@@ -43,7 +42,6 @@ function getInitials(name: string | null) {
 export default function ProfilePage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [addresses, setAddresses] = useState<Address[] | null>(null);
-  const [connecting, setConnecting] = useState(false);
 
   useEffect(() => {
     fetch("/api/profile")
@@ -54,19 +52,8 @@ export default function ProfilePage() {
       .then((data) => setAddresses(data.addresses || []));
   }, []);
 
-  async function handleConnectSwiggy() {
-    setConnecting(true);
-    try {
-      const res = await fetch("/api/swiggy/connect", { method: "POST" });
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        toast.error("Could not start Swiggy connection");
-      }
-    } finally {
-      setConnecting(false);
-    }
+  function handleConnectSwiggy() {
+    window.location.href = "/api/swiggy/connect";
   }
 
   const user = profile?.user;
@@ -120,8 +107,7 @@ export default function ProfilePage() {
                     )}
                   </div>
                 </div>
-                <Button variant="secondary" onClick={handleConnectSwiggy} disabled={connecting} className="gap-2">
-                  {connecting && <Loader2 className="h-4 w-4 animate-spin" />}
+                <Button variant="secondary" onClick={handleConnectSwiggy} className="gap-2">
                   <Link2 className="h-4 w-4" />
                   Connect Swiggy
                 </Button>

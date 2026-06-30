@@ -20,7 +20,7 @@ export function HeroV2() {
               animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
               className="text-sm font-semibold text-primary"
             >
-              Swiggy-powered food copilot
+              Goal-first food planning
             </motion.p>
             <motion.h1
               initial={reduceMotion ? undefined : { opacity: 0, y: 20 }}
@@ -28,8 +28,8 @@ export function HeroV2() {
               transition={{ delay: 0.05 }}
               className="mt-4 font-display text-4xl font-bold leading-tight text-foreground sm:text-5xl lg:text-6xl"
             >
-              Decide dinner. <br />
-              <span className="text-primary">No second guessing.</span>
+              Eat better, spend less, <br />
+              <span className="text-primary">decide faster.</span>
             </motion.h1>
             <motion.p
               initial={reduceMotion ? undefined : { opacity: 0, y: 20 }}
@@ -37,7 +37,7 @@ export function HeroV2() {
               transition={{ delay: 0.1 }}
               className="mt-6 text-lg text-muted-foreground"
             >
-              MealMap compares Cook, Order, and Dineout on Swiggy, plans your week, and builds your cart — all in one place.
+              MealMap turns your food goals into a weekly plan: compare Cook, Order, and Dineout on Swiggy, stay inside budget, and build your cart — all in one place.
             </motion.p>
             <motion.div
               initial={reduceMotion ? undefined : { opacity: 0, y: 20 }}
@@ -52,8 +52,8 @@ export function HeroV2() {
                 </Link>
               </Button>
               <Button asChild variant="secondary" size="lg" className="h-12 px-6 text-base">
-                <Link href={"/sign-in" as Route}>
-                  Already have an account?
+                <Link href={"/goal" as Route}>
+                  Set your goal
                 </Link>
               </Button>
             </motion.div>

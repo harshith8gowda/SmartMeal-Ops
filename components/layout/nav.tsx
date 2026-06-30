@@ -4,11 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
-import { CalendarDays, ShoppingBag, Package, User, LayoutDashboard } from "lucide-react";
+import { CalendarDays, ShoppingBag, Package, User, LayoutDashboard, Target, ShoppingCart } from "lucide-react";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/goal", label: "Goals", icon: Target },
   { href: "/meal-plan", label: "Meal Plan", icon: CalendarDays },
+  { href: "/grocery", label: "Groceries", icon: ShoppingCart },
   { href: "/orders", label: "Orders", icon: ShoppingBag },
   { href: "/pantry", label: "Pantry", icon: Package },
   { href: "/profile", label: "Profile", icon: User }

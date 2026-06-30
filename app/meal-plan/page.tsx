@@ -6,8 +6,9 @@ import { WeekGrid, type MealSlot } from "@/components/meal-plan/week-grid";
 import { SlotSheet, type SlotFormData } from "@/components/meal-plan/slot-sheet";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Loader2, Sparkles, Trash2, ExternalLink } from "lucide-react";
+import { Loader2, Sparkles, Trash2, ExternalLink, CalendarDays } from "lucide-react";
 import { ScrollReveal } from "@/components/landing/scroll-reveal";
+import { EmptyState } from "@/components/ui/empty-state";
 
 export default function MealPlanPage() {
   const [slots, setSlots] = useState<MealSlot[]>([]);
@@ -167,6 +168,14 @@ export default function MealPlanPage() {
 
         {loading ? (
           <div className="py-12 text-center text-muted-foreground">Loading plan...</div>
+        ) : slots.length === 0 ? (
+          <EmptyState
+            icon={CalendarDays}
+            title="No meals planned yet"
+            description="Tap any slot to add a meal, or use AI plan to fill the week."
+            action="AI plan"
+            onAction={handleAiPlan}
+          />
         ) : (
           <WeekGrid slots={slots} onSlotClick={setActiveSlot} />
         )}

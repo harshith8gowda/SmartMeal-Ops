@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { ChefHat, Bike, MapPin, CalendarDays, ShoppingCart } from "lucide-react";
+import { ChefHat, Bike, MapPin, CalendarDays, ShoppingCart, Target } from "lucide-react";
 
 const features = [
   {
@@ -9,6 +9,12 @@ const features = [
     body: "Cook, Order, and Dineout ranked by price, time, and what you already have at home.",
     icon: CompareIcon,
     span: "lg:col-span-2 lg:row-span-2",
+  },
+  {
+    title: "Goal-first planning",
+    body: "Set a monthly budget and dietary goal, then track your spend and weekly adherence.",
+    icon: TargetIcon,
+    span: "",
   },
   {
     title: "Weekly planner",
@@ -37,6 +43,14 @@ function CompareIcon() {
         <MapPin className="h-5 w-5" />
       </span>
     </div>
+  );
+}
+
+function TargetIcon() {
+  return (
+    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-light text-primary">
+      <Target className="h-5 w-5" />
+    </span>
   );
 }
 

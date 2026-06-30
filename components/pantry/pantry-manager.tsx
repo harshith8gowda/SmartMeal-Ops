@@ -7,8 +7,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { EmptyState } from "@/components/ui/empty-state";
 import { toast } from "sonner";
-import { Trash2, Plus } from "lucide-react";
+import { Trash2, Plus, Package } from "lucide-react";
 
 type PantryItem = {
   id: string;
@@ -92,25 +93,35 @@ export function PantryManager({ pantryItems }: { pantryItems: PantryItem[] }) {
       </form>
       {errors.item && <p className="px-5 text-sm text-error">{errors.item.message}</p>}
 
-      <ul className="mt-4 max-h-64 space-y-2 overflow-auto px-5 pb-5 scrollbar-hide">
-        {items.map((item) => (
-          <li
-            key={item.id}
-            className="flex items-center justify-between rounded-xl border border-border bg-porcelain px-4 py-3 text-sm transition-colors hover:bg-secondary"
-          >
-            <span className="text-foreground">
-              {item.item} <span className="text-muted-foreground">— {item.qty} {item.unit}</span>
-            </span>
-            <button
-              onClick={() => onDelete(item.id)}
-              className="text-muted-foreground transition-colors hover:text-error"
-              aria-label={`Delete ${item.item}`}
+      {items.length === 0 ? (
+        <div className="px-5 pb-5">
+          <EmptyState
+            icon={Package}
+            title="Pantry is empty"
+            description="Add staples like rice, eggs, or paneer so MealMap can skip them in your grocery list."
+          />
+        </div>
+      ) : (
+        <ul className="mt-4 max-h-64 space-y-2 overflow-auto px-5 pb-5 scrollbar-hide">
+          {items.map((item) => (
+            <li
+              key={item.id}
+              className="flex items-center justify-between rounded-xl border border-border bg-porcelain px-4 py-3 text-sm transition-colors hover:bg-secondary"
             >
-              <Trash2 className="h-4 w-4" />
-            </button>
-          </li>
-        ))}
-      </ul>
+              <span className="text-foreground">
+                {item.item} <span className="text-muted-foreground">— {item.qty} {item.unit}</span>
+              </span>
+              <button
+                onClick={() => onDelete(item.id)}
+                className="text-muted-foreground transition-colors hover:text-error"
+                aria-label={`Delete ${item.item}`}
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </Card>
   );
 }

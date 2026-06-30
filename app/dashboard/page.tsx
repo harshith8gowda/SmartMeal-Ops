@@ -6,8 +6,11 @@ import { InputBar, type InputValues } from "@/components/dashboard/input-bar";
 import { ComparisonCardV2, ComparisonRecommendation } from "@/components/dashboard/comparison-card-v2";
 import { CartSummary } from "@/components/dashboard/cart-summary";
 import { DashboardHeaderV2 } from "@/components/dashboard/dashboard-header-v2";
+import { BudgetOverview } from "@/components/charts/budget-overview";
 import { ScrollReveal } from "@/components/landing/scroll-reveal";
 import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Wallet, Sparkles } from "lucide-react";
 
 type UserProfile = {
   id: string;
@@ -47,6 +50,7 @@ type Recommendations = {
 export default function DashboardPage() {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [recommendations, setRecommendations] = useState<Recommendations | null>(null);
+  const [budget, setBudget] = useState<{ monthlyBudget: number; spent: number; bySource: Record<string, number> } | null>(null);
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState<ComparisonRecommendation | null>(null);
 
@@ -54,6 +58,9 @@ export default function DashboardPage() {
     fetch("/api/profile")
       .then((res) => res.json())
       .then((data) => setProfile(data));
+    fetch("/api/budget")
+      .then((res) => res.json())
+      .then((data) => setBudget(data));
   }, []);
 
   async function fetchRecommendations(input: InputValues) {
@@ -94,7 +101,7 @@ export default function DashboardPage() {
         </ScrollReveal>
 
         <div className="grid gap-6 md:grid-cols-3">
-          {loading || !recommendations ? (
+          {loading ? (
             [1, 2, 3].map((i) => (
               <div key={i} className="flex flex-col rounded-2xl border border-border bg-flour p-5 shadow-sm">
                 <Skeleton className="mb-5 h-12 w-12 rounded-xl" />
@@ -104,6 +111,14 @@ export default function DashboardPage() {
                 <Skeleton className="mt-auto h-10 w-full" />
               </div>
             ))
+          ) : !recommendations ? (
+            <div className="md:col-span-3">
+              <EmptyState
+                icon={Sparkles}
+                title="What are you eating today?"
+                description="Set your budget, time, and mood above to get Cook, Order, and Dineout recommendations."
+              />
+            </div>
           ) : (
             <>
               <ScrollReveal delay={0.2}>
@@ -156,6 +171,30 @@ export default function DashboardPage() {
         </div>
 
         {selected && <CartSummary recommendation={selected} onClose={() => setSelected(null)} />}
+
+        <ScrollReveal delay={0.5}>
+          <div className="mt-10">
+            <div className="mb-4 flex items-center gap-2">
+              <Wallet className="h-5 w-5 text-primary" />
+              <h2 className="font-display text-xl font-semibold">Budget this month</h2>
+            </div>
+            {budget ? (
+              <div className="md:max-w-md">
+                <BudgetOverview
+                  monthlyBudget={budget.monthlyBudget}
+                  spent={budget.spent}
+                  bySource={budget.bySource}
+                />
+              </div>
+            ) : (
+              <div className="flex flex-col rounded-2xl border border-border bg-flour p-5 shadow-sm md:max-w-md">
+                <Skeleton className="mb-4 h-6 w-1/2" />
+                <Skeleton className="h-2.5 w-full" />
+                <Skeleton className="mt-4 h-2 w-2/3" />
+              </div>
+            )}
+          </div>
+        </ScrollReveal>
       </main>
     </>
   );
