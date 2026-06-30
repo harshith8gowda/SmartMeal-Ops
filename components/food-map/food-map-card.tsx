@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
@@ -24,10 +24,11 @@ const modeLabels = { cook: "Cook", order: "Order", dineout: "Dineout" };
 
 export function FoodMapCard({ mode, title, description, price, time, icon: Icon, image }: FoodMapCardProps) {
   const style = modeStyles[mode];
+  const reduceMotion = useReducedMotion();
 
   return (
     <motion.article
-      whileHover={{ y: -4 }}
+      whileHover={reduceMotion ? undefined : { y: -4 }}
       transition={{ duration: 0.2 }}
       className={cn(
         "relative flex w-72 shrink-0 flex-col overflow-hidden rounded-2xl border bg-flour shadow-md",
