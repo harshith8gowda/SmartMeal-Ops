@@ -5,6 +5,8 @@ export const MealPlanItemSchema = z.object({
   title: z.string(),
   calories: z.number().int().min(0),
   protein: z.number().min(0),
+  carbs: z.number().min(0).default(0),
+  fat: z.number().min(0).default(0),
   cost: z.number().int().min(0),
   prepMinutes: z.number().int().min(0),
   source: z.enum(["COOK", "ORDER", "DINEOUT"]),

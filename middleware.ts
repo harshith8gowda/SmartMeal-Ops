@@ -6,11 +6,14 @@ const isProtectedRoute = createRouteMatcher([
   "/goal(.*)",
   "/meal-plan(.*)",
   "/grocery(.*)",
+  "/nutrition(.*)",
+  "/recipes(.*)",
   "/orders(.*)",
   "/profile(.*)",
   "/chat(.*)",
   "/onboarding(.*)",
   "/pantry(.*)",
+  "/notifications(.*)",
   "/api/((?!webhooks|health).*)"
 ]);
 

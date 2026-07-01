@@ -12,6 +12,7 @@ export type MealSlot = {
   cost: number;
   timeMinutes: number;
   effort?: string;
+  items?: unknown;
 };
 
 const sourceConfig = {

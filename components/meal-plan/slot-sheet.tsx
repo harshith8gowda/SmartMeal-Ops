@@ -4,7 +4,8 @@ import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { X, ChefHat, ShoppingBag, UtensilsCrossed, Loader2 } from "lucide-react";
+import { X, ChefHat, ShoppingBag, UtensilsCrossed, Loader2, BookOpen } from "lucide-react";
+import { toast } from "sonner";
 import type { MealSlot } from "./week-grid";
 
 export type SlotFormData = {
@@ -16,6 +17,10 @@ export type SlotFormData = {
   description: string;
   cost: number;
   timeMinutes: number;
+  calories?: number;
+  protein?: number;
+  carbs?: number;
+  fat?: number;
 };
 
 const SOURCE_OPTIONS: { value: "cook" | "order" | "dineout"; label: string; icon: typeof ChefHat }[] = [
@@ -35,13 +40,19 @@ export function SlotSheet({
   onSave: (data: SlotFormData) => Promise<void>;
   onDelete?: () => Promise<void>;
 }) {
+  const items = slot.items as { nutrition?: { calories?: number; protein?: number; carbs?: number; fat?: number } } | null;
   const [source, setSource] = useState<"cook" | "order" | "dineout">(slot.source || "cook");
   const [title, setTitle] = useState(slot.title || "");
   const [description, setDescription] = useState(slot.description || "");
   const [cost, setCost] = useState(slot.cost || 0);
   const [timeMinutes, setTimeMinutes] = useState(slot.timeMinutes || 30);
+  const [calories, setCalories] = useState(items?.nutrition?.calories ?? 0);
+  const [protein, setProtein] = useState(items?.nutrition?.protein ?? 0);
+  const [carbs, setCarbs] = useState(items?.nutrition?.carbs ?? 0);
+  const [fat, setFat] = useState(items?.nutrition?.fat ?? 0);
   const [loading, setLoading] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [savingRecipe, setSavingRecipe] = useState(false);
   const reducedMotion = useReducedMotion();
 
   async function handleSave() {
@@ -54,7 +65,11 @@ export function SlotSheet({
       title: title || `${source} option`,
       description,
       cost,
-      timeMinutes
+      timeMinutes,
+      calories,
+      protein,
+      carbs,
+      fat
     });
     setLoading(false);
   }
@@ -64,6 +79,36 @@ export function SlotSheet({
     setDeleting(true);
     await onDelete();
     setDeleting(false);
+  }
+
+  async function handleSaveAsRecipe() {
+    setSavingRecipe(true);
+    try {
+      const res = await fetch("/api/recipes", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          title: title || `${source} option`,
+          description,
+          source: source.toUpperCase(),
+          calories,
+          protein,
+          carbs,
+          fat,
+          ingredients: description ? [description] : [],
+          steps: [],
+          cookTimeMinutes: timeMinutes,
+          cost,
+          isFavorite: true
+        })
+      });
+      if (!res.ok) throw new Error("Failed to save recipe");
+      toast.success("Saved to recipe collection");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to save recipe");
+    } finally {
+      setSavingRecipe(false);
+    }
   }
 
   return (
@@ -144,6 +189,35 @@ export function SlotSheet({
               />
             </div>
           </div>
+          <div>
+            <label className="text-sm text-muted-foreground">Nutrition</label>
+            <div className="grid grid-cols-2 gap-4">
+              <Input
+                type="number"
+                placeholder="Calories"
+                value={calories}
+                onChange={(e) => setCalories(Number(e.target.value))}
+              />
+              <Input
+                type="number"
+                placeholder="Protein (g)"
+                value={protein}
+                onChange={(e) => setProtein(Number(e.target.value))}
+              />
+              <Input
+                type="number"
+                placeholder="Carbs (g)"
+                value={carbs}
+                onChange={(e) => setCarbs(Number(e.target.value))}
+              />
+              <Input
+                type="number"
+                placeholder="Fat (g)"
+                value={fat}
+                onChange={(e) => setFat(Number(e.target.value))}
+              />
+            </div>
+          </div>
         </div>
 
         <div className="mt-8 flex gap-3">
@@ -155,6 +229,17 @@ export function SlotSheet({
             Save slot
           </Button>
         </div>
+
+        <Button
+          variant="outline"
+          onClick={handleSaveAsRecipe}
+          disabled={savingRecipe}
+          className="mt-3 w-full gap-2 border-primary text-primary hover:bg-primary/10"
+        >
+          {savingRecipe && <Loader2 className="h-4 w-4 animate-spin" />}
+          <BookOpen className="h-4 w-4" />
+          Save as recipe
+        </Button>
 
         {slot.id && onDelete && (
           <Button

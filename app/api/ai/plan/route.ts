@@ -5,6 +5,8 @@ import { ensureDbUser } from "@/lib/auth/clerk";
 import { getPantryItems } from "@/lib/db/pantry";
 import { getMonthlySpend } from "@/lib/db/orders";
 import { bulkCreateMealSlots } from "@/lib/db/meal-slot";
+import { createRecipe } from "@/lib/db/recipe";
+import { createNotification } from "@/lib/db/notification";
 import { getPreference } from "@/lib/db/preference";
 import { getAddresses } from "@/lib/db/address";
 import { appendMessage } from "@/lib/db/conversation";
@@ -100,10 +102,37 @@ export async function POST(req: NextRequest) {
           timeMinutes: meal.prepMinutes,
           items: {
             ingredients: meal.ingredients ?? [],
-            providerSuggestion: meal.providerSuggestion
+            providerSuggestion: meal.providerSuggestion,
+            nutrition: {
+              calories: meal.calories,
+              protein: meal.protein,
+              carbs: meal.carbs,
+              fat: meal.fat
+            }
           } as Prisma.InputJsonValue
         }))
       ),
+      ...meals.map((meal) =>
+        createRecipe(user.id, {
+          title: meal.title,
+          description: meal.reason,
+          source: meal.source,
+          calories: meal.calories,
+          protein: meal.protein,
+          carbs: meal.carbs,
+          fat: meal.fat,
+          ingredients: meal.ingredients ?? [],
+          steps: [],
+          cookTimeMinutes: meal.prepMinutes,
+          cost: meal.cost
+        })
+      ),
+      createNotification(user.id, {
+        title: "AI meal plan ready",
+        body: `${meals.length} dinners planned for the week.`,
+        type: "ai_plan",
+        actionUrl: "/meal-plan"
+      }),
       appendMessage(user.id, { role: "user", content: prompt, createdAt: new Date().toISOString() }),
       appendMessage(user.id, {
         role: "assistant",

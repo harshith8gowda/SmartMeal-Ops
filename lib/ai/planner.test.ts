@@ -35,7 +35,9 @@ describe("getMissingIngredients", () => {
         prepMinutes: 10,
         source: "COOK" as const,
         ingredients: ["Rice", "Chicken", "Paneer"],
-        reason: "Test"
+        reason: "Test",
+        carbs: 20,
+        fat: 5
       }
     ];
     const missing = getMissingIngredients(meals, ["rice", "paneer"]);
@@ -54,7 +56,9 @@ describe("getMissingIngredients", () => {
         prepMinutes: 10,
         source: "COOK" as const,
         ingredients: ["Rice"],
-        reason: "Test"
+        reason: "Test",
+        carbs: 20,
+        fat: 5
       }
     ];
     expect(getMissingIngredients(meals, ["rice"])).toHaveLength(0);

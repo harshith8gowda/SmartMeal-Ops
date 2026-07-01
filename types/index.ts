@@ -6,6 +6,8 @@ export interface MealCard {
   title: string;
   calories: number;
   protein: number;
+  carbs: number;
+  fat: number;
   cost: number;
   prepMinutes: number;
   source: DecisionSource;

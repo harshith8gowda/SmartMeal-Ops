@@ -3,12 +3,15 @@ import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import {
   getMealSlots,
+  getMealSlotById,
   createMealSlot,
   updateMealSlot,
   deleteMealSlot,
   clearMealSlots,
   type MealSlotInput
 } from "@/lib/db/meal-slot";
+import { recalculateNutritionLogForDate } from "@/lib/db/nutrition";
+import { createNotification } from "@/lib/db/notification";
 import { ensureDbUser } from "@/lib/auth/clerk";
 import { mapErrorToResponse } from "@/lib/errors";
 
@@ -70,12 +73,21 @@ export async function POST(req: NextRequest) {
       const start = new Date(body.start);
       const end = new Date(body.end);
       await clearMealSlots(user.id, start, end);
+      const dates = [];
+      for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
+        dates.push(new Date(d));
+      }
+      await Promise.all(dates.map((date) => recalculateNutritionLogForDate(user.id, date)));
       return NextResponse.json({ success: true });
     }
 
     if (action === "delete") {
       const id = z.string().parse(body.id);
+      const slot = await getMealSlotById(id, user.id);
       await deleteMealSlot(id, user.id);
+      if (slot) {
+        await recalculateNutritionLogForDate(user.id, slot.date);
+      }
       return NextResponse.json({ success: true });
     }
 
@@ -98,6 +110,21 @@ export async function POST(req: NextRequest) {
         return slot.id ? updateMealSlot(slot.id, user.id, data) : createMealSlot(user.id, data);
       })
     );
+
+    const dates = new Set(results.map((r) => r.date.toISOString().split("T")[0]));
+    await Promise.all(
+      [...dates].map((dateStr) => recalculateNutritionLogForDate(user.id, new Date(dateStr)))
+    );
+
+    const firstSlot = results[0];
+    if (firstSlot) {
+      await createNotification(user.id, {
+        title: firstSlot.id ? "Meal slot updated" : "Meal slot saved",
+        body: `"${firstSlot.title}" is planned for ${firstSlot.date.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "short" })}.`,
+        type: "meal_slot",
+        actionUrl: "/meal-plan"
+      });
+    }
 
     return NextResponse.json({ slots: results });
   } catch (error) {

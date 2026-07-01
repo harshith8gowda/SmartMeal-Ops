@@ -36,10 +36,23 @@ export default function MealPlanPage() {
   }
 
   async function handleSave(data: SlotFormData) {
+    const existingItems = (activeSlot?.items as Record<string, unknown> | null) ?? {};
+    const slot = {
+      ...data,
+      items: {
+        ...existingItems,
+        nutrition: {
+          calories: data.calories ?? 0,
+          protein: data.protein ?? 0,
+          carbs: data.carbs ?? 0,
+          fat: data.fat ?? 0
+        }
+      }
+    };
     const res = await fetch("/api/meal-plan", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ slots: [data] })
+      body: JSON.stringify({ slots: [slot] })
     });
     if (!res.ok) {
       toast.error("Could not save slot");

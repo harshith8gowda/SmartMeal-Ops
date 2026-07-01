@@ -4,13 +4,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
-import { CalendarDays, ShoppingBag, Package, User, LayoutDashboard, Target, ShoppingCart } from "lucide-react";
+import { CalendarDays, ShoppingBag, Package, User, LayoutDashboard, Target, ShoppingCart, Flame, BookOpen } from "lucide-react";
+import { NotificationBell } from "@/components/notifications/notification-bell";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/goal", label: "Goals", icon: Target },
   { href: "/meal-plan", label: "Meal Plan", icon: CalendarDays },
   { href: "/grocery", label: "Groceries", icon: ShoppingCart },
+  { href: "/nutrition", label: "Nutrition", icon: Flame },
+  { href: "/recipes", label: "Recipes", icon: BookOpen },
   { href: "/orders", label: "Orders", icon: ShoppingBag },
   { href: "/pantry", label: "Pantry", icon: Package },
   { href: "/profile", label: "Profile", icon: User }
@@ -51,6 +54,7 @@ export function AppNav() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <NotificationBell />
           <UserButton />
         </div>
       </div>
