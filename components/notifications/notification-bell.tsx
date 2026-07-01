@@ -9,10 +9,24 @@ export function NotificationBell() {
   const [unread, setUnread] = useState(0);
 
   useEffect(() => {
-    fetch("/api/notifications")
-      .then((res) => res.json())
-      .then((data) => setUnread(data.unreadCount ?? 0))
-      .catch(() => setUnread(0));
+    function loadCount() {
+      fetch("/api/notifications")
+        .then((res) => res.json())
+        .then((data) => setUnread(data.unreadCount ?? 0))
+        .catch(() => setUnread(0));
+    }
+
+    loadCount();
+    const interval = setInterval(loadCount, 30000);
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") loadCount();
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
   }, []);
 
   return (

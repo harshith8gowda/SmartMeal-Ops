@@ -15,6 +15,21 @@ import { createNotification } from "@/lib/db/notification";
 import { ensureDbUser } from "@/lib/auth/clerk";
 import { mapErrorToResponse } from "@/lib/errors";
 
+const slotItemsSchema = z
+  .object({
+    ingredients: z.array(z.string()).optional(),
+    providerSuggestion: z.any().optional(),
+    nutrition: z
+      .object({
+        calories: z.number().min(0).optional(),
+        protein: z.number().min(0).optional(),
+        carbs: z.number().min(0).optional(),
+        fat: z.number().min(0).optional()
+      })
+      .optional()
+  })
+  .optional();
+
 const slotSchema = z.object({
   id: z.string().optional(),
   date: z.string().datetime(),
@@ -26,7 +41,7 @@ const slotSchema = z.object({
   timeMinutes: z.number().default(0),
   effort: z.string().optional(),
   imageUrl: z.string().optional(),
-  items: z.any().optional(),
+  items: slotItemsSchema,
   cartSessionId: z.string().optional()
 });
 
@@ -43,8 +58,10 @@ export async function GET(req: NextRequest) {
     }
 
     const { searchParams } = new URL(req.url);
-    const start = new Date(searchParams.get("start") || Date.now());
-    const end = new Date(searchParams.get("end") || Date.now() + 7 * 24 * 60 * 60 * 1000);
+    const startParam = searchParams.get("start");
+    const endParam = searchParams.get("end");
+    const start = startParam ? z.coerce.date().parse(startParam) : new Date();
+    const end = endParam ? z.coerce.date().parse(endParam) : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
     const slots = await getMealSlots(user.id, start, end);
 
     return NextResponse.json({ slots });
@@ -70,8 +87,7 @@ export async function POST(req: NextRequest) {
     const action = body.action;
 
     if (action === "clear") {
-      const start = new Date(body.start);
-      const end = new Date(body.end);
+      const { start, end } = z.object({ start: z.coerce.date(), end: z.coerce.date() }).parse(body);
       await clearMealSlots(user.id, start, end);
       const dates = [];
       for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
@@ -84,10 +100,9 @@ export async function POST(req: NextRequest) {
     if (action === "delete") {
       const id = z.string().parse(body.id);
       const slot = await getMealSlotById(id, user.id);
+      if (!slot) throw new Error("Slot not found");
       await deleteMealSlot(id, user.id);
-      if (slot) {
-        await recalculateNutritionLogForDate(user.id, slot.date);
-      }
+      await recalculateNutritionLogForDate(user.id, slot.date);
       return NextResponse.json({ success: true });
     }
 

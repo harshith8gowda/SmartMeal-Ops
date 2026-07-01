@@ -29,10 +29,17 @@ export default function MealPlanPage() {
       start: start.toISOString(),
       end: end.toISOString()
     });
-    const res = await fetch(`/api/meal-plan?${params.toString()}`);
-    const data = await res.json();
-    setSlots(data.slots || []);
-    setLoading(false);
+    try {
+      const res = await fetch(`/api/meal-plan?${params.toString()}`);
+      if (!res.ok) throw new Error("Failed to load plan");
+      const data = await res.json();
+      setSlots(data.slots || []);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to load plan");
+      setSlots([]);
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function handleSave(data: SlotFormData) {

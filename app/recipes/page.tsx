@@ -15,9 +15,15 @@ export default function RecipesPage() {
 
   useEffect(() => {
     fetch("/api/recipes")
-      .then((res) => res.json())
+      .then(async (res) => {
+        if (!res.ok) throw new Error(await res.text());
+        return res.json();
+      })
       .then((data) => setRecipes(data.recipes || []))
-      .catch(() => setRecipes([]))
+      .catch((err) => {
+        toast.error(err instanceof Error ? err.message : "Failed to load recipes");
+        setRecipes([]);
+      })
       .finally(() => setLoading(false));
   }, []);
 

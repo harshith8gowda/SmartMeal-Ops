@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
+import Image from "next/image";
 import { cn } from "@/lib/utils/cn";
 
 export type FoodMapCardProps = {
@@ -36,7 +37,7 @@ export function FoodMapCard({ mode, title, description, price, time, icon: Icon,
       )}
     >
       <div className="relative h-36 w-full overflow-hidden">
-        <img src={image} alt={title} className="h-full w-full object-cover" />
+        <Image src={image} alt={title} fill className="object-cover" sizes="(max-width: 768px) 100vw, 288px" />
         <span className={cn("absolute left-3 top-3 rounded-full px-2.5 py-1 text-xs font-semibold", style.badge)}>
           {modeLabels[mode]}
         </span>

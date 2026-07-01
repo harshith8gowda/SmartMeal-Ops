@@ -5,7 +5,6 @@ import { ensureDbUser } from "@/lib/auth/clerk";
 import {
   getNotifications,
   getUnreadNotificationCount,
-  createNotification,
   markNotificationRead,
   markAllNotificationsRead,
   deleteNotification
@@ -30,36 +29,6 @@ export async function GET() {
     ]);
 
     return NextResponse.json({ notifications, unreadCount });
-  } catch (error) {
-    const { status, body } = mapErrorToResponse(error);
-    return NextResponse.json(body, { status });
-  }
-}
-
-export async function POST(req: NextRequest) {
-  try {
-    const { userId } = await auth();
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const user = await ensureDbUser(userId);
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const body = await req.json();
-    const parsed = z
-      .object({
-        title: z.string().min(1),
-        body: z.string().min(1),
-        type: z.string().min(1),
-        actionUrl: z.string().optional()
-      })
-      .parse(body);
-
-    const notification = await createNotification(user.id, parsed);
-    return NextResponse.json({ notification });
   } catch (error) {
     const { status, body } = mapErrorToResponse(error);
     return NextResponse.json(body, { status });

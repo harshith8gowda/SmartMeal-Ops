@@ -72,23 +72,27 @@ export async function updateRecipe(id: string, userId: string, input: Partial<Re
   if (input.imageUrl !== undefined) data.imageUrl = input.imageUrl;
   if (input.isFavorite !== undefined) data.isFavorite = input.isFavorite;
 
-  return prisma.recipe.updateMany({
+  const result = await prisma.recipe.updateMany({
     where: { id, userId },
     data
   });
+  if (result.count === 0) throw new Error("Recipe not found");
+  return result;
 }
 
 export async function deleteRecipe(id: string, userId: string) {
   const prisma = getPrisma();
-  return prisma.recipe.deleteMany({
+  const result = await prisma.recipe.deleteMany({
     where: { id, userId }
   });
+  if (result.count === 0) throw new Error("Recipe not found");
+  return result;
 }
 
 export async function toggleFavoriteRecipe(id: string, userId: string) {
   const prisma = getPrisma();
   const recipe = await getRecipeById(id, userId);
-  if (!recipe) return null;
+  if (!recipe) throw new Error("Recipe not found");
 
   return prisma.recipe.update({
     where: { id },

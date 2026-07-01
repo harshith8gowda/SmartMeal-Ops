@@ -6,7 +6,7 @@ export type MealSlot = {
   id: string;
   date: string;
   mealType: "breakfast" | "lunch" | "dinner";
-  source: "cook" | "order" | "dineout" | null;
+  source: "COOK" | "ORDER" | "DINEOUT" | null;
   title: string;
   description?: string;
   cost: number;
@@ -20,6 +20,11 @@ const sourceConfig = {
   order: { icon: ShoppingBag, color: "text-order", bg: "bg-order-light", border: "border-order/20" },
   dineout: { icon: UtensilsCrossed, color: "text-dineout", bg: "bg-dineout-light", border: "border-dineout/20" }
 };
+
+function getSourceConfig(source: MealSlot["source"]) {
+  const key = (source ?? "COOK").toLowerCase() as keyof typeof sourceConfig;
+  return sourceConfig[key] ?? sourceConfig.cook;
+}
 
 export function WeekGrid({
   slots,
@@ -57,7 +62,7 @@ export function WeekGrid({
           </div>
           {mealTypes.map((mealType) => {
             const slot = getSlot(day, mealType);
-            const config = slot?.source ? sourceConfig[slot.source] : null;
+            const config = slot?.source ? getSourceConfig(slot.source) : null;
             const Icon = config?.icon;
             return (
               <button

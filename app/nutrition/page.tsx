@@ -8,6 +8,7 @@ import { ScrollReveal } from "@/components/landing/scroll-reveal";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Flame, CalendarDays } from "lucide-react";
+import { toast } from "sonner";
 
 type NutritionLog = {
   date: string;
@@ -32,11 +33,17 @@ export default function NutritionPage() {
   useEffect(() => {
     const { start, end } = getWeekRange();
     fetch(`/api/nutrition?start=${start.toISOString()}&end=${end.toISOString()}`)
-      .then((res) => res.json())
+      .then(async (res) => {
+        if (!res.ok) throw new Error(await res.text());
+        return res.json();
+      })
       .then((data) => {
         setLogs(data.logs || []);
       })
-      .catch(() => setLogs([]))
+      .catch((err) => {
+        toast.error(err instanceof Error ? err.message : "Failed to load nutrition");
+        setLogs([]);
+      })
       .finally(() => setLoading(false));
   }, []);
 

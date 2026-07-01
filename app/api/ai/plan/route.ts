@@ -84,62 +84,70 @@ export async function POST(req: NextRequest) {
 
     const swiggyToken = await getSwiggyToken(user.id);
     const [food, groceries, restaurants] = await Promise.all([
-      searchFood("high protein dinner", addressId, swiggyToken),
-      searchGroceries(missingIngredients[0] ?? "eggs", addressId, swiggyToken),
-      searchRestaurants("dinner", addressId, swiggyToken)
+      searchFood("high protein dinner", addressId, swiggyToken).catch(() => null),
+      missingIngredients.length > 0
+        ? searchGroceries(missingIngredients[0], addressId, swiggyToken).catch(() => null)
+        : null,
+      searchRestaurants("dinner", addressId, swiggyToken).catch(() => null)
     ]);
 
-    await Promise.all([
-      bulkCreateMealSlots(
-        user.id,
-        meals.map((meal, index) => ({
-          date: new Date(startDate.getTime() + index * 24 * 60 * 60 * 1000),
-          mealType: "dinner",
-          source: meal.source,
-          title: meal.title,
-          description: meal.reason,
-          cost: meal.cost,
-          timeMinutes: meal.prepMinutes,
-          items: {
-            ingredients: meal.ingredients ?? [],
-            providerSuggestion: meal.providerSuggestion,
-            nutrition: {
+    try {
+      await Promise.all([
+        bulkCreateMealSlots(
+          user.id,
+          meals.map((meal, index) => ({
+            date: new Date(startDate.getTime() + index * 24 * 60 * 60 * 1000),
+            mealType: "dinner",
+            source: meal.source,
+            title: meal.title,
+            description: meal.reason,
+            cost: meal.cost,
+            timeMinutes: meal.prepMinutes,
+            items: {
+              ingredients: meal.ingredients ?? [],
+              providerSuggestion: meal.providerSuggestion,
+              nutrition: {
+                calories: meal.calories,
+                protein: meal.protein,
+                carbs: meal.carbs,
+                fat: meal.fat
+              }
+            } as Prisma.InputJsonValue
+          }))
+        ),
+        ...meals
+          .filter((meal) => meal.source === "COOK")
+          .map((meal) =>
+            createRecipe(user.id, {
+              title: meal.title,
+              description: meal.reason,
+              source: meal.source,
               calories: meal.calories,
               protein: meal.protein,
               carbs: meal.carbs,
-              fat: meal.fat
-            }
-          } as Prisma.InputJsonValue
-        }))
-      ),
-      ...meals.map((meal) =>
-        createRecipe(user.id, {
-          title: meal.title,
-          description: meal.reason,
-          source: meal.source,
-          calories: meal.calories,
-          protein: meal.protein,
-          carbs: meal.carbs,
-          fat: meal.fat,
-          ingredients: meal.ingredients ?? [],
-          steps: [],
-          cookTimeMinutes: meal.prepMinutes,
-          cost: meal.cost
+              fat: meal.fat,
+              ingredients: meal.ingredients ?? [],
+              steps: [],
+              cookTimeMinutes: meal.prepMinutes,
+              cost: meal.cost
+            })
+          ),
+        createNotification(user.id, {
+          title: "AI meal plan ready",
+          body: `${meals.length} dinners planned for the week.`,
+          type: "ai_plan",
+          actionUrl: "/meal-plan"
+        }),
+        appendMessage(user.id, { role: "user", content: prompt, createdAt: new Date().toISOString() }),
+        appendMessage(user.id, {
+          role: "assistant",
+          content: `${recommendation.headline}. ${recommendation.reason}`,
+          createdAt: new Date().toISOString()
         })
-      ),
-      createNotification(user.id, {
-        title: "AI meal plan ready",
-        body: `${meals.length} dinners planned for the week.`,
-        type: "ai_plan",
-        actionUrl: "/meal-plan"
-      }),
-      appendMessage(user.id, { role: "user", content: prompt, createdAt: new Date().toISOString() }),
-      appendMessage(user.id, {
-        role: "assistant",
-        content: `${recommendation.headline}. ${recommendation.reason}`,
-        createdAt: new Date().toISOString()
-      })
-    ]);
+      ]);
+    } catch (sideEffectError) {
+      console.error("AI plan side effects failed:", sideEffectError);
+    }
 
     return NextResponse.json({
       summary: `${recommendation.headline}. ${recommendation.reason} I found ${missingIngredients.length} missing grocery items and prepared a confirmation-ready ${recommendation.source.toLowerCase()} path for "${prompt}".`,

@@ -29,6 +29,12 @@ const SOURCE_OPTIONS: { value: "cook" | "order" | "dineout"; label: string; icon
   { value: "dineout", label: "Dineout", icon: UtensilsCrossed }
 ];
 
+function parseNumberInput(value: string): number {
+  const parsed = Number(value);
+  if (value === "" || Number.isNaN(parsed)) return 0;
+  return Math.max(0, parsed);
+}
+
 export function SlotSheet({
   slot,
   onClose,
@@ -41,7 +47,9 @@ export function SlotSheet({
   onDelete?: () => Promise<void>;
 }) {
   const items = slot.items as { nutrition?: { calories?: number; protein?: number; carbs?: number; fat?: number } } | null;
-  const [source, setSource] = useState<"cook" | "order" | "dineout">(slot.source || "cook");
+  const [source, setSource] = useState<"cook" | "order" | "dineout">(
+    (slot.source ? slot.source.toLowerCase() : "cook") as "cook" | "order" | "dineout"
+  );
   const [title, setTitle] = useState(slot.title || "");
   const [description, setDescription] = useState(slot.description || "");
   const [cost, setCost] = useState(slot.cost || 0);
@@ -177,7 +185,7 @@ export function SlotSheet({
               <Input
                 type="number"
                 value={cost}
-                onChange={(e) => setCost(Number(e.target.value))}
+                onChange={(e) => setCost(parseNumberInput(e.target.value))}
               />
             </div>
             <div>
@@ -185,7 +193,7 @@ export function SlotSheet({
               <Input
                 type="number"
                 value={timeMinutes}
-                onChange={(e) => setTimeMinutes(Number(e.target.value))}
+                onChange={(e) => setTimeMinutes(parseNumberInput(e.target.value))}
               />
             </div>
           </div>
@@ -196,25 +204,25 @@ export function SlotSheet({
                 type="number"
                 placeholder="Calories"
                 value={calories}
-                onChange={(e) => setCalories(Number(e.target.value))}
+                onChange={(e) => setCalories(parseNumberInput(e.target.value))}
               />
               <Input
                 type="number"
                 placeholder="Protein (g)"
                 value={protein}
-                onChange={(e) => setProtein(Number(e.target.value))}
+                onChange={(e) => setProtein(parseNumberInput(e.target.value))}
               />
               <Input
                 type="number"
                 placeholder="Carbs (g)"
                 value={carbs}
-                onChange={(e) => setCarbs(Number(e.target.value))}
+                onChange={(e) => setCarbs(parseNumberInput(e.target.value))}
               />
               <Input
                 type="number"
                 placeholder="Fat (g)"
                 value={fat}
-                onChange={(e) => setFat(Number(e.target.value))}
+                onChange={(e) => setFat(parseNumberInput(e.target.value))}
               />
             </div>
           </div>

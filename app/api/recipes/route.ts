@@ -76,8 +76,7 @@ export async function PUT(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { id, ...rest } = body;
-    const parsed = RecipeSchema.partial().parse(rest);
+    const { id, ...parsed } = z.object({ id: z.string() }).merge(RecipeSchema.partial()).parse(body);
     const result = await updateRecipe(id, user.id, parsed);
     return NextResponse.json({ ok: true, count: result.count });
   } catch (error) {

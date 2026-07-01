@@ -26,12 +26,18 @@ export default function NotificationsPage() {
 
   useEffect(() => {
     fetch("/api/notifications")
-      .then((res) => res.json())
+      .then(async (res) => {
+        if (!res.ok) throw new Error(await res.text());
+        return res.json();
+      })
       .then((data) => {
         setNotifications(data.notifications || []);
         setUnreadCount(data.unreadCount || 0);
       })
-      .catch(() => setNotifications([]))
+      .catch((err) => {
+        toast.error(err instanceof Error ? err.message : "Failed to load notifications");
+        setNotifications([]);
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -71,8 +77,12 @@ export default function NotificationsPage() {
     try {
       const res = await fetch(`/api/notifications?id=${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Failed to delete");
-      setNotifications((prev) => (prev ? prev.filter((n) => n.id !== id) : prev));
-      const wasUnread = notifications?.find((n) => n.id === id)?.read === false;
+      let wasUnread = false;
+      setNotifications((prev) => {
+        const target = prev?.find((n) => n.id === id);
+        wasUnread = target?.read === false;
+        return prev ? prev.filter((n) => n.id !== id) : prev;
+      });
       if (wasUnread) setUnreadCount((count) => Math.max(0, count - 1));
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to delete");

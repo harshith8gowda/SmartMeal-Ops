@@ -69,10 +69,18 @@ export async function updateMealSlot(id: string, userId: string, input: Partial<
   if (input.items !== undefined) data.items = input.items as Prisma.InputJsonValue;
   if (input.cartSessionId !== undefined) data.cartSessionId = input.cartSessionId;
 
-  return prisma.mealSlot.update({
+  const result = await prisma.mealSlot.updateMany({
     where: { id, userId },
     data
   });
+  if (result.count === 0) {
+    throw new Error("Slot not found");
+  }
+  const updated = await prisma.mealSlot.findUnique({ where: { id } });
+  if (!updated) {
+    throw new Error("Slot not found");
+  }
+  return updated;
 }
 
 export async function deleteMealSlot(id: string, userId: string) {

@@ -18,8 +18,10 @@ export async function GET(req: NextRequest) {
     }
 
     const { searchParams } = new URL(req.url);
-    const start = new Date(searchParams.get("start") || Date.now());
-    const end = new Date(searchParams.get("end") || Date.now() + 7 * 24 * 60 * 60 * 1000);
+    const startParam = searchParams.get("start");
+    const endParam = searchParams.get("end");
+    const start = startParam ? z.coerce.date().parse(startParam) : new Date();
+    const end = endParam ? z.coerce.date().parse(endParam) : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
     const logs = await getNutritionLogs(user.id, start, end);
 
     return NextResponse.json({ logs });

@@ -54,7 +54,9 @@ export async function markAllNotificationsRead(userId: string) {
 
 export async function deleteNotification(userId: string, id: string) {
   const prisma = getPrisma();
-  return prisma.notification.deleteMany({
+  const result = await prisma.notification.deleteMany({
     where: { id, userId }
   });
+  if (result.count === 0) throw new Error("Notification not found");
+  return result;
 }
